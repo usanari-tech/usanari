@@ -1,39 +1,45 @@
-// --- Data Management ---
-let goals = JSON.parse(localStorage.getItem('goals-2026')) || [];
-
-const saveGoals = () => {
-    localStorage.setItem('goals-2026', JSON.stringify(goals));
-    updateTotalProgress();
-};
+// --- State Management ---
+let goals = JSON.parse(localStorage.getItem('goals')) || [];
+let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
 
 // --- DOM Elements ---
 const goalsContainer = document.getElementById('goals-container');
-const modalOverlay = document.getElementById('modal-overlay');
-const addGoalBtn = document.getElementById('add-goal-btn');
-const closeModalBtn = document.querySelector('.close-modal');
 const goalForm = document.getElementById('goal-form');
-const totalProgressFill = document.getElementById('total-progress');
+const addGoalBtn = document.getElementById('add-goal-btn');
+const modalOverlay = document.getElementById('modal-overlay');
+const closeModalBtn = document.querySelector('.close-modal');
+const categoryDatalist = document.getElementById('category-options');
+const deadlinePresets = document.querySelectorAll('.preset-btn');
+const dateInput = document.getElementById('goal-deadline');
 
-// --- Initialization & Animations ---
+// --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
-    gsap.from('.hero-section h2', { y: 30, opacity: 0, duration: 1.2, delay: 0.3, ease: 'power4.out' });
+    updateCategoryDatalist();
+    renderStats();
     renderGoals();
-    updateTotalProgress();
+
+    // Initial GSAP animations
+    gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
+    gsap.from('.stat-card', { y: 20, opacity: 0, duration: 0.8, stagger: 0.2, ease: 'power4.out' });
 });
+
+// --- Category persistence ---
+const updateCategoryDatalist = () => {
+    categoryDatalist.innerHTML = categories.map(cat => `<option value="${cat}">`).join('');
+};
 
 // --- Modal Control ---
 const openModal = () => {
     modalOverlay.style.display = 'flex';
     gsap.fromTo('.modal-content',
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' }
+        { scale: 0.9, opacity: 0, y: 20 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: 'power4.out' }
     );
 };
 
 const closeModal = () => {
     gsap.to('.modal-content', {
-        scale: 0.8, opacity: 0, duration: 0.3, onComplete: () => {
+        scale: 0.9, opacity: 0, y: 20, duration: 0.3, onComplete: () => {
             modalOverlay.style.display = 'none';
         }
     });
@@ -41,45 +47,83 @@ const closeModal = () => {
 
 addGoalBtn.addEventListener('click', openModal);
 closeModalBtn.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+});
 
-// --- Goal Actions ---
+// --- Deadline logic ---
+deadlinePresets.forEach(btn => {
+    btn.addEventListener('click', () => {
+        deadlinePresets.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (btn.dataset.value === 'custom') {
+            dateInput.classList.remove('hidden-date');
+        } else {
+            dateInput.classList.add('hidden-date');
+        }
+    });
+});
+
+// --- Core Actions ---
+const saveGoals = () => {
+    localStorage.setItem('goals', JSON.stringify(goals));
+    localStorage.setItem('categories', JSON.stringify(categories));
+};
+
 goalForm.onsubmit = (e) => {
     e.preventDefault();
 
-    // Process dynamic tasks
+    const category = document.getElementById('goal-category').value.trim();
+    const title = document.getElementById('goal-title').value;
     const tasksInput = document.getElementById('goal-tasks').value;
+    const selectedDeadlineBtn = document.querySelector('.preset-btn.active');
+
+    // Save new category
+    if (category && !categories.includes(category)) {
+        categories.push(category);
+        updateCategoryDatalist();
+    }
+
+    // Process tasks
     const taskLines = tasksInput.split('\n').filter(line => line.trim() !== '');
+    const tasks = taskLines.map((text, index) => ({
+        id: Date.now() + index,
+        text: text.trim(),
+        done: false
+    }));
 
-    const tasks = taskLines.length > 0
-        ? taskLines.map((text, index) => ({ id: Date.now() + index, text: text.trim(), done: false }))
-        : [
-            { id: 1, text: '最初の一歩を踏み出す', done: false },
-            { id: 2, text: '習慣化を定着させる', done: false }
-        ];
-
-    const categoryInput = document.getElementById('goal-category').value.trim();
-    const category = categoryInput || 'その他';
+    // Process deadline
+    let deadline = '未定';
+    const now = new Date();
+    if (selectedDeadlineBtn.dataset.value === 'this-week') {
+        const sunday = new Date(now.setDate(now.getDate() + (7 - now.getDay())));
+        deadline = `${sunday.getMonth() + 1}/${sunday.getDate()}`;
+    } else if (selectedDeadlineBtn.dataset.value === 'this-month') {
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        deadline = `${lastDay.getMonth() + 1}/${lastDay.getDate()}`;
+    }
 
     const newGoal = {
         id: Date.now(),
-        title: document.getElementById('goal-title').value,
-        category: category,
-        tasks: tasks,
+        title,
+        category,
+        tasks,
+        deadline,
         progress: 0
     };
 
     goals.push(newGoal);
     saveGoals();
+    renderStats();
     renderGoals();
 
-    // Success feedback
     goalForm.reset();
     closeModal();
     confetti({
-        particleCount: 150,
+        particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#2563eb', '#3b82f6', '#60a5fa']
+        colors: ['#3b82f6', '#6366f1']
     });
 };
 
@@ -88,65 +132,102 @@ const toggleTask = (goalId, taskId) => {
     const task = goal.tasks.find(t => t.id === taskId);
     task.done = !task.done;
 
-    // Calculate progress
-    const doneTasks = goal.tasks.filter(t => t.done).length;
-    goal.progress = (doneTasks / goal.tasks.length) * 100;
+    // Update progress
+    const doneCount = goal.tasks.filter(t => t.done).length;
+    goal.progress = Math.round((doneCount / goal.tasks.length) * 100);
 
     saveGoals();
+    renderStats();
     renderGoals();
 
-    if (task.done) {
-        confetti({
-            particleCount: 40,
-            spread: 50,
-            origin: { y: 0.8 },
-            colors: ['#4ade80', '#38bdf8']
-        });
+    if (goal.progress === 100) {
+        confetti({ particleCount: 50, scalar: 0.7 });
     }
 };
 
 // --- Rendering ---
+const renderStats = () => {
+    const totalTasks = goals.reduce((acc, g) => acc + g.tasks.length, 0);
+    const completedTasks = goals.reduce((acc, g) => acc + g.tasks.filter(t => t.done).length, 0);
+    const overallProgress = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
+    document.getElementById('overall-progress-text').innerText = `${overallProgress}%`;
+    document.getElementById('pending-tasks-count').innerText = totalTasks - completedTasks;
+
+    // Simple visual update for deadline
+    const deadlines = goals.filter(g => g.deadline !== '未定').map(g => g.deadline);
+    document.getElementById('upcoming-deadline-text').innerText = deadlines.length > 0 ? deadlines[0] : 'なし';
+};
+
 const renderGoals = () => {
+    goalsContainer.innerHTML = '';
+
     if (goals.length === 0) {
-        goalsContainer.innerHTML = '<div class="empty-state"><p>まだ目標がありません。＋ボタンから追加してください。</p></div>';
+        goalsContainer.innerHTML = '<div class="empty-state">新しい目標を登録して、2026年をデザインしましょう。</div>';
         return;
     }
 
-    goalsContainer.innerHTML = '';
-    goals.forEach(goal => {
-        const card = document.createElement('div');
-        card.className = 'goal-card';
-        card.innerHTML = `
-            <div class="category-tag">${goal.category.toUpperCase()}</div>
-            <h4>${goal.title}</h4>
-            <div class="card-progress">
-                <div class="progress-bar-sm">
-                    <div class="progress-fill-sm" style="width: ${goal.progress}%"></div>
-                </div>
-                <span class="progress-text">${Math.round(goal.progress)}%</span>
+    // Grouping by category
+    const grouped = goals.reduce((acc, goal) => {
+        if (!acc[goal.category]) acc[goal.category] = [];
+        acc[goal.category].push(goal);
+        return acc;
+    }, {});
+
+    Object.entries(grouped).forEach(([category, categoryGoals]) => {
+        const stackElement = document.createElement('div');
+        stackElement.className = `category-stack ${categoryGoals.length > 1 ? 'is-stacked' : ''}`;
+
+        stackElement.innerHTML = `
+            <div class="stack-title">
+                <span>${category}</span>
+                <span class="stack-count">${categoryGoals.length}</span>
             </div>
-            <ul class="task-list">
-                ${goal.tasks.map(task => `
-                    <li class="task-item ${task.done ? 'done' : ''}" onclick="toggleTask(${goal.id}, ${task.id})">
-                        <span class="checkbox"></span>
-                        <span class="task-text">${task.text}</span>
-                    </li>
+            <div class="stack-content">
+                ${categoryGoals.map(goal => `
+                    <div class="goal-card-wrapper">
+                        <div class="goal-card" onclick="toggleStack(this)">
+                            <div class="goal-header">
+                                <h4>${goal.title}</h4>
+                                <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${goal.deadline}</span>
+                            </div>
+                            <div class="progress-mini-bar">
+                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                            </div>
+                            <div class="task-mini-list">
+                                ${goal.tasks.slice(0, 3).map(task => `
+                                    <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
+                                        <div class="mini-checkbox"></div>
+                                        <span class="mini-task-text">${task.text}</span>
+                                    </div>
+                                `).join('')}
+                                ${goal.tasks.length > 3 ? `<p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">+ 他 ${goal.tasks.length - 3} 件</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
                 `).join('')}
-            </ul>
+            </div>
         `;
-        goalsContainer.appendChild(card);
-        // 新しく追加されたカードのみアニメーション
-        if (goal.id > Date.now() - 1000) {
-            gsap.from(card, { y: 20, opacity: 0, duration: 0.6, ease: 'power4.out' });
-        }
+        goalsContainer.appendChild(stackElement);
     });
 };
 
-const updateTotalProgress = () => {
-    if (goals.length === 0) {
-        totalProgressFill.style.width = '0%';
-        return;
+const toggleStack = (cardEl) => {
+    const stack = cardEl.closest('.category-stack');
+    if (stack.classList.contains('is-stacked')) {
+        const isExpanded = stack.classList.contains('is-expanded');
+
+        if (!isExpanded) {
+            stack.classList.add('is-expanded');
+            gsap.from(stack.querySelectorAll('.goal-card-wrapper'), {
+                y: -10,
+                opacity: 0,
+                stagger: 0.1,
+                duration: 0.4,
+                ease: 'power2.out'
+            });
+        } else {
+            stack.classList.remove('is-expanded');
+        }
     }
-    const avgProgress = goals.reduce((acc, g) => acc + g.progress, 0) / goals.length;
-    totalProgressFill.style.width = `${avgProgress}%`;
 };

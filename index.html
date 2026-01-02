@@ -41,6 +41,32 @@
                 </div>
             </section>
 
+            <!-- Stats Section -->
+            <section class="stats-overview">
+                <div class="stat-card" id="total-completion-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-label">達成率</span>
+                        <h3 id="overall-progress-text">0%</h3>
+                    </div>
+                    <div class="mini-graph"><canvas id="completion-chart"></canvas></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-label">未完了タスク</span>
+                        <h3 id="pending-tasks-count">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-info">
+                        <span class="stat-label">直近の期限</span>
+                        <h3 id="upcoming-deadline-text">登録なし</h3>
+                    </div>
+                </div>
+            </section>
+
             <!-- Goals Dashboard -->
             <section id="dashboard" class="dashboard-section">
                 <div class="section-header">
@@ -65,16 +91,14 @@
         <div id="modal-overlay" class="modal-overlay">
             <div class="modal-content glass">
                 <button class="close-modal">&times;</button>
-                <h3>新規目標の設定</h3>
+                <h3>目標の登録</h3>
                 <form id="goal-form">
                     <div class="input-group focus-animation">
-                        <label for="goal-title">目標の名前</label>
-                        <input type="text" id="goal-title" placeholder="例: AI開発を極める" required>
-                    </div>
-                    <div class="input-group">
                         <label for="goal-category">カテゴリー</label>
-                        <input type="text" id="goal-category" list="category-options" placeholder="例：自己研鑽、健康、仕事">
+                        <input type="text" id="goal-category" list="category-options" placeholder="例：自己研鑽、健康、仕事"
+                            required>
                         <datalist id="category-options">
+                            <!-- Dynamic categories will be added here -->
                             <option value="スキル・学習">
                             <option value="健康・習慣">
                             <option value="仕事・キャリア">
@@ -82,8 +106,21 @@
                         </datalist>
                     </div>
                     <div class="input-group">
+                        <label for="goal-title">目標の名前</label>
+                        <input type="text" id="goal-title" placeholder="例: AI開発を極める" required>
+                    </div>
+                    <div class="input-group">
                         <label for="goal-tasks">タスク (1行に1タスク)</label>
-                        <textarea id="goal-tasks" placeholder="例：&#10;毎日30分勉強する&#10;週末にポートフォリオを作る" rows="4"></textarea>
+                        <textarea id="goal-tasks" placeholder="例：&#10;毎日30分勉強する&#10;週末にポートフォリオを作る" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>期限</label>
+                        <div class="deadline-presets">
+                            <button type="button" class="preset-btn" data-value="this-week">今週中</button>
+                            <button type="button" class="preset-btn" data-value="this-month">今月末</button>
+                            <button type="button" class="preset-btn active" data-value="none">未定</button>
+                        </div>
+                        <input type="date" id="goal-deadline" class="hidden-date">
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn-submit">登録</button>
