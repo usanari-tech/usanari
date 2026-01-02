@@ -159,6 +159,15 @@ const renderStats = () => {
     document.getElementById('upcoming-deadline-text').innerText = deadlines.length > 0 ? deadlines[0] : 'なし';
 };
 
+const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}.${m}.${d}`;
+};
+
 const renderGoals = () => {
     goalsContainer.innerHTML = '';
 
@@ -184,14 +193,16 @@ const renderGoals = () => {
                 <div class="stack-count">${categoryGoals.length}</div>
             </div>
             <div class="stack-content">
-                ${categoryGoals.map((goal, idx) => `
-                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${20 - idx}; transform: translateY(${idx * 12}px)">
+                ${categoryGoals.map((goal, idx) => {
+            const formattedDeadline = goal.deadline.includes('.') ? goal.deadline : formatDate(goal.deadline);
+            return `
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${30 - idx}; transform: translateY(${-idx * 40}px)">
                         <div class="goal-card" onclick="toggleCategoryStack(this)">
                             <div class="goal-header">
                                 <h4>${goal.title}</h4>
-                                <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${goal.deadline}</span>
+                                <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${formattedDeadline}</span>
                             </div>
-                            <!-- Card Details (Auto-shown when stack is expanded via CSS) -->
+                            <!-- Task Details -->
                             <div class="card-content-expand">
                                 <div class="progress-mini-bar">
                                     <div class="progress-fill" style="width: ${goal.progress}%"></div>
@@ -207,7 +218,7 @@ const renderGoals = () => {
                             </div>
                         </div>
                     </div>
-                `).join('')}
+                `}).join('')}
             </div>
         `;
         goalsContainer.appendChild(stackElement);
@@ -220,17 +231,14 @@ const toggleCategoryStack = (cardEl) => {
     const wrappers = stack.querySelectorAll('.goal-card-wrapper');
 
     if (isExpanded) {
-        // Collapse to card stack (12px offset)
+        // Collapse to card stack (Upward offset: -40px)
         stack.classList.remove('is-expanded');
         wrappers.forEach((tr, i) => {
-            gsap.to(tr, { y: i * 12, duration: 0.6, ease: 'expo.out' });
+            gsap.to(tr, { y: -i * 40, duration: 0.6, ease: 'expo.out' });
         });
     } else {
         // Expand to vertical list
         stack.classList.add('is-expanded');
-        gsap.fromTo(wrappers,
-            { y: (i) => i * 12 },
-            { y: 0, duration: 0.6, ease: 'expo.out' }
-        );
+        gsap.to(wrappers, { y: 0, duration: 0.6, ease: 'expo.out' });
     }
 };

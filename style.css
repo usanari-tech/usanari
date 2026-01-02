@@ -142,11 +142,20 @@ body {
     height: 60px;
 }
 
-/* Stack View: Refined Card Stack */
+/* Stack View: Multi-column Index Stack (Fixed Stacking Order) */
 #goals-container {
-    display: flex;
-    flex-direction: column;
-    gap: 5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 5rem 2rem;
+    align-items: start;
+    padding-bottom: 5rem;
+}
+
+@media (min-width: 1200px) {
+    #goals-container {
+        grid-template-columns: repeat(3, 1fr);
+        /* PCで強制3列 */
+    }
 }
 
 .category-stack {
@@ -164,14 +173,14 @@ body {
 }
 
 .category-label {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 800;
     color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
 
 .category-label::before {
@@ -183,7 +192,7 @@ body {
 }
 
 .stack-count {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
     background: rgba(0, 0, 0, 0.04);
@@ -193,8 +202,8 @@ body {
 
 .stack-content {
     position: relative;
-    min-height: 120px;
-    transition: min-height 0.4s ease;
+    padding-top: 100px;
+    /* 背後への上方向スタック用スペース */
 }
 
 .goal-card-wrapper {
@@ -205,7 +214,8 @@ body {
     left: 0;
 }
 
-/* Card Stack Offsets: Small offsets for depth */
+/* Stacking Order: First card is FRONT-most (highest z-index, bottom-most Y) */
+/* Behind cards peek from ABOVE (upward index) */
 .category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(1) {
     transform: translateY(0px) scale(1);
     z-index: 10;
@@ -213,32 +223,38 @@ body {
 }
 
 .category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(2) {
-    transform: translateY(12px) scale(0.98);
+    transform: translateY(-40px) scale(0.98);
     z-index: 9;
-    opacity: 0.6;
+    opacity: 0.8;
 }
 
 .category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(3) {
-    transform: translateY(24px) scale(0.96);
+    transform: translateY(-80px) scale(0.96);
     z-index: 8;
-    opacity: 0.3;
+    opacity: 0.6;
 }
 
 .category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+4) {
-    transform: translateY(30px) scale(0.94);
+    transform: translateY(-100px) scale(0.94);
     z-index: 7;
     opacity: 0;
     pointer-events: none;
 }
 
-/* Hide info on background cards to avoid text overlap (noise) */
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .goal-card>* {
-    opacity: 0 !important;
+/* In stack: hide details on background cards to keep it clean */
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .card-content-expand,
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .progress-mini-bar {
+    display: none !important;
 }
 
-/* Expanded state: Layout as a clear list */
+/* Expanded state within the grid */
+.category-stack.is-expanded {
+    grid-column: 1 / -1;
+    margin-bottom: 2rem;
+}
+
 .category-stack.is-expanded .stack-content {
-    min-height: auto;
+    padding-top: 0;
 }
 
 .category-stack.is-expanded .goal-card-wrapper {
@@ -250,8 +266,8 @@ body {
     z-index: 1 !important;
 }
 
-.category-stack.is-expanded .goal-card-wrapper .goal-card>* {
-    opacity: 1 !important;
+.category-stack.is-expanded .goal-card-wrapper .card-content-expand {
+    display: block !important;
 }
 
 /* Single Goal Card */
@@ -259,12 +275,12 @@ body {
     background: var(--bg-card);
     backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 1.5rem 2.5rem;
-    box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 1.25rem 1.75rem;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     overflow: hidden;
-    transition: background 0.3s, border-color 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .goal-card:hover {
