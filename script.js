@@ -23,12 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- Modal Control ---
-addGoalBtn.onclick = () => {
+const openModal = () => {
     modalOverlay.style.display = 'flex';
-    gsap.from('.modal-content', { scale: 0.8, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' });
+    gsap.fromTo('.modal-content',
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' }
+    );
 };
 
-closeModalBtn.onclick = () => {
+const closeModal = () => {
     gsap.to('.modal-content', {
         scale: 0.8, opacity: 0, duration: 0.3, onComplete: () => {
             modalOverlay.style.display = 'none';
@@ -36,17 +39,29 @@ closeModalBtn.onclick = () => {
     });
 };
 
+addGoalBtn.addEventListener('click', openModal);
+closeModalBtn.addEventListener('click', closeModal);
+
 // --- Goal Actions ---
 goalForm.onsubmit = (e) => {
     e.preventDefault();
+
+    // Process dynamic tasks
+    const tasksInput = document.getElementById('goal-tasks').value;
+    const taskLines = tasksInput.split('\n').filter(line => line.trim() !== '');
+
+    const tasks = taskLines.length > 0
+        ? taskLines.map((text, index) => ({ id: Date.now() + index, text: text.trim(), done: false }))
+        : [
+            { id: 1, text: '最初の一歩を踏み出す', done: false },
+            { id: 2, text: '習慣化を定着させる', done: false }
+        ];
+
     const newGoal = {
         id: Date.now(),
         title: document.getElementById('goal-title').value,
         category: document.getElementById('goal-category').value,
-        tasks: [
-            { id: 1, text: '最初の一歩を踏み出す', done: false },
-            { id: 2, text: '習慣化を定着させる', done: false }
-        ],
+        tasks: tasks,
         progress: 0
     };
 
@@ -56,12 +71,12 @@ goalForm.onsubmit = (e) => {
 
     // Success feedback
     goalForm.reset();
-    closeModalBtn.click();
+    closeModal();
     confetti({
         particleCount: 150,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#38bdf8', '#818cf8', '#a855f7']
+        colors: ['#2563eb', '#3b82f6', '#60a5fa']
     });
 };
 

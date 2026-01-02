@@ -72,15 +72,19 @@
                         <input type="text" id="goal-title" placeholder="例: AI開発を極める" required>
                     </div>
                     <div class="input-group">
-                        <label for="goal-category">カテゴリー</label>
-                        <select id="goal-category">
-                            <option value="skill">スキル・学習</option>
-                            <option value="health">健康・習慣</option>
-                            <option value="wealth">資産・キャリア</option>
-                            <option value="leisure">趣味・余暇</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-submit">起動する</button>
+                    <label for="goal-category">CATEGORY</label>
+                    <select id="goal-category">
+                        <option value="skill">SKILL</option>
+                        <option value="health">HEALTH</option>
+                        <option value="finance">FINANCE</option>
+                        <option value="mindset">MINDSET</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="goal-tasks">TASKS (1行に1タスク)</label>
+                    <textarea id="goal-tasks" placeholder="例：&#10;毎日30分勉強する&#10;週末にポートフォリオを作る" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">起動する</button>
                 </form>
             </div>
         </div>
