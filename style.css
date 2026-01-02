@@ -307,23 +307,29 @@ body {
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
 .btn-submit {
-    width: 100%;
     background: var(--text-primary);
     color: white;
     border: none;
-    padding: 1.25rem;
-    border-radius: 18px;
+    padding: 0.85rem 2.5rem;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s;
-    margin-top: 1rem;
+    width: auto;
+    /* 全幅解除 */
 }
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .close-modal {

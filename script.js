@@ -57,10 +57,13 @@ goalForm.onsubmit = (e) => {
             { id: 2, text: '習慣化を定着させる', done: false }
         ];
 
+    const categoryInput = document.getElementById('goal-category').value.trim();
+    const category = categoryInput || 'その他';
+
     const newGoal = {
         id: Date.now(),
         title: document.getElementById('goal-title').value,
-        category: document.getElementById('goal-category').value,
+        category: category,
         tasks: tasks,
         progress: 0
     };
