@@ -84,7 +84,8 @@ body {
 .main-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 3rem 8%;
+    padding: 3rem 12%;
+    /* 余白をさらに拡大 */
 }
 
 /* Stats Section */
@@ -141,28 +142,54 @@ body {
     height: 60px;
 }
 
-/* Stack View: Accordion Index Style */
+/* Stack View: Refined Accordion Style */
 #goals-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
 }
 
 .category-stack {
     position: relative;
-    min-height: 200px;
+    width: 100%;
+    min-height: 250px;
 }
 
-.stack-title {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-    padding-left: 0.5rem;
+.category-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-left: 3px solid var(--accent-blue);
+    padding: 0 0.5rem 1rem 0.5rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.category-label {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.category-label::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--accent-blue);
+    border-radius: 2px;
+}
+
+.stack-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
 }
 
 .stack-content {
@@ -171,58 +198,58 @@ body {
 
 .goal-card-wrapper {
     width: 100%;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.6s cubic-bezier(0.2, 1, 0.2, 1);
     position: absolute;
     top: 0;
     left: 0;
 }
 
-/* Index positioning: offset each card slightly to show titles */
+/* Index positioning: offset each card (Increased to 80px to avoid text overlap) */
 .category-stack .goal-card-wrapper:nth-child(1) {
     transform: translateY(0px);
     z-index: 10;
 }
 
 .category-stack .goal-card-wrapper:nth-child(2) {
-    transform: translateY(50px);
+    transform: translateY(80px);
     z-index: 9;
 }
 
 .category-stack .goal-card-wrapper:nth-child(3) {
-    transform: translateY(100px);
+    transform: translateY(160px);
     z-index: 8;
 }
 
 .category-stack .goal-card-wrapper:nth-child(n+4) {
-    transform: translateY(150px);
+    transform: translateY(240px);
     z-index: 7;
     opacity: 0;
     pointer-events: none;
 }
 
-/* Expanded state: when one card is focused */
-.goal-card-wrapper.is-focused {
-    z-index: 100 !important;
-    transform: translateY(-10px) !important;
+/* Expanded state within the stack */
+.category-stack.is-expanded {
+    padding-bottom: 100px;
 }
 
-.goal-card-wrapper.is-blurred {
-    filter: blur(4px) grayscale(0.5);
-    opacity: 0.4;
-    transform: translateY(20px) scale(0.95) !important;
-    pointer-events: none;
+.category-stack.is-expanded .goal-card-wrapper {
+    position: relative !important;
+    transform: none !important;
+    margin-bottom: 1.5rem;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 /* Single Goal Card Internal Layout */
 .goal-card {
     background: var(--bg-card);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 1.25rem 1.5rem;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    overflow: hidden;
+    transition: all 0.3s;
 }
 
 .goal-card:hover {

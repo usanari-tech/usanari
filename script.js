@@ -179,19 +179,19 @@ const renderGoals = () => {
         stackElement.className = 'category-stack';
 
         stackElement.innerHTML = `
-            <div class="stack-title">
-                <span>${category}</span>
-                <span class="stack-count">${categoryGoals.length}</span>
+            <div class="category-header">
+                <div class="category-label">${category}</div>
+                <div class="stack-count">${categoryGoals.length}</div>
             </div>
             <div class="stack-content">
                 ${categoryGoals.map((goal, idx) => `
-                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${10 - idx}; transform: translateY(${idx * 55}px)">
-                        <div class="goal-card" onclick="focusGoal(this)">
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${20 - idx}; transform: translateY(${idx * 80}px)">
+                        <div class="goal-card" onclick="toggleCategoryStack(this)">
                             <div class="goal-header">
                                 <h4>${goal.title}</h4>
                                 <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${goal.deadline}</span>
                             </div>
-                            <!-- Expandable Content -->
+                            <!-- Details appear when stack expands -->
                             <div class="card-content-expand">
                                 <div class="progress-mini-bar">
                                     <div class="progress-fill" style="width: ${goal.progress}%"></div>
@@ -214,30 +214,22 @@ const renderGoals = () => {
     });
 };
 
-const focusGoal = (cardEl) => {
-    const wrapper = cardEl.closest('.goal-card-wrapper');
+const toggleCategoryStack = (cardEl) => {
     const stack = cardEl.closest('.category-stack');
-    const allWrappers = stack.querySelectorAll('.goal-card-wrapper');
-    const isFocused = wrapper.classList.contains('is-focused');
+    const isExpanded = stack.classList.contains('is-expanded');
+    const wrappers = stack.querySelectorAll('.goal-card-wrapper');
 
-    if (isFocused) {
-        // Unfocus: Return to neutral index state
-        allWrappers.forEach((tr, i) => {
-            tr.classList.remove('is-focused', 'is-blurred');
-            gsap.to(tr, { y: i * 55, opacity: 1, scale: 1, duration: 0.5, ease: 'expo.out' });
+    if (isExpanded) {
+        stack.classList.remove('is-expanded');
+        wrappers.forEach((tr, i) => {
+            gsap.to(tr, { y: i * 80, duration: 0.6, ease: 'expo.out' });
         });
     } else {
-        // Focus: Slide up and blur others
-        allWrappers.forEach((tr) => {
-            if (tr === wrapper) {
-                tr.classList.add('is-focused');
-                tr.classList.remove('is-blurred');
-                gsap.to(tr, { y: -20, scale: 1.02, duration: 0.6, ease: 'expo.out' });
-            } else {
-                tr.classList.add('is-blurred');
-                tr.classList.remove('is-focused');
-                gsap.to(tr, { y: 150, scale: 0.95, opacity: 0.3, duration: 0.5, ease: 'expo.out' });
-            }
+        stack.classList.add('is-expanded');
+        gsap.to(wrappers, {
+            y: 0,
+            duration: 0.6,
+            ease: 'expo.out'
         });
     }
 };
