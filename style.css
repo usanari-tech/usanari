@@ -88,58 +88,347 @@ body {
     /* 余白をさらに拡大 */
 }
 
-/* Stats Section */
-.stats-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 4rem;
-}
-
-.stat-card {
+/* Mission Control & Analytics */
+.mission-control {
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem;
     background: var(--bg-card);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 1.5rem;
+    border-radius: 24px;
+}
+
+.control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.control-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.energy-status-compact {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    position: relative;
+    gap: 1rem;
+    width: 240px;
+}
+
+.energy-status-compact .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.energy-bar-main {
+    flex: 1;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
     overflow: hidden;
 }
 
+.energy-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-indigo));
+    border-radius: 4px;
+    transition: width 1s cubic-bezier(0.2, 1, 0.2, 1);
+}
+
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    grid-auto-rows: 1fr;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    /* Slightly smaller radius inside control */
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 80px;
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+}
+
 .stat-icon {
-    font-size: 1.5rem;
-    width: 45px;
-    height: 45px;
+    font-size: 1.25rem;
+    width: 40px;
+    height: 40px;
     background: white;
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
+.stat-info {
+    flex: 1;
+}
+
 .stat-label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
 }
 
 .stat-info h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 800;
+    color: var(--text-primary);
 }
 
-.mini-graph {
+/* Analytics Grid */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.analytics-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.analytics-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Action Momentum Specifics */
+.momentum-card {
+    position: relative;
+    overflow: visible;
+    /* Allow tooltip to pop out if needed, though we will position absolute to body/card */
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.score-badge {
+    background: var(--text-primary);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.momentum-flow {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 140px;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.momentum-bar {
+    flex: 1;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    transition: height 0.6s cubic-bezier(0.2, 1, 0.2, 1), background-color 0.3s;
+    position: relative;
+    cursor: pointer;
+}
+
+.momentum-bar:hover {
+    background: var(--accent-blue);
+}
+
+.momentum-bar.active {
+    background: var(--accent-indigo);
+}
+
+.analyzing-text {
     position: absolute;
-    right: 1.5rem;
-    width: 60px;
-    height: 60px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Momentum Tooltip (High Contrast) */
+.momentum-tooltip {
+    position: absolute;
+    background: #ffffff;
+    /* Solid white */
+    color: #1e293b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    z-index 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
+}
+
+.momentum-tooltip.visible {
+    opacity: 1;
+    transform: translateY(-8px);
+}
+
+.tooltip-date {
+    display: block;
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.momentum-footer {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: auto;
+    margin-bottom: 1rem;
+}
+
+.stat-pill {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 0.6rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.stat-pill .label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.1rem;
+}
+
+.stat-pill .value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+/* Rank Progress */
+.momentum-progress-container {
+    margin-top: 0.5rem;
+}
+
+.rank-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.rank-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.rank-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), #8b5cf6);
+    border-radius: 3px;
+    transition: width 1s;
+}
+
+/* Category Balance */
+.cat-stats-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 280px;
+    padding-right: 0.5rem;
+    /* Custom Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+    /* Fade Mask */
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+.cat-stats-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cat-stats-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cat-stats-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+.cat-stat-item {
+    margin-bottom: 1rem;
+}
+
+.cat-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+}
+
+.cat-bar-bg {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.cat-bar-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    /* Dynamically colored via JS usually */
+    border-radius: 4px;
 }
 
 /* Stack View: Multi-column Index Stack (Fixed Stacking Order) */
@@ -323,6 +612,26 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.btn-delete-goal {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    opacity: 0.5;
+}
+
+.btn-delete-goal:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    opacity: 1;
 }
 
 .goal-card h4 {

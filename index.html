@@ -41,28 +41,89 @@
                 </div>
             </section>
 
-            <!-- Stats Section -->
-            <section class="stats-overview">
-                <div class="stat-card" id="total-completion-card">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-info">
-                        <span class="stat-label">達成率</span>
-                        <h3 id="overall-progress-text">0%</h3>
-                    </div>
-                    <div class="mini-graph"><canvas id="completion-chart"></canvas></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🎯</div>
-                    <div class="stat-info">
-                        <span class="stat-label">未完了タスク</span>
-                        <h3 id="pending-tasks-count">0</h3>
+            <!-- Mission Control Section -->
+            <section class="mission-control">
+                <div class="control-header">
+                    <h3>Mission Control</h3>
+                    <div class="energy-status-compact">
+                        <span class="label">Total Energy</span>
+                        <div class="energy-bar-main">
+                            <div id="total-progress" class="energy-fill" style="width: 0%"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏰</div>
-                    <div class="stat-info">
-                        <span class="stat-label">直近の期限</span>
-                        <h3 id="upcoming-deadline-text">登録なし</h3>
+
+                <div class="stats-overview">
+                    <div class="stat-card" id="total-completion-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <span class="stat-label">達成率</span>
+                            <h3 id="overall-progress-text">0%</h3>
+                        </div>
+                        <!-- Canvas removed, simple text focus -->
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <span class="stat-label">未完了タスク</span>
+                            <h3 id="pending-tasks-count">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <span class="stat-label">現在のステータス</span>
+                            <h3 id="current-status-text">Starting</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Grid -->
+            <section class="analytics-grid">
+                <!-- Action Momentum (Psychological Pulse) -->
+                <div class="analytics-card momentum-card">
+                    <div class="card-header">
+                        <h4>Action Momentum</h4>
+                        <span id="momentum-score-display" class="score-badge">0.0</span>
+                    </div>
+                    <div id="momentum-flow" class="momentum-flow">
+                        <!-- Bars injected via JS -->
+                        <div class="analyzing-text">リズムを解析中...</div>
+                    </div>
+                    <!-- Custom Tooltip -->
+                    <div id="momentum-tooltip" class="momentum-tooltip hidden"></div>
+
+                    <div class="momentum-footer">
+                        <div class="stat-pill">
+                            <span class="label">Monthly Vol.</span>
+                            <span class="value" id="mom-total">0</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="label">Daily Max</span>
+                            <span class="value" id="mom-max">0</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="label">Active Rate</span>
+                            <span class="value" id="mom-rate">0%</span>
+                        </div>
+                    </div>
+                    <div id="momentum-progress-container" class="momentum-progress-container">
+                        <div class="rank-info">
+                            <span id="next-rank-name">Next: Flow</span>
+                            <span id="next-rank-points">+15 pts</span>
+                        </div>
+                        <div class="rank-bar-bg">
+                            <div id="rank-progress-bar" class="rank-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Balance -->
+                <div class="analytics-card category-card">
+                    <h4>Category Balance</h4>
+                    <div id="category-stats" class="cat-stats-container">
+                        <!-- Category bars injected via JS -->
                     </div>
                 </div>
             </section>
@@ -71,12 +132,7 @@
             <section id="dashboard" class="dashboard-section">
                 <div class="section-header">
                     <h3>Your Goals</h3>
-                    <div class="energy-meter-container">
-                        <span class="label">Total Energy</span>
-                        <div class="energy-bar">
-                            <div id="total-progress" class="energy-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
+                    <!-- Energy container moved to Mission Control -->
                 </div>
                 <div id="goals-container" class="goals-grid">
                     <!-- Goals will be injected here -->
