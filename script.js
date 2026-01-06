@@ -13,7 +13,7 @@ const categoryDatalist = document.getElementById('category-options');
 const deadlinePresets = document.querySelectorAll('.preset-btn');
 const dateInput = document.getElementById('goal-deadline');
 
-// Analytics Elements
+const categoryManagerList = document.getElementById('category-manager-list');
 const momentumFlow = document.getElementById('momentum-flow');
 const momentumTooltip = document.getElementById('momentum-tooltip');
 const categoryStatsContainer = document.getElementById('category-stats');
@@ -48,7 +48,35 @@ const sanitizeData = () => {
 
 // --- Category persistence ---
 const updateCategoryDatalist = () => {
+    // Update Datalist
     categoryDatalist.innerHTML = categories.map(cat => `<option value="${cat}">`).join('');
+
+    // Update Chips in Modal
+    if (categoryManagerList) {
+        categoryManagerList.innerHTML = categories.map(cat => `
+            <div class="cat-chip">
+                <span>${cat}</span>
+                <span class="cat-chip-delete" onclick="deleteCategory('${cat}')">&times;</span>
+            </div>
+        `).join('');
+    }
+
+    // Refresh stats to reflect any category changes
+    renderCategoryStats();
+};
+
+const deleteCategory = (catName) => {
+    // Check if any goals are using this category
+    const goalsInCat = goals.filter(g => g.category === catName);
+    const message = goalsInCat.length > 0
+        ? `このカテゴリーに関連する目標が ${goalsInCat.length} 件あります。カテゴリーのリストから削除してもよろしいですか？（既存の目標は消えません）`
+        : `カテゴリー「${catName}」を削除してもよろしいですか？`;
+
+    if (confirm(message)) {
+        categories = categories.filter(c => c !== catName);
+        saveGoals();
+        updateCategoryDatalist();
+    }
 };
 
 // --- Modal Control ---

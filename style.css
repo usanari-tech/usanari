@@ -825,6 +825,48 @@ body {
     cursor: pointer;
 }
 
+.category-manager-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.cat-chip {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+    cursor: default;
+}
+
+.cat-chip:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-1px);
+}
+
+.cat-chip-delete {
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 2px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.cat-chip-delete:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
 @media (max-width: 768px) {
     .glass-nav {
         padding: 1rem 5%;
