@@ -491,8 +491,7 @@ body {
 
 .stack-content {
     position: relative;
-    padding-top: 100px;
-    /* 背後への上方向スタック用スペース */
+    padding-top: 0;
 }
 
 .goal-card-wrapper {
@@ -505,29 +504,18 @@ body {
 
 /* Stacking Order: First card is FRONT-most (highest z-index, bottom-most Y) */
 /* Behind cards peek from ABOVE (upward index) */
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(1) {
-    transform: translateY(0px) scale(1);
-    z-index: 10;
+/* シンプルな縦並びリストに変更 (検証フェーズ用) */
+.category-stack:not(.is-expanded) .goal-card-wrapper {
+    position: relative;
+    transform: none;
+    margin-bottom: 1rem;
     opacity: 1;
+    pointer-events: auto;
 }
 
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(2) {
-    transform: translateY(-40px) scale(0.98);
-    z-index: 9;
-    opacity: 0.8;
-}
-
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(3) {
-    transform: translateY(-80px) scale(0.96);
-    z-index: 8;
-    opacity: 0.6;
-}
-
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+4) {
-    transform: translateY(-100px) scale(0.94);
-    z-index: 7;
-    opacity: 0;
-    pointer-events: none;
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .card-content-expand,
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .progress-mini-bar {
+    display: block !important;
 }
 
 /* In stack: hide details on background cards to keep it clean */
@@ -591,14 +579,7 @@ body {
 }
 
 .card-content-expand {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.goal-card-wrapper.is-focused .card-content-expand {
-    max-height: 500px;
+    max-height: none;
     opacity: 1;
     margin-top: 1.5rem;
 }
@@ -854,10 +835,11 @@ body {
 
 .cat-chip-delete {
     color: var(--text-muted);
-    font-size: 1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     line-height: 1;
-    padding: 0 2px;
+    padding: 0.2rem 0.4rem;
+    margin: -0.2rem -0.4rem;
     border-radius: 4px;
     transition: all 0.2s;
 }
@@ -865,6 +847,73 @@ body {
 .cat-chip-delete:hover {
     color: #ef4444;
     background: rgba(239, 68, 68, 0.1);
+}
+
+/* Global Confirm Modal - Focused & Centered */
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* Ensure it's above the goal registration modal (1000) */
+}
+
+.confirm-card {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.confirm-card h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.confirm-card p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirm-actions button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {

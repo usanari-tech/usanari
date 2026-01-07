@@ -56,7 +56,7 @@ const updateCategoryDatalist = () => {
         categoryManagerList.innerHTML = categories.map(cat => `
             <div class="cat-chip">
                 <span>${cat}</span>
-                <span class="cat-chip-delete" onclick="deleteCategory('${cat}')">&times;</span>
+                <span class="cat-chip-delete" onclick="event.stopPropagation(); deleteCategoryPrompt(event, '${cat}')">&times;</span>
             </div>
         `).join('');
     }
@@ -65,18 +65,73 @@ const updateCategoryDatalist = () => {
     renderCategoryStats();
 };
 
-const deleteCategory = (catName) => {
-    // Check if any goals are using this category
-    const goalsInCat = goals.filter(g => g.category === catName);
-    const message = goalsInCat.length > 0
-        ? `このカテゴリーに関連する目標が ${goalsInCat.length} 件あります。カテゴリーのリストから削除してもよろしいですか？（既存の目標は消えません）`
-        : `カテゴリー「${catName}」を削除してもよろしいですか？`;
+const showConfirm = (title, message, onConfirm) => {
+    const overlay = document.getElementById('confirm-overlay');
+    const titleEl = document.getElementById('confirm-title');
+    const msgEl = document.getElementById('confirm-message');
+    const okBtn = document.getElementById('confirm-ok');
+    const cancelBtn = document.getElementById('confirm-cancel');
 
-    if (confirm(message)) {
-        categories = categories.filter(c => c !== catName);
-        saveGoals();
-        updateCategoryDatalist();
-    }
+    if (!overlay || !titleEl || !msgEl || !okBtn || !cancelBtn) return;
+
+    titleEl.innerText = title;
+    msgEl.innerText = message;
+
+    overlay.style.display = 'flex';
+
+    gsap.fromTo('.confirm-card',
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' }
+    );
+
+    const handleClose = () => {
+        gsap.to('.confirm-card', {
+            scale: 0.8, opacity: 0, duration: 0.2,
+            onComplete: () => {
+                overlay.style.display = 'none';
+            }
+        });
+    };
+
+    okBtn.onclick = (e) => {
+        e.stopPropagation();
+        onConfirm();
+        handleClose();
+    };
+
+    cancelBtn.onclick = (e) => {
+        e.stopPropagation();
+        handleClose();
+    };
+
+    overlay.onclick = (e) => {
+        if (e.target === overlay) handleClose();
+    };
+};
+
+const deleteCategoryPrompt = (event, catName) => {
+    const message = `カテゴリー「${catName}」を削除してもよろしいですか？`;
+
+    showConfirm("カテゴリーの削除", message, () => {
+        const chip = event.target.closest('.cat-chip');
+        if (chip) {
+            gsap.to(chip, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => {
+                    categories = categories.filter(c => c !== catName);
+                    saveGoals();
+                    updateCategoryDatalist();
+                }
+            });
+        } else {
+            categories = categories.filter(c => c !== catName);
+            saveGoals();
+            updateCategoryDatalist();
+        }
+    });
 };
 
 // --- Modal Control ---
@@ -131,26 +186,40 @@ const logActivity = () => {
 goalForm.onsubmit = (e) => {
     e.preventDefault();
 
-    const category = document.getElementById('goal-category').value.trim();
-    const title = document.getElementById('goal-title').value;
-    const tasksInput = document.getElementById('goal-tasks').value;
+    const categoryInput = document.getElementById('goal-category');
+    const titleInput = document.getElementById('goal-title');
+    const tasksInput = document.getElementById('goal-tasks');
     const selectedDeadlineBtn = document.querySelector('.preset-btn.active');
 
-    // Save new category
-    if (category && !categories.includes(category)) {
+    const category = categoryInput.value.trim();
+    const title = titleInput.value.trim();
+    const tasksRaw = tasksInput.value;
+
+    // 基本バリデーション
+    if (!title) {
+        alert('目標の名前を入力してください。');
+        return;
+    }
+    if (!category) {
+        alert('カテゴリーを選択または入力してください。');
+        return;
+    }
+
+    // カテゴリーの自動登録
+    if (!categories.includes(category)) {
         categories.push(category);
         updateCategoryDatalist();
     }
 
-    // Process tasks
-    const taskLines = tasksInput.split('\n').filter(line => line.trim() !== '');
+    // タスクのパース
+    const taskLines = tasksRaw.split('\n').filter(line => line.trim() !== '');
     const tasks = taskLines.map((text, index) => ({
-        id: Date.now() + index,
+        id: Date.now() + index, // より堅牢なID生成が必要な場合は後で検討
         text: text.trim(),
         done: false
     }));
 
-    // Process deadline
+    // 期限の計算（従来のロジックを継承）
     let deadline = '未定';
     const now = new Date();
     if (selectedDeadlineBtn.dataset.value === 'this-week') {
@@ -175,12 +244,16 @@ goalForm.onsubmit = (e) => {
 
     goals.push(newGoal);
     saveGoals();
-    logActivity(); // Creating a goal counts as activity
+    logActivity();
     renderStats();
     renderGoals();
 
+    // フォームリセット
     goalForm.reset();
+    deadlinePresets.forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-value="none"]').classList.add('active');
     closeModal();
+
     confetti({
         particleCount: 100,
         spread: 70,
@@ -215,12 +288,12 @@ const toggleTask = (goalId, taskId) => {
 };
 
 const deleteGoal = (id) => {
-    if (confirm('この目標を削除してもよろしいですか？')) {
+    showConfirm("目標の削除", "この目標を削除してもよろしいですか？この操作は取り消せません。", () => {
         goals = goals.filter(g => g.id !== id);
         saveGoals();
         renderStats();
         renderGoals();
-    }
+    });
 };
 
 // --- Rendering & Logic ---
@@ -265,11 +338,44 @@ const renderMomentumFlow = () => {
     });
 
     // Display Score
-    const finalScore = totalScore.toFixed(1);
+    const finalScore = parseFloat(totalScore.toFixed(1));
     const scoreDisplay = document.getElementById('momentum-score-display');
     if (scoreDisplay) scoreDisplay.innerText = finalScore;
 
-    // 3. Render Bars
+    // 4. Update Momentum Message (Psychological Pulse)
+    const momentumMsg = document.getElementById('momentum-msg');
+    const rankProgress = document.getElementById('rank-progress-bar');
+
+    const momentumLabels = {
+        high: ["覚醒の兆し", "ゾーンに到達", "フロー状態：極", "圧倒的推進力", "未来を切り拓く力"],
+        mid: ["リズムを構築中", "着実な前進", "安定した脈動", "上昇気流", "良い兆候"],
+        low: ["静かなる準備", "再集中の時間", "一歩ずつ", "内なる火を灯せ", "リズムを整えよう"]
+    };
+
+    let label = "リズムを解析中...";
+    let labelColor = "#94a3b8";
+    if (finalScore >= 15) {
+        label = momentumLabels.high[Math.floor(Math.random() * momentumLabels.high.length)];
+        labelColor = "var(--accent-blue)";
+    } else if (finalScore >= 5) {
+        label = momentumLabels.mid[Math.floor(Math.random() * momentumLabels.mid.length)];
+        labelColor = "#64748b";
+    } else {
+        label = momentumLabels.low[Math.floor(Math.random() * momentumLabels.low.length)];
+    }
+
+    if (momentumMsg) {
+        momentumMsg.innerText = label;
+        momentumMsg.style.color = labelColor;
+    }
+
+    // Update Rank Progress Bar (Max assumed 25 points based on 28-day window)
+    if (rankProgress) {
+        const progressPercent = Math.min((finalScore / 25) * 100, 100);
+        rankProgress.style.width = `${progressPercent}%`;
+    }
+
+    // 5. Render Bars
     // Determine max for scaling
     const maxCount = Math.max(...days.map(d => d.count), 1); // Avoid div by zero
 
@@ -421,11 +527,16 @@ const renderGoals = () => {
     goalsContainer.innerHTML = '';
 
     if (goals.length === 0) {
-        goalsContainer.innerHTML = '<div class="empty-state">新しい目標を登録して、2026年をデザインしましょう。</div>';
+        goalsContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔭</div>
+                <p>2026年の軌道がまだ設定されていません。<br>「新しい目標を追加」から始めましょう。</p>
+            </div>
+        `;
         return;
     }
 
-    // Grouping by category
+    // カテゴリーごとのグループ化
     const grouped = goals.reduce((acc, goal) => {
         if (!acc[goal.category]) acc[goal.category] = [];
         acc[goal.category].push(goal);
@@ -442,23 +553,24 @@ const renderGoals = () => {
                 <div class="stack-count">${categoryGoals.length}</div>
             </div>
             <div class="stack-content">
-                ${categoryGoals.map((goal, idx) => {
+                ${categoryGoals.map((goal) => {
             const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
             return `
-                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${30 - idx}; transform: translateY(${-idx * 40}px)">
-                        <div class="goal-card" onclick="toggleCategoryStack(this)">
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}">
+                        <div class="goal-card">
                             <div class="goal-header">
-                                <div style="flex:1">
+                                <div class="goal-title-area">
                                     <h4>${goal.title}</h4>
                                     <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${formattedDeadline}</span>
                                 </div>
-                                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})">&times;</button>
+                                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})" title="目標を削除">&times;</button>
                             </div>
-                            <!-- Task Details -->
+                            
+                            <div class="progress-mini-bar">
+                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                            </div>
+
                             <div class="card-content-expand">
-                                <div class="progress-mini-bar">
-                                    <div class="progress-fill" style="width: ${goal.progress}%"></div>
-                                </div>
                                 <div class="task-mini-list">
                                     ${goal.tasks.map(task => `
                                         <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
@@ -477,20 +589,7 @@ const renderGoals = () => {
     });
 };
 
-const toggleCategoryStack = (cardEl) => {
-    const stack = cardEl.closest('.category-stack');
-    const isExpanded = stack.classList.contains('is-expanded');
-    const wrappers = stack.querySelectorAll('.goal-card-wrapper');
-
-    if (isExpanded) {
-        // Collapse to card stack (Upward offset: -40px)
-        stack.classList.remove('is-expanded');
-        wrappers.forEach((tr, i) => {
-            gsap.to(tr, { y: -i * 40, duration: 0.6, ease: 'expo.out' });
-        });
-    } else {
-        // Expand to vertical list
-        stack.classList.add('is-expanded');
-        gsap.to(wrappers, { y: 0, duration: 0.6, ease: 'expo.out' });
-    }
+const toggleGoalExpand = (cardElement) => {
+    const wrapper = cardElement.closest('.goal-card-wrapper');
+    wrapper.classList.toggle('is-focused');
 };

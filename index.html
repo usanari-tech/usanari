@@ -89,7 +89,7 @@
                     </div>
                     <div id="momentum-flow" class="momentum-flow">
                         <!-- Bars injected via JS -->
-                        <div class="analyzing-text">リズムを解析中...</div>
+                        <div id="momentum-msg" class="momentum-pulse-msg">リズムを解析中...</div>
                     </div>
                     <!-- Custom Tooltip -->
                     <div id="momentum-tooltip" class="momentum-tooltip hidden"></div>
@@ -185,6 +185,17 @@
                         <button type="submit" class="btn-submit">登録</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- Global Confirm Modal -->
+    <div id="confirm-overlay" class="confirm-overlay" style="display: none;">
+        <div class="confirm-card">
+            <h3 id="confirm-title">確認</h3>
+            <p id="confirm-message">実行してもよろしいですか？</p>
+            <div class="confirm-actions">
+                <button id="confirm-cancel" class="btn-secondary">キャンセル</button>
+                <button id="confirm-ok" class="btn-primary btn-danger">実行する</button>
             </div>
         </div>
     </div>
