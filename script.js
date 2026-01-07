@@ -186,18 +186,47 @@ const openModal = (goalId = null) => {
 
         // Handle Deadline restoration
         deadlinePresets.forEach(b => b.classList.remove('active'));
+        dateInput.classList.add('hidden-date'); // Reset default
+
         if (goal.deadline === '未定') {
             document.querySelector('[data-value="none"]').classList.add('active');
-            dateInput.classList.add('hidden-date');
-        } else if (goal.deadline.includes('.')) {
-            // Check if it matches preset logic or is custom
-            // Simplification: treat as custom if not none for restoration
-            document.querySelector('[data-value="custom"]')?.classList.add('active');
-            dateInput.classList.remove('hidden-date');
+        } else {
+            // Smart preset matching
+            let matched = false;
+            const now = new Date();
 
-            // Format YYYY.MM.DD to YYYY-MM-DD for input[type=date]
-            const [y, m, d] = goal.deadline.split('.');
-            dateInput.value = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            // This Week
+            const sun = new Date(new Date().setDate(now.getDate() + (7 - now.getDay())));
+            const thisWeekStr = `${sun.getFullYear()}.${sun.getMonth() + 1}.${sun.getDate()}`;
+
+            // This Month
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            const thisMonthStr = `${lastDay.getFullYear()}.${lastDay.getMonth() + 1}.${lastDay.getDate()}`;
+
+            // This Year
+            const thisYearStr = `${now.getFullYear()}.12.31`;
+
+            if (goal.deadline === thisWeekStr) {
+                document.querySelector('[data-value="this-week"]').classList.add('active');
+                matched = true;
+            } else if (goal.deadline === thisMonthStr) {
+                document.querySelector('[data-value="this-month"]').classList.add('active');
+                matched = true;
+            } else if (goal.deadline === thisYearStr) {
+                document.querySelector('[data-value="this-year"]').classList.add('active');
+                matched = true;
+            }
+
+            if (!matched && goal.deadline.includes('.')) {
+                // Custom Date handling
+                const customBtn = Array.from(deadlinePresets).find(b => b.dataset.value === 'custom');
+                if (customBtn) customBtn.classList.add('active');
+                dateInput.classList.remove('hidden-date');
+
+                // Format YYYY.MM.DD to YYYY-MM-DD for input[type=date]
+                const [y, m, d] = goal.deadline.split('.');
+                dateInput.value = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            }
         }
     } else {
         // Add Mode
