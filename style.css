@@ -58,13 +58,27 @@ body {
 
 .nav-divider {
     width: 1px;
-    height: 1.5rem;
+    height: 1.25rem;
     background: rgba(0, 0, 0, 0.1);
+    margin: 0 0.5rem;
 }
 
-.nav-status {
-    font-size: 0.85rem;
-    font-weight: 600;
+.nav-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.2;
+}
+
+.nav-message span#dynamic-greeting {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.nav-message .subtitle {
+    font-size: 0.65rem;
+    font-weight: 500;
     color: var(--text-muted);
 }
 
@@ -438,19 +452,6 @@ body {
 .section-header {
     margin-bottom: 2rem;
     padding: 0 1rem;
-}
-
-.header-main h2 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 0.25rem;
-}
-
-.header-main .subtitle {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    font-weight: 500;
 }
 
 /* Stack View: Multi-column Index Stack (Fixed Stacking Order) */
