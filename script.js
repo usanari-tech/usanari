@@ -413,6 +413,13 @@ const toggleTask = (goalId, taskId) => {
     // Verify completion
     if (task.done) {
         logActivity();
+        const now = new Date();
+        const yy = String(now.getFullYear()).slice(-2);
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        task.completedAt = `${yy}.${mm}.${dd}`;
+    } else {
+        delete task.completedAt;
     }
 
     saveGoals();
@@ -508,6 +515,7 @@ const renderGoals = () => {
                                         <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask('${goal.id}', '${task.id}')">
                                             <div class="mini-checkbox"></div>
                                             <span class="mini-task-text">${task.text}</span>
+                                            ${task.completedAt ? `<span class="task-date">${task.completedAt}</span>` : ''}
                                         </div>
                                     `).join('')}
                                 </div>
