@@ -513,16 +513,7 @@ body {
     pointer-events: auto;
 }
 
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .card-content-expand,
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .progress-mini-bar {
-    display: block !important;
-}
 
-/* In stack: hide details on background cards to keep it clean */
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .card-content-expand,
-.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .progress-mini-bar {
-    display: none !important;
-}
 
 /* Expanded state within the grid */
 .category-stack.is-expanded {
