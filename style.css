@@ -579,10 +579,33 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.goal-title-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
 .goal-card h4 {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.deadline-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.deadline-urgent {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
 }
 
 .card-content-expand {
