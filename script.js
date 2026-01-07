@@ -14,21 +14,15 @@ const deadlinePresets = document.querySelectorAll('.preset-btn');
 const dateInput = document.getElementById('goal-deadline');
 
 const categoryManagerList = document.getElementById('category-manager-list');
-const momentumFlow = document.getElementById('momentum-flow');
-const momentumTooltip = document.getElementById('momentum-tooltip');
-const categoryStatsContainer = document.getElementById('category-stats');
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     sanitizeData();
     updateCategoryDatalist();
-    renderStats(); // Calls renderMomentumFlow and renderCategoryStats
     renderGoals();
 
     // Initial GSAP animations
     gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
-    gsap.from('.mission-control', { y: 20, opacity: 0, duration: 0.8, delay: 0.2, ease: 'power4.out' });
-    gsap.from('.analytics-card', { y: 20, opacity: 0, duration: 0.8, delay: 0.4, stagger: 0.2, ease: 'power4.out' });
 });
 
 // --- Data Sanitization ---
@@ -60,9 +54,6 @@ const updateCategoryDatalist = () => {
             </div>
         `).join('');
     }
-
-    // Refresh stats to reflect any category changes
-    renderCategoryStats();
 };
 
 const selectCategory = (catName) => {
@@ -195,7 +186,6 @@ const logActivity = () => {
     const today = new Date().toISOString().split('T')[0];
     activityLog[today] = (activityLog[today] || 0) + 1;
     localStorage.setItem('activityLog', JSON.stringify(activityLog));
-    renderMomentumFlow(); // Immediate update
 };
 
 goalForm.onsubmit = (e) => {
@@ -260,7 +250,6 @@ goalForm.onsubmit = (e) => {
     goals.push(newGoal);
     saveGoals();
     logActivity();
-    renderStats();
     renderGoals();
 
     // フォームリセット
@@ -294,7 +283,6 @@ const toggleTask = (goalId, taskId) => {
     }
 
     saveGoals();
-    renderStats(); // Updates mission control and charts
     renderGoals();
 
     if (goal.progress === 100) {
@@ -306,228 +294,15 @@ const deleteGoal = (id) => {
     showConfirm("目標の削除", "この目標を削除してもよろしいですか？この操作は取り消せません。", () => {
         goals = goals.filter(g => g.id !== id);
         saveGoals();
-        renderStats();
         renderGoals();
     });
 };
 
 // --- Rendering & Logic ---
 
-const getDayName = (dateStr) => {
-    const date = new Date(dateStr);
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return days[date.getDay()];
-};
 
-const renderMomentumFlow = () => {
-    if (!momentumFlow) return;
 
-    momentumFlow.innerHTML = '';
 
-    // 1. Generate last 28 days
-    const days = [];
-    const today = new Date();
-
-    for (let i = 27; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(today.getDate() - i);
-        const dateStr = d.toISOString().split('T')[0];
-        days.push({
-            date: dateStr,
-            count: activityLog[dateStr] || 0,
-            dayName: getDayName(dateStr)
-        });
-    }
-
-    // 2. Scoring Algorithm (Weighted)
-    let totalScore = 0;
-    let rankPoints = 0;
-
-    days.forEach((day, index) => {
-        // Weight: Recent days have higher impact. Index 27 is today (weight 1.0)
-        // Linear weight from 0.4 to 1.0
-        const weight = 0.4 + (0.6 * (index / 27));
-        const dailyScore = day.count * weight;
-        totalScore += dailyScore;
-        rankPoints += day.count * 10; // Simple points for rank
-    });
-
-    // Display Score
-    const finalScore = parseFloat(totalScore.toFixed(1));
-    const scoreDisplay = document.getElementById('momentum-score-display');
-    if (scoreDisplay) scoreDisplay.innerText = finalScore;
-
-    // 4. Update Momentum Message (Psychological Pulse)
-    const momentumMsg = document.getElementById('momentum-msg');
-    const rankProgress = document.getElementById('rank-progress-bar');
-
-    const momentumLabels = {
-        high: ["覚醒の兆し", "ゾーンに到達", "フロー状態：極", "圧倒的推進力", "未来を切り拓く力"],
-        mid: ["リズムを構築中", "着実な前進", "安定した脈動", "上昇気流", "良い兆候"],
-        low: ["静かなる準備", "再集中の時間", "一歩ずつ", "内なる火を灯せ", "リズムを整えよう"]
-    };
-
-    let label = "リズムを解析中...";
-    let labelColor = "#94a3b8";
-    if (finalScore >= 15) {
-        label = momentumLabels.high[Math.floor(Math.random() * momentumLabels.high.length)];
-        labelColor = "var(--accent-blue)";
-    } else if (finalScore >= 5) {
-        label = momentumLabels.mid[Math.floor(Math.random() * momentumLabels.mid.length)];
-        labelColor = "#64748b";
-    } else {
-        label = momentumLabels.low[Math.floor(Math.random() * momentumLabels.low.length)];
-    }
-
-    if (momentumMsg) {
-        momentumMsg.innerText = label;
-        momentumMsg.style.color = labelColor;
-    }
-
-    // Update Rank Progress Bar (Max assumed 25 points based on 28-day window)
-    if (rankProgress) {
-        const progressPercent = Math.min((finalScore / 25) * 100, 100);
-        rankProgress.style.width = `${progressPercent}%`;
-    }
-
-    // 5. Render Bars
-    // Determine max for scaling
-    const maxCount = Math.max(...days.map(d => d.count), 1); // Avoid div by zero
-
-    days.forEach((day, index) => {
-        const bar = document.createElement('div');
-        bar.className = 'momentum-bar';
-        if (day.count > 0) bar.classList.add('active');
-
-        // Height based on count relative to max (min height 10%)
-        const heightPercent = day.count === 0 ? 5 : 10 + ((day.count / maxCount) * 90);
-        bar.style.height = `${heightPercent}%`;
-
-        // Animation delay
-        bar.style.transitionDelay = `${index * 20}ms`;
-
-        // Tooltip Events
-        bar.addEventListener('mouseenter', (e) => {
-            const rect = bar.getBoundingClientRect();
-            momentumTooltip.innerHTML = `
-                <span class="tooltip-date">${day.date} (${day.dayName})</span>
-                <span style="font-size:1.1em">⚡ ${day.count} Actions</span>
-                <div style="font-size:0.8em; margin-top:4px; color:#3b82f6">
-                    ${day.count > 0 ? "Good Step!" : "No Activity"}
-                </div>
-            `;
-            momentumTooltip.classList.remove('hidden');
-            momentumTooltip.classList.add('visible');
-
-            // Position
-            const tooltipX = rect.left + (rect.width / 2) - (momentumTooltip.offsetWidth / 2);
-            const tooltipY = rect.top - momentumTooltip.offsetHeight - 10;
-
-            momentumTooltip.style.left = `${tooltipX}px`;
-            momentumTooltip.style.top = `${window.scrollY + tooltipY}px`; // Absolute to page
-        });
-
-        bar.addEventListener('mouseleave', () => {
-            momentumTooltip.classList.remove('visible');
-            setTimeout(() => momentumTooltip.classList.add('hidden'), 200);
-        });
-
-        momentumFlow.appendChild(bar);
-    });
-
-    // 4. Update Footer Stats
-    const totalActions = days.reduce((sum, d) => sum + d.count, 0);
-    const bestDay = Math.max(...days.map(d => d.count));
-    const activeDays = days.filter(d => d.count > 0).length;
-    const activeRate = Math.round((activeDays / 28) * 100);
-
-    document.getElementById('mom-total').innerText = totalActions;
-    document.getElementById('mom-max').innerText = bestDay;
-    document.getElementById('mom-rate').innerText = `${activeRate}%`;
-
-    // 5. Rank Progress
-    // Simple logic: Next rank at next multiple of 50 actions?
-    // Let's use points. 
-    // Rank logic: 0-100 (Starter), 100-300 (Builder), 300+ (Flow) based on Monthly Vol
-    const progressFill = document.getElementById('rank-progress-bar');
-    const nextRankName = document.getElementById('next-rank-name');
-    const nextRankPoints = document.getElementById('next-rank-points');
-
-    let progress = 0;
-    if (totalActions < 50) {
-        progress = (totalActions / 50) * 100;
-        nextRankName.innerText = "Next: Builder";
-        nextRankPoints.innerText = `+${50 - totalActions}`;
-    } else if (totalActions < 150) {
-        progress = ((totalActions - 50) / 100) * 100;
-        nextRankName.innerText = "Next: Flow Master";
-        nextRankPoints.innerText = `+${150 - totalActions}`;
-    } else {
-        progress = 100;
-        nextRankName.innerText = "Max Rank Reached";
-        nextRankPoints.innerText = "";
-    }
-
-    if (progressFill) progressFill.style.width = `${progress}%`;
-};
-
-const renderCategoryStats = () => {
-    if (!categoryStatsContainer) return;
-    categoryStatsContainer.innerHTML = '';
-
-    // Calculate stats per category
-    const stats = {};
-    goals.forEach(g => {
-        if (!stats[g.category]) stats[g.category] = { total: 0, done: 0 };
-        const total = g.tasks.length;
-        const done = g.tasks.filter(t => t.done).length;
-        stats[g.category].total += total;
-        stats[g.category].done += done;
-    });
-
-    Object.entries(stats).forEach(([cat, data]) => {
-        const percentage = data.total === 0 ? 0 : Math.round((data.done / data.total) * 100);
-
-        const item = document.createElement('div');
-        item.className = 'cat-stat-item';
-        item.innerHTML = `
-            <div class="cat-header">
-                <span>${cat}</span>
-                <span>${percentage}%</span>
-            </div>
-            <div class="cat-bar-bg">
-                <div class="cat-bar-fill" style="width: ${percentage}%"></div>
-            </div>
-        `;
-        categoryStatsContainer.appendChild(item);
-    });
-};
-
-const renderStats = () => {
-    const totalTasks = goals.reduce((acc, g) => acc + g.tasks.length, 0);
-    const completedTasks = goals.reduce((acc, g) => acc + g.tasks.filter(t => t.done).length, 0);
-    const overallProgress = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
-
-    // Mission Control Updates
-    document.getElementById('overall-progress-text').innerText = `${overallProgress}%`;
-    document.getElementById('pending-tasks-count').innerText = totalTasks - completedTasks;
-
-    // Status Text logic
-    const statusText = document.getElementById('current-status-text');
-    if (overallProgress === 0) statusText.innerText = "Starting";
-    else if (overallProgress < 30) statusText.innerText = "Warming Up";
-    else if (overallProgress < 60) statusText.innerText = "Climbing";
-    else if (overallProgress < 90) statusText.innerText = "Cruising";
-    else statusText.innerText = "Peak Performance";
-
-    // Energy Bar (Total Progress visual)
-    const energyFill = document.getElementById('total-progress');
-    if (energyFill) energyFill.style.width = `${overallProgress}%`;
-
-    // Render Sub-components
-    renderMomentumFlow();
-    renderCategoryStats();
-};
 
 const formatDate = (dateStr) => {
     if (!dateStr || dateStr === '未定') return '未定';
