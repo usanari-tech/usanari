@@ -1,5 +1,6 @@
 // --- State Management ---
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
+let currentView = 'active'; // 'active' or 'completed'
 let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
 let activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
 
@@ -60,15 +61,21 @@ const selectCategory = (catName) => {
     const categoryInput = document.getElementById('goal-category');
     if (categoryInput) {
         categoryInput.value = catName;
-        // ちょっとした視覚フィードバック（フォーカス）
         categoryInput.focus();
-
-        // GSAPで少し揺らすなど演出しても良いが、まずは確実に機能させる
-        gsap.fromTo(categoryInput,
-            { x: -2 },
-            { x: 0, duration: 0.1, repeat: 3, yoyo: true }
-        );
+        gsap.fromTo(categoryInput, { x: -2 }, { x: 0, duration: 0.1, repeat: 3, yoyo: true });
     }
+};
+
+const switchTab = (view) => {
+    if (currentView === view) return;
+    currentView = view;
+
+    // Update Tab UI
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`tab-${view}`).classList.add('active');
+
+    // Re-render
+    renderGoals();
 };
 
 const showConfirm = (title, message, onConfirm) => {
@@ -318,18 +325,25 @@ const formatDate = (dateStr) => {
 const renderGoals = () => {
     goalsContainer.innerHTML = '';
 
-    if (goals.length === 0) {
+    const filteredGoals = goals.filter(goal => {
+        if (currentView === 'completed') return goal.progress === 100;
+        return goal.progress < 100;
+    });
+
+    if (filteredGoals.length === 0) {
+        const message = currentView === 'completed'
+            ? '達成された目標はまだありません。'
+            : '2026年の軌道がまだ設定されていません。<br>「新しい目標を追加」から始めましょう。';
         goalsContainer.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">🔭</div>
-                <p>2026年の軌道がまだ設定されていません。<br>「新しい目標を追加」から始めましょう。</p>
+                <p>${message}</p>
             </div>
         `;
         return;
     }
 
     // カテゴリーごとのグループ化
-    const grouped = goals.reduce((acc, goal) => {
+    const grouped = filteredGoals.reduce((acc, goal) => {
         if (!acc[goal.category]) acc[goal.category] = [];
         acc[goal.category].push(goal);
         return acc;

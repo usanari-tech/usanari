@@ -26,16 +26,24 @@
         <div class="fluid-bg" id="fluid-bg"></div>
 
         <nav class="glass-nav">
-            <div class="nav-left">
-                <div class="logo">Goal Horizon <span>2026</span></div>
-                <div class="nav-divider"></div>
-                <div class="nav-message">
-                    <span id="dynamic-greeting">2026年の挑戦を始めましょう</span>
-                    <span class="subtitle">目標をセットして、最高の1年に。</span>
+            <div class="nav-content">
+                <div class="brand">
+                    <span class="logo-text">Goal Horizon 2026</span>
                 </div>
-            </div>
-            <div class="nav-links">
-                <button id="add-goal-btn" class="btn-primary">新しい目標を追加</button>
+
+                <!-- Simple View Tabs -->
+                <div class="view-tabs">
+                    <button class="tab-btn active" onclick="switchTab('active')" id="tab-active">目標</button>
+                    <button class="tab-btn" onclick="switchTab('completed')" id="tab-completed">達成</button>
+                </div>
+
+                <div class="nav-actions">
+                    <div class="nav-message">
+                        <span id="dynamic-greeting">2026年の挑戦を始めましょう</span>
+                        <span class="subtitle">目標をセットして、最高の1年に。</span>
+                    </div>
+                    <button id="add-goal-btn" class="btn-primary">新しい目標を追加</button>
+                </div>
             </div>
         </nav>
 

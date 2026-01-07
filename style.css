@@ -21,53 +21,114 @@ body {
     background: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
+    padding-top: 100px;
+    /* Space for fixed header */
     background-image:
         radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.03) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.03) 0px, transparent 50%);
     padding-bottom: 5rem;
 }
 
-/* Nav Bar */
+/* Glass Navigation */
 .glass-nav {
-    backdrop-filter: blur(20px);
-    background: rgba(255, 255, 255, 0.5);
-    border-bottom: 1px solid var(--glass-border);
-    padding: 1rem 8%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(10, 12, 16, 0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0.75rem 0;
+    transition: all 0.5s ease;
 }
 
-.nav-left {
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+/* Simple View Tabs */
+.view-tabs {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 3px;
+    border-radius: 10px;
+    display: flex;
+    gap: 2px;
+    backdrop-filter: blur(10px);
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-sub);
+    padding: 0.4rem 1.25rem;
+    border-radius: 7px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand {
+    flex-shrink: 0;
+}
+
+.logo-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.6));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-actions {
     display: flex;
     align-items: center;
     gap: 1.5rem;
 }
 
-.logo {
-    font-size: 1.25rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.nav-divider {
-    width: 1px;
-    height: 1.25rem;
-    background: rgba(0, 0, 0, 0.1);
-    margin: 0 0.5rem;
-}
-
 .nav-message {
+    text-align: right;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    line-height: 1.2;
+    gap: 2px;
+}
+
+.nav-message #dynamic-greeting {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.nav-message .subtitle {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+}
+
+justify-content: center;
+line-height: 1.2;
 }
 
 .nav-message span#dynamic-greeting {
