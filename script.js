@@ -313,36 +313,6 @@ const formatDate = (dateStr) => {
     return `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
 };
 
-const apply3DTilt = (card) => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (y - centerY) / 8;
-        const rotateY = (centerX - x) / 8;
-
-        gsap.to(card, {
-            rotationX: rotateX,
-            rotationY: rotateY,
-            scale: 1.02,
-            duration: 0.5,
-            ease: "power2.out"
-        });
-    });
-
-    card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-            rotationX: 0,
-            rotationY: 0,
-            scale: 1,
-            duration: 0.8,
-            ease: "elastic.out(1, 0.3)"
-        });
-    });
-};
-
 const renderGoals = () => {
     goalsContainer.innerHTML = '';
 
@@ -363,7 +333,7 @@ const renderGoals = () => {
         return acc;
     }, {});
 
-    Object.entries(grouped).forEach(([category, categoryGoals], catIndex) => {
+    Object.entries(grouped).forEach(([category, categoryGoals]) => {
         const stackElement = document.createElement('div');
         stackElement.className = 'category-stack';
 
@@ -372,57 +342,39 @@ const renderGoals = () => {
                 <div class="category-label">${category}</div>
                 <div class="stack-count">${categoryGoals.length}</div>
             </div>
-            <div class="stack-content"></div>
-        `;
-
-        const stackContent = stackElement.querySelector('.stack-content');
-
-        categoryGoals.forEach((goal, goalIndex) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'goal-card-wrapper';
-            const progress = (goal.tasks.filter(t => t.done).length / goal.tasks.length) * 100 || 0;
-
-            wrapper.innerHTML = `
-                <div class="goal-card">
-                    <div class="goal-header">
-                        <h4>${goal.title}</h4>
-                        <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})">&times;</button>
-                    </div>
-                    
-                    <div class="progress-mini-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
-
-                    <div class="card-content-expand">
-                        <div class="task-mini-list">
-                            ${goal.tasks.map((task) => `
-                                <div class="task-mini-item ${task.done ? 'done' : ''}" 
-                                     onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
-                                    <div class="mini-checkbox"></div>
-                                    <span class="mini-task-text">${task.text}</span>
+            <div class="stack-content">
+                ${categoryGoals.map((goal) => {
+            const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
+            return `
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}">
+                        <div class="goal-card">
+                            <div class="goal-header">
+                                <div class="goal-title-area">
+                                    <h4>${goal.title}</h4>
+                                    <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${formattedDeadline}</span>
                                 </div>
-                            `).join('')}
+                                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})" title="目標を削除">&times;</button>
+                            </div>
+                            
+                            <div class="progress-mini-bar">
+                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                            </div>
+
+                            <div class="card-content-expand">
+                                <div class="task-mini-list">
+                                    ${goal.tasks.map(task => `
+                                        <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
+                                            <div class="mini-checkbox"></div>
+                                            <span class="mini-task-text">${task.text}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-
-            stackContent.appendChild(wrapper);
-
-            // Apply 3D Tilt
-            const cardElement = wrapper.querySelector('.goal-card');
-            apply3DTilt(cardElement);
-
-            // Staggered reveal animation
-            gsap.from(wrapper, {
-                y: 30,
-                opacity: 0,
-                duration: 0.8,
-                delay: (catIndex * 0.15) + (goalIndex * 0.1),
-                ease: "power3.out"
-            });
-        });
-
+                `}).join('')}
+            </div>
+        `;
         goalsContainer.appendChild(stackElement);
     });
 };
