@@ -21,7 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     sanitizeData();
     updateCategoryDatalist();
     renderGoals();
-    updateDashboard();
+
+    // Initial UI state for dashboard (hidden on active view)
+    const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
+    dashboardElements.forEach(el => el.style.display = 'none');
 
     // Initial GSAP animations
     gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
@@ -74,6 +77,20 @@ const switchTab = (view) => {
     // Update Tab UI
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`tab-${view}`).classList.add('active');
+
+    // Toggle Dashboard Visibility based on View
+    const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
+    if (view === 'completed') {
+        dashboardElements.forEach(el => {
+            el.style.display = 'block';
+            gsap.fromTo(el, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+        });
+        updateDashboard();
+    } else {
+        dashboardElements.forEach(el => {
+            el.style.display = 'none';
+        });
+    }
 
     // Re-render
     renderGoals();
