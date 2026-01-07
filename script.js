@@ -233,6 +233,8 @@ goalForm.onsubmit = (e) => {
     } else if (selectedDeadlineBtn.dataset.value === 'this-month') {
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
         deadline = `${lastDay.getFullYear()}.${lastDay.getMonth() + 1}.${lastDay.getDate()}`;
+    } else if (selectedDeadlineBtn.dataset.value === 'this-year') {
+        deadline = `${now.getFullYear()}.12.31`;
     } else if (selectedDeadlineBtn.dataset.value === 'custom' && dateInput.value) {
         const d = new Date(dateInput.value);
         deadline = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
