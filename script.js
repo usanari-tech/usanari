@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sanitizeData();
     updateCategoryDatalist();
     renderGoals();
+    updateDashboard();
 
     // Initial GSAP animations
     gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
@@ -260,6 +261,7 @@ goalForm.onsubmit = (e) => {
     saveGoals();
     logActivity();
     renderGoals();
+    updateDashboard();
 
     // フォームリセット
     goalForm.reset();
@@ -293,6 +295,7 @@ const toggleTask = (goalId, taskId) => {
 
     saveGoals();
     renderGoals();
+    updateDashboard();
 
     if (goal.progress === 100) {
         confetti({ particleCount: 50, scalar: 0.7 });
@@ -304,6 +307,7 @@ const deleteGoal = (id) => {
         goals = goals.filter(g => g.id !== id);
         saveGoals();
         renderGoals();
+        updateDashboard();
     });
 };
 
@@ -398,4 +402,93 @@ const renderGoals = () => {
 const toggleGoalExpand = (cardElement) => {
     const wrapper = cardElement.closest('.goal-card-wrapper');
     wrapper.classList.toggle('is-focused');
+};
+
+// --- Dashboard & Analytics Logic ---
+const updateDashboard = () => {
+    // 1. Basic Stats
+    const total = goals.length;
+    const active = goals.filter(g => g.progress < 100).length;
+    const achieved = goals.filter(g => g.progress === 100).length;
+
+    const statTotalEl = document.getElementById('stat-total');
+    const statActiveEl = document.getElementById('stat-active');
+    const statCompletedEl = document.getElementById('stat-completed');
+
+    if (statTotalEl) statTotalEl.innerText = total;
+    if (statActiveEl) statActiveEl.innerText = active;
+    if (statCompletedEl) statCompletedEl.innerText = achieved;
+
+    // 2. Daily Momentum (Energy)
+    // Based on activities today in activityLog
+    const today = new Date().toISOString().split('T')[0];
+    const todayCount = activityLog[today] || 0;
+    const energyFill = document.getElementById('energy-fill');
+    if (energyFill) {
+        // Assume 5 activities as 100% for the daily goal
+        const energyPercent = Math.min((todayCount / 5) * 100, 100);
+        gsap.to(energyFill, { width: `${energyPercent}%`, duration: 1, ease: 'power2.out' });
+    }
+
+    // 3. Action Momentum Chart (Past 7 Days)
+    const momentumFlow = document.getElementById('momentum-flow');
+    if (momentumFlow) {
+        momentumFlow.innerHTML = '';
+        const dates = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            dates.push(d.toISOString().split('T')[0]);
+        }
+
+        const counts = dates.map(d => activityLog[d] || 0);
+        const maxCount = Math.max(...counts, 1);
+        const avg = (counts.reduce((a, b) => a + b, 0) / 7).toFixed(1);
+
+        dates.forEach((date, i) => {
+            const bar = document.createElement('div');
+            bar.className = 'momentum-bar';
+            if (i === 6) bar.classList.add('active'); // Today
+            const height = (counts[i] / maxCount) * 100;
+
+            bar.style.height = '0%';
+            momentumFlow.appendChild(bar);
+            gsap.to(bar, { height: `${Math.max(height, 5)}%`, duration: 0.8, delay: i * 0.05, ease: 'back.out(1.5)' });
+        });
+
+        document.getElementById('momentum-score').innerText = todayCount;
+        document.getElementById('stat-avg').innerText = avg;
+        document.getElementById('stat-max').innerText = Math.max(...counts);
+    }
+
+    // 4. Category Balance
+    const catContainer = document.getElementById('cat-balance-container');
+    if (catContainer) {
+        catContainer.innerHTML = '';
+        const catStats = {};
+        categories.forEach(cat => catStats[cat] = 0);
+        goals.forEach(g => {
+            if (catStats[g.category] !== undefined) {
+                catStats[g.category] += g.progress / (goals.filter(goal => goal.category === g.category).length || 1);
+            }
+        });
+
+        Object.entries(catStats).forEach(([cat, progress]) => {
+            const item = document.createElement('div');
+            item.className = 'cat-stat-item';
+            const roundedProgress = Math.round(progress);
+            item.innerHTML = `
+                <div class="cat-header">
+                    <span>${cat}</span>
+                    <span>${roundedProgress}%</span>
+                </div>
+                <div class="cat-bar-bg">
+                    <div class="cat-bar-fill" style="width: 0%"></div>
+                </div>
+            `;
+            catContainer.appendChild(item);
+            const fill = item.querySelector('.cat-bar-fill');
+            gsap.to(fill, { width: `${roundedProgress}%`, duration: 1, ease: 'power2.out' });
+        });
+    }
 };

@@ -168,14 +168,25 @@ body {
     padding: 2rem 8%;
 }
 
+/* Glass Panel Base */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+}
+
 /* Mission Control & Analytics */
 .mission-control {
     margin-bottom: 2rem;
-    padding: 1.5rem 2rem;
-    background: var(--bg-card);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
+    padding: 1.5rem 2.5rem;
+    transition: all 0.3s ease;
+}
+
+.mission-control:hover {
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 15px 50px -10px rgba(0, 0, 0, 0.08);
 }
 
 .control-header {
@@ -230,21 +241,22 @@ body {
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    /* Slightly smaller radius inside control */
-    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    min-height: 80px;
-    transition: all 0.3s;
+    gap: 1.25rem;
+    min-height: 90px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stat-card:hover {
-    background: rgba(255, 255, 255, 0.8);
-    transform: translateY(-2px);
+    background: #ffffff;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.05);
+    border-color: var(--accent-blue);
 }
 
 .stat-icon {
@@ -288,12 +300,8 @@ body {
 }
 
 .analytics-card {
-    background: var(--bg-card);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 1.5rem;
-    min-height: 320px;
+    padding: 1.75rem;
+    min-height: 340px;
     display: flex;
     flex-direction: column;
 }
@@ -352,10 +360,12 @@ body {
 
 .momentum-bar:hover {
     background: var(--accent-blue);
+    filter: brightness(1.1);
 }
 
 .momentum-bar.active {
-    background: var(--accent-indigo);
+    background: var(--accent-blue);
+    box-shadow: 0 0 15px rgba(68, 136, 255, 0.4);
 }
 
 .analyzing-text {

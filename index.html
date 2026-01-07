@@ -48,16 +48,82 @@
         </nav>
 
         <main>
-            <!-- Content Header & Goals -->
-            <section id="dashboard" class="dashboard-section">
-                <div class="section-header">
-                </div>
-                <div id="goals-container" class="goals-grid">
-                    <!-- Goals will be injected here -->
-                    <div class="empty-state">
-                        <p>まだ目標がありません。＋ボタンから追加してください。</p>
+            <!-- Mission Control: Energy & Stats -->
+            <section id="mission-control" class="mission-control glass-panel">
+                <div class="control-header">
+                    <h3>Mission Control</h3>
+                    <div class="energy-status-compact">
+                        <span class="label">Daily Momentum</span>
+                        <div class="energy-bar-main">
+                            <div id="energy-fill" class="energy-fill" style="width: 0%"></div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="stats-overview">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Goals</span>
+                            <h3 id="stat-total">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Active</span>
+                            <h3 id="stat-active">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Achieved</span>
+                            <h3 id="stat-completed">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard / Analytics -->
+            <section id="dashboard" class="dashboard-section">
+                <div class="analytics-grid">
+                    <!-- Action Momentum (Activity Chart) -->
+                    <div class="analytics-card momentum-card glass-panel">
+                        <div class="card-header">
+                            <h4>Action Momentum</h4>
+                            <div class="score-badge" id="momentum-score">0</div>
+                        </div>
+                        <div id="momentum-flow" class="momentum-flow">
+                            <!-- Bars will be injected here -->
+                        </div>
+                        <div class="momentum-footer">
+                            <div class="stat-pill">
+                                <span class="label">7-Day Avg</span>
+                                <span class="value" id="stat-avg">0.0</span>
+                            </div>
+                            <div class="stat-pill">
+                                <span class="label">Best Day</span>
+                                <span class="value" id="stat-max">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Balance or empty slot for future -->
+                    <div class="analytics-card glass-panel">
+                        <h4>Category Balance</h4>
+                        <div id="cat-balance-container" class="cat-stats-container">
+                            <!-- Category progress bars will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="goals-container" class="goals-grid">
+                <!-- Goals will be injected here -->
+                <div class="empty-state">
+                    <p>まだ目標がありません。＋ボタンから追加してください。</p>
+                </div>
+            </div>
             </section>
         </main>
 
