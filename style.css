@@ -825,7 +825,12 @@ body {
     align-items: center;
     gap: 0.4rem;
     transition: all 0.2s;
-    cursor: default;
+    cursor: pointer;
+}
+
+.cat-chip:active {
+    transform: scale(0.95);
+    background: #f1f5f9;
 }
 
 .cat-chip:hover {

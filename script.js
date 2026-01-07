@@ -54,7 +54,7 @@ const updateCategoryDatalist = () => {
     // Update Chips in Modal
     if (categoryManagerList) {
         categoryManagerList.innerHTML = categories.map(cat => `
-            <div class="cat-chip">
+            <div class="cat-chip" onclick="selectCategory('${cat}')">
                 <span>${cat}</span>
                 <span class="cat-chip-delete" onclick="event.stopPropagation(); deleteCategoryPrompt(event, '${cat}')">&times;</span>
             </div>
@@ -63,6 +63,21 @@ const updateCategoryDatalist = () => {
 
     // Refresh stats to reflect any category changes
     renderCategoryStats();
+};
+
+const selectCategory = (catName) => {
+    const categoryInput = document.getElementById('goal-category');
+    if (categoryInput) {
+        categoryInput.value = catName;
+        // ちょっとした視覚フィードバック（フォーカス）
+        categoryInput.focus();
+
+        // GSAPで少し揺らすなど演出しても良いが、まずは確実に機能させる
+        gsap.fromTo(categoryInput,
+            { x: -2 },
+            { x: 0, duration: 0.1, repeat: 3, yoyo: true }
+        );
+    }
 };
 
 const showConfirm = (title, message, onConfirm) => {
