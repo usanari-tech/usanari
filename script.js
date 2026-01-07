@@ -3,6 +3,7 @@ let goals = JSON.parse(localStorage.getItem('goals')) || [];
 let currentView = 'active'; // 'active' or 'completed'
 let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
 let activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
+let editingGoalId = null;
 
 // --- DOM Elements ---
 const goalsContainer = document.getElementById('goals-container');
@@ -166,7 +167,48 @@ const deleteCategoryPrompt = (event, catName) => {
 };
 
 // --- Modal Control ---
-const openModal = () => {
+const openModal = (goalId = null) => {
+    editingGoalId = goalId;
+    const modalTitle = document.getElementById('modal-title');
+    const submitBtn = document.getElementById('btn-submit');
+
+    if (editingGoalId) {
+        // Edit Mode
+        const goal = goals.find(g => String(g.id) === String(editingGoalId));
+        if (!goal) return;
+
+        modalTitle.innerText = '目標の編集';
+        submitBtn.innerText = '更新する';
+
+        document.getElementById('goal-category').value = goal.category;
+        document.getElementById('goal-title').value = goal.title;
+        document.getElementById('goal-tasks').value = goal.tasks.map(t => t.text).join('\n');
+
+        // Handle Deadline restoration
+        deadlinePresets.forEach(b => b.classList.remove('active'));
+        if (goal.deadline === '未定') {
+            document.querySelector('[data-value="none"]').classList.add('active');
+            dateInput.classList.add('hidden-date');
+        } else if (goal.deadline.includes('.')) {
+            // Check if it matches preset logic or is custom
+            // Simplification: treat as custom if not none for restoration
+            document.querySelector('[data-value="custom"]')?.classList.add('active');
+            dateInput.classList.remove('hidden-date');
+
+            // Format YYYY.MM.DD to YYYY-MM-DD for input[type=date]
+            const [y, m, d] = goal.deadline.split('.');
+            dateInput.value = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        }
+    } else {
+        // Add Mode
+        modalTitle.innerText = '目標の登録';
+        submitBtn.innerText = '登録';
+        goalForm.reset();
+        deadlinePresets.forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-value="none"]').classList.add('active');
+        dateInput.classList.add('hidden-date');
+    }
+
     modalOverlay.style.display = 'flex';
     gsap.fromTo('.modal-content',
         { scale: 0.9, opacity: 0, y: 20 },
@@ -182,7 +224,7 @@ const closeModal = () => {
     });
 };
 
-addGoalBtn.addEventListener('click', openModal);
+addGoalBtn.addEventListener('click', () => openModal());
 closeModalBtn.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) closeModal();
@@ -243,13 +285,8 @@ goalForm.onsubmit = (e) => {
 
     // タスクのパース
     const taskLines = tasksRaw.split('\n').filter(line => line.trim() !== '');
-    const tasks = taskLines.map((text, index) => ({
-        id: Date.now() + index, // より堅牢なID生成が必要な場合は後で検討
-        text: text.trim(),
-        done: false
-    }));
 
-    // 期限の計算（従来のロジックを継承）
+    // 期限の計算（共通ロジック）
     let deadline = '未定';
     const now = new Date();
     if (selectedDeadlineBtn.dataset.value === 'this-week') {
@@ -265,38 +302,77 @@ goalForm.onsubmit = (e) => {
         deadline = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
     }
 
-    const newGoal = {
-        id: Date.now(),
-        title,
-        category,
-        tasks,
-        deadline,
-        progress: 0
-    };
+    if (editingGoalId) {
+        // UPDATE MODE
+        const goalIndex = goals.findIndex(g => String(g.id) === String(editingGoalId));
+        if (goalIndex === -1) return;
 
-    goals.push(newGoal);
+        const existingGoal = goals[goalIndex];
+
+        // タスクのリマップ（同じ文言なら完了状態を引き継ぐ、新しいものは新規）
+        const updatedTasks = taskLines.map((text, index) => {
+            const trimmed = text.trim();
+            const existingTask = existingGoal.tasks.find(t => t.text === trimmed);
+            return {
+                id: existingTask ? existingTask.id : Date.now() + index,
+                text: trimmed,
+                done: existingTask ? existingTask.done : false
+            };
+        });
+
+        goals[goalIndex] = {
+            ...existingGoal,
+            title,
+            category,
+            deadline,
+            tasks: updatedTasks
+        };
+
+        // 再計算
+        const doneCount = updatedTasks.filter(t => t.done).length;
+        goals[goalIndex].progress = Math.round((doneCount / updatedTasks.length) * 100);
+
+    } else {
+        // CREATE MODE
+        const tasks = taskLines.map((text, index) => ({
+            id: Date.now() + index,
+            text: text.trim(),
+            done: false
+        }));
+
+        const newGoal = {
+            id: Date.now(),
+            title,
+            category,
+            tasks,
+            deadline,
+            progress: 0
+        };
+        goals.push(newGoal);
+        logActivity();
+    }
+
     saveGoals();
-    logActivity();
     renderGoals();
     updateDashboard();
 
     // フォームリセット
     goalForm.reset();
-    deadlinePresets.forEach(b => b.classList.remove('active'));
-    document.querySelector('[data-value="none"]').classList.add('active');
     closeModal();
 
-    confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#3b82f6', '#6366f1']
-    });
+    if (!editingGoalId) {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#4488ff', '#5d5afe']
+        });
+    }
 };
 
 const toggleTask = (goalId, taskId) => {
-    const goal = goals.find(g => g.id === goalId);
-    const task = goal.tasks.find(t => t.id === taskId);
+    const goal = goals.find(g => String(g.id) === String(goalId));
+    const task = goal.tasks.find(t => String(t.id) === String(taskId));
 
     // Allow toggle
     task.done = !task.done;
@@ -321,7 +397,7 @@ const toggleTask = (goalId, taskId) => {
 
 const deleteGoal = (id) => {
     showConfirm("目標の削除", "この目標を削除してもよろしいですか？この操作は取り消せません。", () => {
-        goals = goals.filter(g => g.id !== id);
+        goals = goals.filter(g => String(g.id) !== String(id));
         saveGoals();
         renderGoals();
         updateDashboard();
@@ -384,23 +460,23 @@ const renderGoals = () => {
             const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
             return `
                     <div class="goal-card-wrapper" data-goal-id="${goal.id}">
-                        <div class="goal-card">
+                        <div class="goal-card" onclick="openModal('${goal.id}')">
                             <div class="goal-header">
                                 <div class="goal-title-area">
                                     <h4>${goal.title}</h4>
                                     <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${formattedDeadline}</span>
                                 </div>
-                                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})" title="目標を削除">&times;</button>
+                                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal('${goal.id}')" title="目標を削除">&times;</button>
                             </div>
                             
                             <div class="progress-mini-bar">
                                 <div class="progress-fill" style="width: ${goal.progress}%"></div>
                             </div>
-
+ 
                             <div class="card-content-expand">
                                 <div class="task-mini-list">
                                     ${goal.tasks.map(task => `
-                                        <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
+                                        <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask('${goal.id}', '${task.id}')">
                                             <div class="mini-checkbox"></div>
                                             <span class="mini-task-text">${task.text}</span>
                                         </div>
