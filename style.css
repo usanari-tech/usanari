@@ -84,8 +84,7 @@ body {
 .main-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 3rem 12%;
-    /* 余白をさらに拡大 */
+    padding: 2rem 8%;
 }
 
 /* Mission Control & Analytics */
@@ -431,20 +430,36 @@ body {
     border-radius: 4px;
 }
 
+/* Dashboard Section */
+.dashboard-section {
+    padding: 1rem 0;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.header-main h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.header-main .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
 /* Stack View: Multi-column Index Stack (Fixed Stacking Order) */
 #goals-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     gap: 5rem 2rem;
     align-items: start;
-    padding-bottom: 5rem;
-}
-
-@media (min-width: 1200px) {
-    #goals-container {
-        grid-template-columns: repeat(3, 1fr);
-        /* PCで強制3列 */
-    }
+    padding: 0 1rem 5rem 1rem;
 }
 
 .category-stack {
@@ -918,10 +933,10 @@ body {
     }
 
     .main-content {
-        padding: 2rem 5%;
+        padding: 1.5rem 5%;
     }
 
-    .hero-section h2 {
-        font-size: 2rem;
+    .header-main h2 {
+        font-size: 1.25rem;
     }
 }
