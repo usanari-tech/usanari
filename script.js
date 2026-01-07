@@ -12,8 +12,6 @@ const closeModalBtn = document.querySelector('.close-modal');
 const categoryDatalist = document.getElementById('category-options');
 const deadlinePresets = document.querySelectorAll('.preset-btn');
 const dateInput = document.getElementById('goal-deadline');
-const archivedSection = document.getElementById('archived-section');
-const archivedContainer = document.getElementById('archived-container');
 
 const categoryManagerList = document.getElementById('category-manager-list');
 
@@ -319,92 +317,68 @@ const formatDate = (dateStr) => {
 
 const renderGoals = () => {
     goalsContainer.innerHTML = '';
-    archivedContainer.innerHTML = '';
 
-    const activeGoals = goals.filter(g => g.progress < 100);
-    const completedGoals = goals.filter(g => g.progress === 100);
-
-    // アーカイブセクションの表示制御
-    if (completedGoals.length > 0) {
-        archivedSection.style.display = 'block';
-    } else {
-        archivedSection.style.display = 'none';
-    }
-
-    // アクティブな目標の描画
-    if (activeGoals.length === 0) {
+    if (goals.length === 0) {
         goalsContainer.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon">🔭</div>
                 <p>2026年の軌道がまだ設定されていません。<br>「新しい目標を追加」から始めましょう。</p>
             </div>
         `;
-    } else {
-        // カテゴリーごとのグループ化
-        const grouped = activeGoals.reduce((acc, goal) => {
-            if (!acc[goal.category]) acc[goal.category] = [];
-            acc[goal.category].push(goal);
-            return acc;
-        }, {});
-
-        Object.entries(grouped).forEach(([category, categoryGoals]) => {
-            const stackElement = document.createElement('div');
-            stackElement.className = 'category-stack';
-            stackElement.innerHTML = `
-                <div class="category-header">
-                    <div class="category-label">${category}</div>
-                    <div class="stack-count">${categoryGoals.length}</div>
-                </div>
-                <div class="stack-content">
-                    ${categoryGoals.map(goal => generateGoalCardHTML(goal)).join('')}
-                </div>
-            `;
-            goalsContainer.appendChild(stackElement);
-        });
+        return;
     }
 
-    // アーカイブされた目標の描画
-    if (completedGoals.length > 0) {
-        completedGoals.forEach(goal => {
-            const cardWrapper = document.createElement('div');
-            cardWrapper.className = 'goal-card-wrapper archived-card';
-            cardWrapper.dataset.goalId = goal.id;
-            cardWrapper.innerHTML = generateGoalCardHTML(goal, true);
-            archivedContainer.appendChild(cardWrapper);
-        });
-    }
-};
+    // カテゴリーごとのグループ化
+    const grouped = goals.reduce((acc, goal) => {
+        if (!acc[goal.category]) acc[goal.category] = [];
+        acc[goal.category].push(goal);
+        return acc;
+    }, {});
 
-const generateGoalCardHTML = (goal, isArchived = false) => {
-    const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
-    const archiveClass = isArchived ? 'is-archived' : '';
+    Object.entries(grouped).forEach(([category, categoryGoals]) => {
+        const stackElement = document.createElement('div');
+        stackElement.className = 'category-stack';
 
-    return `
-        <div class="goal-card ${archiveClass}">
-            <div class="goal-header">
-                <div class="goal-title-area">
-                    <h4>${goal.title}</h4>
-                    <span class="deadline-tag ${!isArchived && goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${formattedDeadline}</span>
-                </div>
-                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})" title="目標を削除">&times;</button>
+        stackElement.innerHTML = `
+            <div class="category-header">
+                <div class="category-label">${category}</div>
+                <div class="stack-count">${categoryGoals.length}</div>
             </div>
-            
-            <div class="progress-mini-bar">
-                <div class="progress-fill" style="width: ${goal.progress}%"></div>
-            </div>
+            <div class="stack-content">
+                ${categoryGoals.map((goal) => {
+            const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
+            return `
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}">
+                        <div class="goal-card">
+                            <div class="goal-header">
+                                <div class="goal-title-area">
+                                    <h4>${goal.title}</h4>
+                                    <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${formattedDeadline}</span>
+                                </div>
+                                <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal(${goal.id})" title="目標を削除">&times;</button>
+                            </div>
+                            
+                            <div class="progress-mini-bar">
+                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                            </div>
 
-            <div class="card-content-expand">
-                <div class="task-mini-list">
-                    ${goal.tasks.map(task => `
-                        <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
-                            <div class="mini-checkbox"></div>
-                            <span class="mini-task-text">${task.text}</span>
+                            <div class="card-content-expand">
+                                <div class="task-mini-list">
+                                    ${goal.tasks.map(task => `
+                                        <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
+                                            <div class="mini-checkbox"></div>
+                                            <span class="mini-task-text">${task.text}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
                         </div>
-                    `).join('')}
-                </div>
+                    </div>
+                `}).join('')}
             </div>
-        </div>
-    `;
+        `;
+        goalsContainer.appendChild(stackElement);
+    });
 };
 
 const toggleGoalExpand = (cardElement) => {
