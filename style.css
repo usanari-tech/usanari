@@ -316,7 +316,7 @@ body {
 }
 
 /* Main Content */
-.main-content {
+main {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem 5%;
@@ -324,7 +324,7 @@ body {
 
 @media (max-width: 768px) {
     body {
-        padding-top: 130px;
+        padding-top: 155px;
     }
 
     .glass-nav {
@@ -376,8 +376,8 @@ body {
         font-size: 0.75rem;
     }
 
-    .main-content {
-        padding: 1rem;
+    main {
+        padding: 1.5rem 1rem;
     }
 }
 
