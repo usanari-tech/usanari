@@ -1,9 +1,21 @@
+import * as fb from './firebase-config.js';
+
 // --- State Management ---
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
 let currentView = 'active'; // 'active' or 'completed'
 let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
 let activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
 let editingGoalId = null;
+let currentUser = null;
+
+// --- Global Handlers (for HTML onclick) ---
+window.switchTab = (view) => switchTab(view);
+window.openModal = (id) => openModal(id);
+window.closeModal = () => closeModal();
+window.toggleTask = (gId, tId) => toggleTask(gId, tId);
+window.deleteGoal = (id) => deleteGoal(id);
+window.selectCategory = (cat) => selectCategory(cat);
+window.deleteCategoryPrompt = (e, cat) => deleteCategoryPrompt(e, cat);
 
 // --- DOM Elements ---
 const goalsContainer = document.getElementById('goals-container');
@@ -14,6 +26,11 @@ const closeModalBtn = document.querySelector('.close-modal');
 const categoryDatalist = document.getElementById('category-options');
 const deadlinePresets = document.querySelectorAll('.preset-btn');
 const dateInput = document.getElementById('goal-deadline');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const userProfile = document.getElementById('user-profile');
+const userAvatar = document.getElementById('user-avatar');
+const userNameEl = document.getElementById('user-name');
 
 const categoryManagerList = document.getElementById('category-manager-list');
 
@@ -279,9 +296,23 @@ deadlinePresets.forEach(btn => {
 });
 
 // --- Core Actions ---
-const saveGoals = () => {
-    localStorage.setItem('goals', JSON.stringify(goals));
-    localStorage.setItem('categories', JSON.stringify(categories));
+const saveGoals = async () => {
+    if (currentUser) {
+        // Sync metadata (categories, activityLog)
+        try {
+            const userDocRef = fb.doc(fb.db, 'users', currentUser.uid);
+            await fb.updateDoc(userDocRef, {
+                categories: categories,
+                activityLog: activityLog,
+                lastSync: fb.serverTimestamp()
+            });
+        } catch (e) {
+            console.error("Cloud save failed", e);
+        }
+    } else {
+        localStorage.setItem('goals', JSON.stringify(goals));
+        localStorage.setItem('categories', JSON.stringify(categories));
+    }
 };
 
 const logActivity = () => {
@@ -364,143 +395,303 @@ goalForm.onsubmit = (e) => {
         };
 
         // 再計算
+        // Prepare tasks for the goal
+        let updatedTasks = [];
+        if (editingGoalId) {
+            const existingGoal = goals.find(g => String(g.id) === String(editingGoalId));
+            if (existingGoal) {
+                updatedTasks = taskLines.map((text, index) => {
+                    const trimmed = text.trim();
+                    const existingTask = existingGoal.tasks.find(t => t.text === trimmed);
+                    return {
+                        id: existingTask ? existingTask.id : Date.now() + index,
+                        text: trimmed,
+                        done: existingTask ? existingTask.done : false,
+                        completedAt: existingTask ? existingTask.completedAt : undefined
+                    };
+                });
+            }
+        } else {
+            updatedTasks = taskLines.map((text, index) => ({
+                id: Date.now() + index,
+                text: text.trim(),
+                done: false
+            }));
+        }
+
         const doneCount = updatedTasks.filter(t => t.done).length;
-        goals[goalIndex].progress = Math.round((doneCount / updatedTasks.length) * 100);
+        const progress = updatedTasks.length > 0 ? Math.round((doneCount / updatedTasks.length) * 100) : 0;
 
-    } else {
-        // CREATE MODE
-        const tasks = taskLines.map((text, index) => ({
-            id: Date.now() + index,
-            text: text.trim(),
-            done: false
-        }));
-
-        const newGoal = {
-            id: Date.now(),
+        const goalData = {
             title,
             category,
-            tasks,
             deadline,
-            progress: 0
+            tasks: updatedTasks,
+            progress
         };
-        goals.push(newGoal);
-        logActivity();
-    }
 
-    saveGoals();
-    renderGoals();
-    updateDashboard();
+        if (editingGoalId) {
+            const index = goals.findIndex(g => String(g.id) === String(editingGoalId));
+            if (index !== -1) {
+                goals[index] = { ...goals[index], ...goalData };
+                if (currentUser) {
+                    const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(editingGoalId));
+                    await fb.setDoc(gRef, goals[index]);
+                }
+            }
+        } else {
+            const newGoal = {
+                id: Date.now(),
+                ...goalData,
+            };
+            goals.push(newGoal);
+            if (currentUser) {
+                const gRef = fb.doc(fb.collection(fb.db, 'users', currentUser.uid, 'goals'), String(newGoal.id));
+                await fb.setDoc(gRef, newGoal);
+            }
+            logActivity();
+        }
 
-    // フォームリセット
-    goalForm.reset();
-    closeModal();
-
-    if (!editingGoalId) {
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#4488ff', '#5d5afe']
-        });
-    }
-};
-
-const toggleTask = (goalId, taskId) => {
-    const goal = goals.find(g => String(g.id) === String(goalId));
-    const task = goal.tasks.find(t => String(t.id) === String(taskId));
-
-    // Allow toggle
-    task.done = !task.done;
-
-    // Update progress
-    const doneCount = goal.tasks.filter(t => t.done).length;
-    goal.progress = Math.round((doneCount / goal.tasks.length) * 100);
-
-    // Verify completion
-    if (task.done) {
-        logActivity();
-        const now = new Date();
-        const yy = String(now.getFullYear()).slice(-2);
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        task.completedAt = `${yy}.${mm}.${dd}`;
-    } else {
-        delete task.completedAt;
-    }
-
-    saveGoals();
-    renderGoals();
-    updateDashboard();
-
-    if (goal.progress === 100) {
-        confetti({ particleCount: 50, scalar: 0.7 });
-    }
-};
-
-const deleteGoal = (id) => {
-    showConfirm("目標の削除", "この目標を削除してもよろしいですか？この操作は取り消せません。", () => {
-        goals = goals.filter(g => String(g.id) !== String(id));
-        saveGoals();
+        saveGoals(); // This will now primarily sync categories and activityLog for Firebase users, and all for local storage users.
         renderGoals();
         updateDashboard();
+
+        // フォームリセット
+        goalForm.reset();
+        closeModal();
+
+        if (!editingGoalId) {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#4488ff', '#5d5afe']
+            });
+        }
+    };
+
+    // --- Firebase Actions ---
+    const handleLogin = async () => {
+        try {
+            await fb.signInWithPopup(fb.auth, fb.provider);
+        } catch (error) {
+            console.error("Login failed:", error);
+            // Error check for placeholder keys
+            if (error.code === 'auth/invalid-api-key' || error.message.includes('PLACEHOLDER')) {
+                alert("Firebaseの設定（APIキーなど）がまだ完了していないようです。貼り付けをお願いします！");
+            } else {
+                alert("ログインに失敗しました。詳細: " + error.message);
+            }
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await fb.signOut(fb.auth);
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+
+    if (loginBtn) loginBtn.onclick = handleLogin;
+    if (logoutBtn) logoutBtn.onclick = handleLogout;
+
+    // Firebase Auth State Observer
+    fb.onAuthStateChanged(fb.auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            loginBtn.style.display = 'none';
+            userProfile.style.display = 'flex';
+            userAvatar.src = user.photoURL || '';
+            userNameEl.innerText = user.displayName || 'User';
+
+            await setupUserCloudData(user.uid);
+        } else {
+            currentUser = null;
+            loginBtn.style.display = 'flex';
+            userProfile.style.display = 'none';
+
+            // Fallback to local storage
+            goals = JSON.parse(localStorage.getItem('goals')) || [];
+            categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
+            activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
+            renderGoals();
+            updateDashboard();
+        }
     });
-};
 
-// --- Rendering & Logic ---
+    const setupUserCloudData = async (uid) => {
+        try {
+            const userDocRef = fb.doc(fb.db, 'users', uid);
+            const userDoc = await fb.getDoc(userDocRef);
+
+            if (!userDoc.exists()) {
+                const localGoals = JSON.parse(localStorage.getItem('goals')) || [];
+                if (localGoals.length > 0) {
+                    showConfirm("データの同期", "ブラウザに保存されている目標をクラウドに同期しますか？", async () => {
+                        await migrateToCloud(uid);
+                    });
+                } else {
+                    await fb.setDoc(userDocRef, {
+                        categories: categories,
+                        activityLog: activityLog,
+                        lastSync: fb.serverTimestamp()
+                    });
+                }
+            } else {
+                const data = userDoc.data();
+                categories = data.categories || categories;
+                activityLog = data.activityLog || {};
+
+                const goalsSnapshot = await fb.getDocs(fb.collection(fb.db, 'users', uid, 'goals'));
+                goals = goalsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                renderGoals();
+                updateDashboard();
+            }
+        } catch (e) {
+            console.error("Cloud data setup failed", e);
+        }
+    };
+
+    const migrateToCloud = async (uid) => {
+        try {
+            const userDocRef = fb.doc(fb.db, 'users', uid);
+            await fb.setDoc(userDocRef, {
+                categories: categories,
+                activityLog: activityLog,
+                lastSync: fb.serverTimestamp()
+            });
+
+            const localGoals = JSON.parse(localStorage.getItem('goals')) || [];
+            for (const g of localGoals) {
+                const gRef = fb.doc(fb.collection(fb.db, 'users', uid, 'goals'), String(g.id));
+                await fb.setDoc(gRef, g);
+            }
+
+            // Refresh cloud state
+            await setupUserCloudData(uid);
+        } catch (e) {
+            console.error("Migration failed", e);
+        }
+    };
+
+    const toggleTask = async (goalId, taskId) => {
+        const goal = goals.find(g => String(g.id) === String(goalId));
+        if (!goal) return;
+
+        const task = goal.tasks.find(t => String(t.id) === String(taskId));
+        if (!task) return;
+
+        task.done = !task.done; // Changed from task.completed to task.done to match existing structure
+
+        // Update progress
+        const doneCount = goal.tasks.filter(t => t.done).length;
+        goal.progress = goal.tasks.length > 0 ? Math.round((doneCount / goal.tasks.length) * 100) : 0;
+
+        if (task.done) {
+            task.completedAt = new Date().toISOString().split('T')[0];
+            logActivity();
+        } else {
+            delete task.completedAt;
+        }
+
+        if (currentUser) {
+            try {
+                const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(goalId));
+                await fb.updateDoc(gRef, { tasks: goal.tasks, progress: goal.progress }); // Update tasks and progress
+                await saveGoals(); // Sync activityLog update
+            } catch (e) {
+                console.error("Cloud task toggle failed", e);
+            }
+        } else {
+            saveGoals();
+        }
+
+        renderGoals();
+        updateDashboard();
+
+        if (goal.progress === 100 && task.done) { // Only confetti if goal becomes 100% and task was just completed
+            confetti({ particleCount: 50, scalar: 0.7 });
+        }
+    };
+
+    const deleteGoal = (id) => {
+        showConfirm("目標の削除", "この目標を削除してもよろしいですか？この操作は取り消せません。", async () => { // Added async here
+            goals = goals.filter(g => String(g.id) !== String(id));
+
+            if (currentUser) {
+                try {
+                    const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(id));
+                    await fb.deleteDoc(gRef);
+                    await saveGoals(); // Sync activityLog and categories if needed
+                } catch (e) {
+                    console.error("Cloud delete failed", e);
+                }
+            } else {
+                saveGoals();
+            }
+
+            renderGoals();
+            updateDashboard();
+        });
+    };
+
+    // --- Rendering & Logic ---
 
 
 
 
 
-const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === '未定') return '未定';
-    // Handle 'YYYY.MM.DD' format or standard Date string
-    const d = new Date(dateStr.replace(/\./g, '/')); // Replace dots for Safari/Legacy safety
-    if (isNaN(d.getTime())) return dateStr;
+    const formatDate = (dateStr) => {
+        if (!dateStr || dateStr === '未定') return '未定';
+        // Handle 'YYYY.MM.DD' format or standard Date string
+        const d = new Date(dateStr.replace(/\./g, '/')); // Replace dots for Safari/Legacy safety
+        if (isNaN(d.getTime())) return dateStr;
 
-    return `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
-};
+        return `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
+    };
 
-const renderGoals = () => {
-    goalsContainer.innerHTML = '';
+    const renderGoals = () => {
+        goalsContainer.innerHTML = '';
 
-    const filteredGoals = goals.filter(goal => {
-        if (currentView === 'completed') return goal.progress === 100;
-        return goal.progress < 100;
-    });
+        const filteredGoals = goals.filter(goal => {
+            if (currentView === 'completed') return goal.progress === 100;
+            return goal.progress < 100;
+        });
 
-    if (filteredGoals.length === 0) {
-        const message = currentView === 'completed'
-            ? '達成された目標はまだありません。'
-            : '2026年の軌道がまだ設定されていません。<br>「新しい目標を追加」から始めましょう。';
-        goalsContainer.innerHTML = `
+        if (filteredGoals.length === 0) {
+            const message = currentView === 'completed'
+                ? '達成された目標はまだありません。'
+                : '2026年の軌道がまだ設定されていません。<br>「新しい目標を追加」から始めましょう。';
+            goalsContainer.innerHTML = `
             <div class="empty-state">
                 <p>${message}</p>
             </div>
         `;
-        return;
-    }
+            return;
+        }
 
-    // カテゴリーごとのグループ化
-    const grouped = filteredGoals.reduce((acc, goal) => {
-        if (!acc[goal.category]) acc[goal.category] = [];
-        acc[goal.category].push(goal);
-        return acc;
-    }, {});
+        // カテゴリーごとのグループ化
+        const grouped = filteredGoals.reduce((acc, goal) => {
+            if (!acc[goal.category]) acc[goal.category] = [];
+            acc[goal.category].push(goal);
+            return acc;
+        }, {});
 
-    Object.entries(grouped).forEach(([category, categoryGoals]) => {
-        const stackElement = document.createElement('div');
-        stackElement.className = 'category-stack';
+        Object.entries(grouped).forEach(([category, categoryGoals]) => {
+            const stackElement = document.createElement('div');
+            stackElement.className = 'category-stack';
 
-        stackElement.innerHTML = `
+            stackElement.innerHTML = `
             <div class="category-header">
                 <div class="category-label">${category}</div>
                 <div class="stack-count">${categoryGoals.length}</div>
             </div>
             <div class="stack-content">
                 ${categoryGoals.map((goal) => {
-            const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
-            return `
+                const formattedDeadline = goal.deadline === '未定' ? '未定' : formatDate(goal.deadline);
+                return `
                     <div class="goal-card-wrapper" data-goal-id="${goal.id}">
                         <div class="goal-card" onclick="openModal('${goal.id}')">
                             <div class="goal-header">
@@ -531,89 +722,89 @@ const renderGoals = () => {
                 `}).join('')}
             </div>
         `;
-        goalsContainer.appendChild(stackElement);
-    });
-};
+            goalsContainer.appendChild(stackElement);
+        });
+    };
 
-const toggleGoalExpand = (cardElement) => {
-    const wrapper = cardElement.closest('.goal-card-wrapper');
-    wrapper.classList.toggle('is-focused');
-};
+    const toggleGoalExpand = (cardElement) => {
+        const wrapper = cardElement.closest('.goal-card-wrapper');
+        wrapper.classList.toggle('is-focused');
+    };
 
-// --- Dashboard & Analytics Logic ---
-const updateDashboard = () => {
-    // 1. Basic Stats
-    const total = goals.length;
-    const active = goals.filter(g => g.progress < 100).length;
-    const achieved = goals.filter(g => g.progress === 100).length;
+    // --- Dashboard & Analytics Logic ---
+    const updateDashboard = () => {
+        // 1. Basic Stats
+        const total = goals.length;
+        const active = goals.filter(g => g.progress < 100).length;
+        const achieved = goals.filter(g => g.progress === 100).length;
 
-    const statTotalEl = document.getElementById('stat-total');
-    const statActiveEl = document.getElementById('stat-active');
-    const statCompletedEl = document.getElementById('stat-completed');
+        const statTotalEl = document.getElementById('stat-total');
+        const statActiveEl = document.getElementById('stat-active');
+        const statCompletedEl = document.getElementById('stat-completed');
 
-    if (statTotalEl) statTotalEl.innerText = total;
-    if (statActiveEl) statActiveEl.innerText = active;
-    if (statCompletedEl) statCompletedEl.innerText = achieved;
+        if (statTotalEl) statTotalEl.innerText = total;
+        if (statActiveEl) statActiveEl.innerText = active;
+        if (statCompletedEl) statCompletedEl.innerText = achieved;
 
-    // 2. Daily Momentum (Energy)
-    // Based on activities today in activityLog
-    const today = new Date().toISOString().split('T')[0];
-    const todayCount = activityLog[today] || 0;
-    const energyFill = document.getElementById('energy-fill');
-    if (energyFill) {
-        // Assume 5 activities as 100% for the daily goal
-        const energyPercent = Math.min((todayCount / 5) * 100, 100);
-        gsap.to(energyFill, { width: `${energyPercent}%`, duration: 1, ease: 'power2.out' });
-    }
-
-    // 3. Action Momentum Chart (Past 7 Days)
-    const momentumFlow = document.getElementById('momentum-flow');
-    if (momentumFlow) {
-        momentumFlow.innerHTML = '';
-        const dates = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            dates.push(d.toISOString().split('T')[0]);
+        // 2. Daily Momentum (Energy)
+        // Based on activities today in activityLog
+        const today = new Date().toISOString().split('T')[0];
+        const todayCount = activityLog[today] || 0;
+        const energyFill = document.getElementById('energy-fill');
+        if (energyFill) {
+            // Assume 5 activities as 100% for the daily goal
+            const energyPercent = Math.min((todayCount / 5) * 100, 100);
+            gsap.to(energyFill, { width: `${energyPercent}%`, duration: 1, ease: 'power2.out' });
         }
 
-        const counts = dates.map(d => activityLog[d] || 0);
-        const maxCount = Math.max(...counts, 1);
-        const avg = (counts.reduce((a, b) => a + b, 0) / 7).toFixed(1);
-
-        dates.forEach((date, i) => {
-            const bar = document.createElement('div');
-            bar.className = 'momentum-bar';
-            if (i === 6) bar.classList.add('active'); // Today
-            const height = (counts[i] / maxCount) * 100;
-
-            bar.style.height = '0%';
-            momentumFlow.appendChild(bar);
-            gsap.to(bar, { height: `${Math.max(height, 5)}%`, duration: 0.5, delay: i * 0.03, ease: 'power2.out' });
-        });
-
-        document.getElementById('momentum-score').innerText = todayCount;
-        document.getElementById('stat-avg').innerText = avg;
-        document.getElementById('stat-max').innerText = Math.max(...counts);
-    }
-
-    // 4. Category Balance
-    const catContainer = document.getElementById('cat-balance-container');
-    if (catContainer) {
-        catContainer.innerHTML = '';
-        const catStats = {};
-        categories.forEach(cat => catStats[cat] = 0);
-        goals.forEach(g => {
-            if (catStats[g.category] !== undefined) {
-                catStats[g.category] += g.progress / (goals.filter(goal => goal.category === g.category).length || 1);
+        // 3. Action Momentum Chart (Past 7 Days)
+        const momentumFlow = document.getElementById('momentum-flow');
+        if (momentumFlow) {
+            momentumFlow.innerHTML = '';
+            const dates = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                dates.push(d.toISOString().split('T')[0]);
             }
-        });
 
-        Object.entries(catStats).forEach(([cat, progress]) => {
-            const item = document.createElement('div');
-            item.className = 'cat-stat-item';
-            const roundedProgress = Math.round(progress);
-            item.innerHTML = `
+            const counts = dates.map(d => activityLog[d] || 0);
+            const maxCount = Math.max(...counts, 1);
+            const avg = (counts.reduce((a, b) => a + b, 0) / 7).toFixed(1);
+
+            dates.forEach((date, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'momentum-bar';
+                if (i === 6) bar.classList.add('active'); // Today
+                const height = (counts[i] / maxCount) * 100;
+
+                bar.style.height = '0%';
+                momentumFlow.appendChild(bar);
+                gsap.to(bar, { height: `${Math.max(height, 5)}%`, duration: 0.5, delay: i * 0.03, ease: 'power2.out' });
+            });
+
+            document.getElementById('momentum-score').innerText = todayCount;
+            document.getElementById('stat-avg').innerText = avg;
+            document.getElementById('stat-max').innerText = Math.max(...counts);
+        }
+
+        // 4. Category Balance
+        const catContainer = document.getElementById('cat-balance-container');
+        if (catContainer) {
+            catContainer.innerHTML = '';
+            const catStats = {};
+            categories.forEach(cat => catStats[cat] = 0);
+            goals.forEach(g => {
+                if (catStats[g.category] !== undefined) {
+                    catStats[g.category] += g.progress / (goals.filter(goal => goal.category === g.category).length || 1);
+                }
+            });
+
+            Object.entries(catStats).forEach(([cat, progress]) => {
+                const item = document.createElement('div');
+                item.className = 'cat-stat-item';
+                const roundedProgress = Math.round(progress);
+                item.innerHTML = `
                 <div class="cat-header">
                     <span>${cat}</span>
                     <span>${roundedProgress}%</span>
@@ -622,9 +813,9 @@ const updateDashboard = () => {
                     <div class="cat-bar-fill" style="width: 0%"></div>
                 </div>
             `;
-            catContainer.appendChild(item);
-            const fill = item.querySelector('.cat-bar-fill');
-            gsap.to(fill, { width: `${roundedProgress}%`, duration: 1, ease: 'power2.out' });
-        });
-    }
-};
+                catContainer.appendChild(item);
+                const fill = item.querySelector('.cat-bar-fill');
+                gsap.to(fill, { width: `${roundedProgress}%`, duration: 1, ease: 'power2.out' });
+            });
+        }
+    };
