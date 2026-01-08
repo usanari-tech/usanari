@@ -78,13 +78,13 @@ body {
     }
 
     .glass-panel {
-        background: rgba(30, 41, 59, 0.4);
-        border-color: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+        background: #1e293b;
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
     }
 
     .stat-card {
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(255, 255, 255, 0.05);
         border-color: rgba(255, 255, 255, 0.05);
     }
 
@@ -351,14 +351,22 @@ main {
     background: var(--bg-card);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 }
 
 /* Mission Control & Analytics */
 .mission-control {
     margin-bottom: 2rem;
     padding: 1.5rem 2.5rem;
+    background: #fbfcfe;
+    /* Very subtle blue tint for framing */
     transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .mission-control {
+        background: rgba(255, 255, 255, 0.02);
+    }
 }
 
 .mission-control:hover {
@@ -424,15 +432,16 @@ main {
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 20px;
+    background: #f8fafc;
+    /* Subtle contrast from white parent */
+    border: 1px solid #edf2f7;
+    border-radius: 16px;
     padding: 1.25rem 1.5rem;
     display: flex;
     align-items: center;
     gap: 1.25rem;
     min-height: 90px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
 }
 
 .stat-card:hover {
@@ -486,10 +495,23 @@ main {
 }
 
 .analytics-card {
+    background: #ffffff;
     padding: 1.75rem;
     min-height: 340px;
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--glass-border);
+}
+
+.momentum-card {
+    background: #fbfcfe;
+    /* Tint for primary analytics */
+}
+
+@media (prefers-color-scheme: dark) {
+    .momentum-card {
+        background: rgba(255, 255, 255, 0.02);
+    }
 }
 
 .analytics-card h4 {
