@@ -19,16 +19,22 @@ const categoryManagerList = document.getElementById('category-manager-list');
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    sanitizeData();
-    updateCategoryDatalist();
-    renderGoals();
+    try {
+        sanitizeData();
+        updateCategoryDatalist();
+        renderGoals();
 
-    // Initial UI state for dashboard (hidden on active view)
-    const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
-    dashboardElements.forEach(el => el.style.display = 'none');
+        // Initial UI state for dashboard (hidden on active view)
+        const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
+        dashboardElements.forEach(el => el.style.display = 'none');
 
-    // Initial GSAP animations
-    gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
+        // Initial GSAP animations - Delayed slightly for stability
+        setTimeout(() => {
+            gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
+        }, 100);
+    } catch (error) {
+        console.error("Initialization Failed:", error);
+    }
 });
 
 // --- Data Sanitization ---
