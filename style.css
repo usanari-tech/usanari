@@ -1,15 +1,15 @@
 :root {
     --bg-primary: #f8fafc;
-    --bg-card: rgba(255, 255, 255, 0.4);
-    --bg-modal: rgba(255, 255, 255, 0.98);
+    --bg-card: #ffffff;
+    --bg-modal: #ffffff;
     --text-primary: #0f172a;
     --text-muted: #64748b;
     --accent-blue: #4488ff;
     --accent-indigo: #5d5afe;
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
-    --btn-primary-bg: linear-gradient(135deg, #1e293b, #334155);
-    --btn-primary-hover: linear-gradient(135deg, #334155, #1e293b);
+    --glass-border: #e2e8f0;
+    --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --btn-primary-bg: #1e293b;
+    --btn-primary-hover: #334155;
 }
 
 * {
@@ -24,43 +24,14 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     padding-top: 100px;
-    /* Space for fixed header */
-    background-image:
-        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.03) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.03) 0px, transparent 50%);
     padding-bottom: 5rem;
     overflow-x: hidden;
 }
 
-/* Background Visuals */
-.bg-glow {
-    position: fixed;
-    top: -10%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    background: radial-gradient(circle, rgba(68, 136, 255, 0.08) 0%, transparent 70%);
-    filter: blur(80px);
-    z-index: -1;
-    pointer-events: none;
-    animation: pulse 15s infinite alternate;
-    will-change: transform;
-    transform: translateZ(0);
-}
-
+/* Background Visuals - DISABLED for stability */
+.bg-glow,
 .fluid-bg {
-    position: fixed;
-    bottom: -20%;
-    right: -10%;
-    width: 70vw;
-    height: 70vw;
-    background: radial-gradient(circle, rgba(93, 90, 254, 0.08) 0%, transparent 70%);
-    filter: blur(90px);
-    z-index: -1;
-    pointer-events: none;
-    animation: pulse 20s infinite alternate-reverse;
-    will-change: transform;
-    transform: translateZ(0);
+    display: none !important;
 }
 
 @keyframes pulse {
@@ -78,20 +49,18 @@ body {
 /* Dark Mode Overrides */
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-primary: #020617;
-        --bg-card: rgba(30, 41, 59, 0.5);
-        --bg-modal: #0f172a;
+        --bg-primary: #0f172a;
+        --bg-card: #1e293b;
+        --bg-modal: #1e293b;
         --text-primary: #f1f5f9;
         --text-muted: #94a3b8;
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
-        --btn-primary-bg: linear-gradient(135deg, #334155, #1e293b);
+        --glass-border: #334155;
+        --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+        --btn-primary-bg: #334155;
     }
 
     body {
-        background-image:
-            radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
-            radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
+        background-color: #020617;
     }
 
     .glass-nav {
@@ -191,11 +160,10 @@ body {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px) saturate(180%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--glass-border);
     padding: 0.6rem 0;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
 }
 
 .nav-content {
@@ -309,10 +277,7 @@ body {
 }
 
 #add-goal-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
     background: var(--accent-indigo);
-    filter: brightness(1.1);
 }
 
 /* Main Content */
@@ -381,13 +346,12 @@ main {
     }
 }
 
-/* Glass Panel Base */
+/* Panel Base */
 .glass-panel {
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(12px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 24px;
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
 }
 
 /* Mission Control & Analytics */
@@ -472,9 +436,6 @@ main {
 }
 
 .stat-card:hover {
-    background: #ffffff;
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.05);
     border-color: var(--accent-blue);
 }
 
@@ -585,7 +546,6 @@ main {
 
 .momentum-bar:hover {
     background: var(--accent-blue);
-    filter: brightness(1.1);
 }
 
 .momentum-bar.active {
@@ -867,14 +827,12 @@ main {
 /* Single Goal Card */
 .goal-card {
     background: var(--bg-card);
-    backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 1.25rem 1.75rem;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--card-shadow);
     cursor: pointer;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .goal-card:hover {
@@ -1083,8 +1041,7 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.1);
-    backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.6);
     display: none;
     justify-content: center;
     align-items: center;

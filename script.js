@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
         dashboardElements.forEach(el => el.style.display = 'none');
 
-        // Initial GSAP animations - Delayed slightly for stability
+        // Initial GSAP animations - Simplified for stability
         setTimeout(() => {
-            gsap.from('.glass-nav', { y: -50, opacity: 0, duration: 1, ease: 'power4.out' });
+            gsap.from('.glass-nav', { y: -20, opacity: 0, duration: 0.5, ease: 'power2.out' });
         }, 100);
     } catch (error) {
         console.error("Initialization Failed:", error);
@@ -90,7 +90,7 @@ const switchTab = (view) => {
     if (view === 'completed') {
         dashboardElements.forEach(el => {
             el.style.display = 'block';
-            gsap.fromTo(el, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+            gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
         });
         updateDashboard();
     } else {
@@ -589,7 +589,7 @@ const updateDashboard = () => {
 
             bar.style.height = '0%';
             momentumFlow.appendChild(bar);
-            gsap.to(bar, { height: `${Math.max(height, 5)}%`, duration: 0.8, delay: i * 0.05, ease: 'back.out(1.5)' });
+            gsap.to(bar, { height: `${Math.max(height, 5)}%`, duration: 0.5, delay: i * 0.03, ease: 'power2.out' });
         });
 
         document.getElementById('momentum-score').innerText = todayCount;
