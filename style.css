@@ -1467,6 +1467,26 @@ main {
         padding: 1rem 5%;
     }
 
+    /* Auth UI Optimization: Hide names/text on mobile to prevent overlap */
+    .user-name,
+    #login-btn span {
+        display: none !important;
+    }
+
+    .user-profile {
+        padding: 4px;
+        /* Icon only mode */
+        gap: 0;
+    }
+
+    #login-btn {
+        padding: 0.5rem;
+        /* Icon only mode */
+        width: 36px;
+        height: 36px;
+        justify-content: center;
+    }
+
     .main-content {
         padding: 1.5rem 5%;
     }
