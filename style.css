@@ -288,6 +288,10 @@ body {
 }
 
 
+.plus-icon {
+    display: inline-block;
+}
+
 #add-goal-btn {
     background: var(--accent-blue);
     color: white;
@@ -302,12 +306,6 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-}
-
-#add-goal-btn::before {
-    content: '+';
-    font-size: 1.1rem;
-    font-weight: 400;
 }
 
 #add-goal-btn:hover {
@@ -441,10 +439,6 @@ main {
         min-width: unset;
     }
 
-    #add-goal-btn {
-        padding: 0.4rem 1rem;
-        font-size: 0.75rem;
-    }
 
     main {
         padding: 1rem 1rem;
@@ -1485,6 +1479,23 @@ main {
         width: 36px;
         height: 36px;
         justify-content: center;
+    }
+
+    #add-goal-btn span {
+        display: none !important;
+    }
+
+    #add-goal-btn .plus-icon {
+        display: inline-block;
+    }
+
+    #add-goal-btn {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+        min-width: 36px;
     }
 
     .main-content {
