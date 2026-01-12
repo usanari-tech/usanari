@@ -464,8 +464,13 @@ main {
 }
 
 /* Mission Control & Analytics */
-.mission-control {
+.mission-control,
+.dashboard-section {
+    display: none;
     margin-bottom: 2rem;
+}
+
+.mission-control {
     padding: 1.5rem 2.5rem;
     background: #fbfcfe;
     /* Very subtle blue tint for framing */
