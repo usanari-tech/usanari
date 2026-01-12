@@ -26,26 +26,22 @@ const categoryManagerList = document.getElementById('category-manager-list');
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Protocol Check (Inform user that Firebase modules need a server)
     if (window.location.protocol === 'file:') {
-        alert("⚠️ ローカルファイル (file://) として開かれています。Firebase (Googleログイン) を動作させるには、VSCode Live Serverなどのローカルサーバーを使用するか、GitHub Pagesにデプロイする必要があります。");
+        alert("⚠️ ローカルファイル (file://) として開かれています。Firebase連携を動作させるにはサーバー経由で開く必要があります。");
     }
     try {
         sanitizeData();
         updateCategoryDatalist();
 
-        // Ensure Dashboard is hidden on 'Active' view initially
         const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
         dashboardElements.forEach(el => el.style.display = 'none');
 
         renderGoals();
 
-        // Initial GSAP animations
         setTimeout(() => {
             gsap.from('.glass-nav', { y: -20, opacity: 0, duration: 0.5, ease: 'power2.out' });
         }, 100);
 
-        // Attach static event listeners
         if (addGoalBtn) addGoalBtn.onclick = () => openModal();
         if (closeModalBtn) closeModalBtn.onclick = closeModal;
         if (modalOverlay) modalOverlay.onclick = (e) => { if (e.target === modalOverlay) closeModal(); };
@@ -75,7 +71,7 @@ const sanitizeData = () => {
     goals.forEach(g => {
         if (!g.tasks) g.tasks = [];
         if (typeof g.progress !== 'number') g.progress = 0;
-        if (g.deadline === 'NaN.NaN.NaN' || g.deadline === 'undefined' || !g.deadline) {
+        if (!g.deadline || g.deadline.includes('NaN')) {
             g.deadline = '未定';
             changed = true;
         }
@@ -84,6 +80,11 @@ const sanitizeData = () => {
 };
 
 const saveGoals = async () => {
+    // Always save to localStorage as a cache/fallback
+    localStorage.setItem('goals', JSON.stringify(goals));
+    localStorage.setItem('categories', JSON.stringify(categories));
+    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+
     if (currentUser) {
         try {
             const userDocRef = fb.doc(fb.db, 'users', currentUser.uid);
@@ -93,12 +94,8 @@ const saveGoals = async () => {
                 lastSync: fb.serverTimestamp()
             }, { merge: true });
         } catch (e) {
-            console.error("Cloud metadata sync failed", e);
+            console.warn("Cloud metadata sync failed (local updated):", e);
         }
-    } else {
-        localStorage.setItem('goals', JSON.stringify(goals));
-        localStorage.setItem('categories', JSON.stringify(categories));
-        localStorage.setItem('activityLog', JSON.stringify(activityLog));
     }
 };
 
@@ -108,17 +105,13 @@ const logActivity = () => {
     saveGoals();
 };
 
-// --- Firebase Actions ---
+// --- Firebase Auth ---
 const handleLogin = async () => {
     try {
         await fb.signInWithPopup(fb.auth, fb.provider);
     } catch (error) {
         console.error("Login failed:", error);
-        if (error.code === 'auth/invalid-api-key' || error.message.includes('PLACEHOLDER')) {
-            alert("Firebaseの設定が完了していません。設定情報を確認してください。");
-        } else {
-            alert("ログインに失敗しました: " + error.message);
-        }
+        alert("ログインに失敗しました: " + error.message);
     }
 };
 
@@ -159,7 +152,7 @@ const setupUserCloudData = async (uid) => {
         if (!userDoc.exists()) {
             const localGoals = JSON.parse(localStorage.getItem('goals')) || [];
             if (localGoals.length > 0) {
-                showConfirm("データの同期", "ローカルに保存されている目標をクラウドに同期しますか？", async () => {
+                showConfirm("データの同期", "ローカルの目標をクラウドに同期しますか？", async () => {
                     await migrateToCloud(uid);
                 });
             } else {
@@ -173,52 +166,42 @@ const setupUserCloudData = async (uid) => {
             const data = userDoc.data();
             categories = data.categories || categories;
             activityLog = data.activityLog || {};
-            const goalsSnapshot = await fb.getDocs(fb.collection(fb.db, 'users', uid, 'goals'));
+            const q = fb.query(fb.collection(fb.db, 'users', uid, 'goals'));
+            const goalsSnapshot = await fb.getDocs(q);
             goals = goalsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-
             renderGoals();
             updateDashboard();
         }
     } catch (e) {
-        console.error("Cloud data fetch failed", e);
+        console.error("Cloud sync failed:", e);
     }
 };
 
 const migrateToCloud = async (uid) => {
     try {
         const userDocRef = fb.doc(fb.db, 'users', uid);
-        await fb.setDoc(userDocRef, {
-            categories: categories,
-            activityLog: activityLog,
-            lastSync: fb.serverTimestamp()
-        });
+        await fb.setDoc(userDocRef, { categories, activityLog, lastSync: fb.serverTimestamp() });
         for (const g of goals) {
-            const gRef = fb.doc(fb.collection(fb.db, 'users', uid, 'goals'), String(g.id));
-            await fb.setDoc(gRef, g);
+            await fb.setDoc(fb.doc(fb.collection(fb.db, 'users', uid, 'goals'), String(g.id)), g);
         }
         await setupUserCloudData(uid);
     } catch (e) {
-        console.error("Migration failed", e);
+        console.error("Migration failed:", e);
     }
 };
 
-// --- UI Components ---
+// --- UI Actions ---
 const switchTab = (view) => {
     if (currentView === view) return;
     currentView = view;
-
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`tab-${view}`).classList.add('active');
-
-    const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
+    const dbEls = document.querySelectorAll('.mission-control, .dashboard-section');
     if (view === 'completed') {
-        dashboardElements.forEach(el => {
-            el.style.display = 'block';
-            gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-        });
+        dbEls.forEach(el => { el.style.display = 'block'; gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3 }); });
         updateDashboard();
     } else {
-        dashboardElements.forEach(el => el.style.display = 'none');
+        dbEls.forEach(el => el.style.display = 'none');
     }
     renderGoals();
 };
@@ -244,66 +227,52 @@ const openModal = (goalId = null) => {
         submitBtn.innerText = '登録';
         goalForm.reset();
     }
-
     modalOverlay.style.display = 'flex';
     gsap.fromTo('.modal-content', { scale: 0.9, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.4 });
 };
 
 const closeModal = () => {
-    gsap.to('.modal-content', {
-        scale: 0.9, opacity: 0, y: 20, duration: 0.3, onComplete: () => {
-            modalOverlay.style.display = 'none';
-        }
-    });
+    gsap.to('.modal-content', { scale: 0.9, opacity: 0, y: 20, duration: 0.3, onComplete: () => { modalOverlay.style.display = 'none'; } });
 };
 
 const showConfirm = (title, message, onConfirm) => {
     const overlay = document.getElementById('confirm-overlay');
-    const titleEl = document.getElementById('confirm-title');
-    const msgEl = document.getElementById('confirm-message');
-    const okBtn = document.getElementById('confirm-ok');
-    const cancelBtn = document.getElementById('confirm-cancel');
-
-    titleEl.innerText = title;
-    msgEl.innerText = message;
+    document.getElementById('confirm-title').innerText = title;
+    document.getElementById('confirm-message').innerText = message;
     overlay.style.display = 'flex';
-
-    okBtn.onclick = (e) => { e.stopPropagation(); onConfirm(); overlay.style.display = 'none'; };
-    cancelBtn.onclick = () => overlay.style.display = 'none';
+    document.getElementById('confirm-ok').onclick = (e) => { e.stopPropagation(); onConfirm(); overlay.style.display = 'none'; };
+    document.getElementById('confirm-cancel').onclick = () => overlay.style.display = 'none';
 };
 
-// --- Goal Actions ---
+// --- Core Logic ---
 goalForm.onsubmit = async (e) => {
     e.preventDefault();
-    const title = document.getElementById('goal-title').value.trim();
-    const category = document.getElementById('goal-category').value.trim();
-    const tasksRaw = document.getElementById('goal-tasks').value;
-    const selectedDeadlineBtn = document.querySelector('.preset-btn.active');
+    const titleValue = document.getElementById('goal-title').value.trim();
+    const categoryValue = document.getElementById('goal-category').value.trim();
+    const tasksValue = document.getElementById('goal-tasks').value;
+    const deadlineBtn = document.querySelector('.preset-btn.active');
 
-    if (!title || !category) return alert('目標名とカテゴリーを入力してください。');
+    if (!titleValue || !categoryValue) return alert('入力内容が不足しています。');
 
-    if (!categories.includes(category)) {
-        categories.push(category);
-        updateCategoryDatalist();
-    }
+    if (!categories.includes(categoryValue)) { categories.push(categoryValue); updateCategoryDatalist(); }
 
-    const taskLines = tasksRaw.split('\n').filter(line => line.trim() !== '');
+    const taskLines = tasksValue.split('\n').filter(l => l.trim() !== '');
     let deadline = '未定';
-    // (Simplified deadline logic for brevity in refactor)
-    if (selectedDeadlineBtn) {
-        const val = selectedDeadlineBtn.dataset.value;
-        const now = new Date();
+    if (deadlineBtn) {
+        const val = deadlineBtn.dataset.value;
+        const dNow = new Date();
         if (val === 'this-week') {
-            const sunday = new Date(now.setDate(now.getDate() + (7 - now.getDay())));
+            const tempDate = new Date();
+            const sunday = new Date(tempDate.setDate(tempDate.getDate() + (7 - tempDate.getDay())));
             deadline = `${sunday.getFullYear()}.${sunday.getMonth() + 1}.${sunday.getDate()}`;
         } else if (val === 'this-month') {
-            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            const lastDay = new Date(dNow.getFullYear(), dNow.getMonth() + 1, 0);
             deadline = `${lastDay.getFullYear()}.${lastDay.getMonth() + 1}.${lastDay.getDate()}`;
         } else if (val === 'this-year') {
-            deadline = `${now.getFullYear()}.12.31`;
+            deadline = `${dNow.getFullYear()}.12.31`;
         } else if (val === 'custom' && dateInput.value) {
-            const d = new Date(dateInput.value);
-            deadline = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
+            const dInput = new Date(dateInput.value);
+            deadline = `${dInput.getFullYear()}.${dInput.getMonth() + 1}.${dInput.getDate()}`;
         }
     }
 
@@ -321,16 +290,20 @@ goalForm.onsubmit = async (e) => {
 
     const doneCount = updatedTasks.filter(t => t.done).length;
     const progress = updatedTasks.length > 0 ? Math.round((doneCount / updatedTasks.length) * 100) : 0;
-    const goalData = { title, category, deadline, tasks: updatedTasks, progress };
+    const goalData = { title: titleValue, category: categoryValue, deadline, tasks: updatedTasks, progress };
 
     if (editingGoalId) {
         const idx = goals.findIndex(g => String(g.id) === String(editingGoalId));
         goals[idx] = { ...goals[idx], ...goalData };
-        if (currentUser) await fb.setDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(editingGoalId)), goals[idx]);
+        if (currentUser) {
+            try { await fb.setDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(editingGoalId)), goals[idx]); } catch (err) { console.error("Cloud update failed", err); }
+        }
     } else {
         const newGoal = { id: Date.now(), ...goalData };
         goals.push(newGoal);
-        if (currentUser) await fb.setDoc(fb.doc(fb.collection(fb.db, 'users', currentUser.uid, 'goals'), String(newGoal.id)), newGoal);
+        if (currentUser) {
+            try { await fb.setDoc(fb.doc(fb.collection(fb.db, 'users', currentUser.uid, 'goals'), String(newGoal.id)), newGoal); } catch (err) { console.error("Cloud save failed", err); }
+        }
         logActivity();
     }
 
@@ -358,8 +331,10 @@ const toggleTask = async (goalId, taskId) => {
     }
 
     if (currentUser) {
-        const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(goalId));
-        await fb.updateDoc(gRef, { tasks: goal.tasks, progress: goal.progress });
+        try {
+            const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(goalId));
+            await fb.updateDoc(gRef, { tasks: goal.tasks, progress: goal.progress });
+        } catch (err) { console.error("Cloud toggle failed", err); }
     }
     saveGoals();
     renderGoals();
@@ -370,7 +345,9 @@ const toggleTask = async (goalId, taskId) => {
 const deleteGoal = async (id) => {
     showConfirm("目標の削除", "この目標を削除しますか？", async () => {
         goals = goals.filter(g => String(g.id) !== String(id));
-        if (currentUser) await fb.deleteDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(id)));
+        if (currentUser) {
+            try { await fb.deleteDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(id))); } catch (err) { console.error("Cloud delete failed", err); }
+        }
         saveGoals();
         renderGoals();
         updateDashboard();
@@ -381,32 +358,25 @@ const deleteGoal = async (id) => {
 const renderGoals = () => {
     goalsContainer.innerHTML = '';
     const filtered = goals.filter(g => currentView === 'completed' ? g.progress === 100 : g.progress < 100);
-
     if (filtered.length === 0) {
-        goalsContainer.innerHTML = `<div class="empty-state"><p>${currentView === 'completed' ? '達成された目標はありません。' : '目標を設定しましょう。'}</p></div>`;
+        goalsContainer.innerHTML = `<div class="empty-state"><p>${currentView === 'completed' ? '達成された目標はありません。' : '2026年の挑戦を始めましょう。'}</p></div>`;
         return;
     }
-
     const grouped = filtered.reduce((acc, g) => { (acc[g.category] = acc[g.category] || []).push(g); return acc; }, {});
     Object.entries(grouped).forEach(([cat, catGoals]) => {
         const stack = document.createElement('div');
         stack.className = 'category-stack';
-        stack.innerHTML = `
-            <div class="category-header"><div class="category-label">${cat}</div><div class="stack-count">${catGoals.length}</div></div>
+        stack.innerHTML = `<div class="category-header"><div class="category-label">${cat}</div><div class="stack-count">${catGoals.length}</div></div>
             <div class="stack-content">${catGoals.map(g => `
                 <div class="goal-card" onclick="openModal('${g.id}')">
-                    <div class="goal-header">
-                        <h4>${g.title}</h4>
-                        <button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal('${g.id}')">&times;</button>
-                    </div>
+                    <div class="goal-header"><h4>${g.title}</h4><button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal('${g.id}')">&times;</button></div>
                     <div class="progress-mini-bar"><div class="progress-fill" style="width: ${g.progress}%"></div></div>
                     <div class="task-mini-list">${(g.tasks || []).map(t => `
                         <div class="task-mini-item ${t.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask('${g.id}', '${t.id}')">
                             <div class="mini-checkbox"></div><span class="mini-task-text">${t.text}</span>
                         </div>`).join('')}
                     </div>
-                </div>`).join('')}
-            </div>`;
+                </div>`).join('')}</div>`;
         goalsContainer.appendChild(stack);
     });
 };
@@ -415,24 +385,26 @@ const updateDashboard = () => {
     const total = goals.length;
     const active = goals.filter(g => g.progress < 100).length;
     const achieved = goals.filter(g => g.progress === 100).length;
-    if (document.getElementById('stat-total')) document.getElementById('stat-total').innerText = total;
-    if (document.getElementById('stat-active')) document.getElementById('stat-active').innerText = active;
-    if (document.getElementById('stat-completed')) document.getElementById('stat-completed').innerText = achieved;
-
-    const momentumFlow = document.getElementById('momentum-flow');
-    if (momentumFlow) {
-        momentumFlow.innerHTML = '';
+    const sTotal = document.getElementById('stat-total');
+    if (sTotal) sTotal.innerText = total;
+    const sActive = document.getElementById('stat-active');
+    if (sActive) sActive.innerText = active;
+    const sDone = document.getElementById('stat-completed');
+    if (sDone) sDone.innerText = achieved;
+    const mFlow = document.getElementById('momentum-flow');
+    if (mFlow) {
+        mFlow.innerHTML = '';
         const dates = Array.from({ length: 7 }, (_, i) => {
             const d = new Date(); d.setDate(d.getDate() - (6 - i));
             return d.toISOString().split('T')[0];
         });
         const counts = dates.map(d => activityLog[d] || 0);
-        const max = Math.max(...counts, 1);
+        const mx = Math.max(...counts, 1);
         dates.forEach((d, i) => {
             const bar = document.createElement('div');
             bar.className = 'momentum-bar' + (i === 6 ? ' active' : '');
-            momentumFlow.appendChild(bar);
-            gsap.to(bar, { height: `${(counts[i] / max) * 100}%`, duration: 0.5, delay: i * 0.05 });
+            mFlow.appendChild(bar);
+            gsap.to(bar, { height: `${(counts[i] / mx) * 100}%`, duration: 0.5, delay: i * 0.05 });
         });
     }
 };
@@ -442,17 +414,12 @@ const updateCategoryDatalist = () => {
     if (categoryManagerList) {
         categoryManagerList.innerHTML = categories.map(c => `
             <div class="cat-chip" onclick="selectCategory('${c}')">
-                <span>${c}</span>
-                <span onclick="event.stopPropagation(); deleteCategoryPrompt(event, '${c}')">&times;</span>
+                <span>${c}</span><span onclick="event.stopPropagation(); deleteCategoryPrompt(event, '${c}')">&times;</span>
             </div>`).join('');
     }
 };
 
-const selectCategory = (cat) => {
-    const input = document.getElementById('goal-category');
-    if (input) { input.value = cat; input.focus(); }
-};
-
+const selectCategory = (cat) => { const input = document.getElementById('goal-category'); if (input) { input.value = cat; input.focus(); } };
 const deleteCategoryPrompt = (e, cat) => {
     showConfirm("カテゴリーの削除", `「${cat}」を削除しますか？`, () => {
         categories = categories.filter(c => c !== cat);
@@ -461,7 +428,7 @@ const deleteCategoryPrompt = (e, cat) => {
     });
 };
 
-// --- Exports to Window (for HTML onclick) ---
+// --- Exports ---
 window.switchTab = switchTab;
 window.openModal = openModal;
 window.closeModal = closeModal;
