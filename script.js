@@ -89,8 +89,8 @@ const saveGoals = async () => {
         try {
             const userDocRef = fb.doc(fb.db, 'users', currentUser.uid);
             await fb.setDoc(userDocRef, {
-                categories: categories,
-                activityLog: activityLog,
+                categories,
+                activityLog,
                 lastSync: fb.serverTimestamp()
             }, { merge: true });
         } catch (e) {
@@ -111,7 +111,7 @@ const handleLogin = async () => {
         await fb.signInWithPopup(fb.auth, fb.provider);
     } catch (error) {
         console.error("Login failed:", error);
-        alert("ログインに失敗しました: " + error.message);
+        alert("ログインに失敗しました。Firebase ConsoleでGoogle AuthとFirestoreを有効にしているか確認してください。");
     }
 };
 
@@ -156,11 +156,7 @@ const setupUserCloudData = async (uid) => {
                     await migrateToCloud(uid);
                 });
             } else {
-                await fb.setDoc(userDocRef, {
-                    categories: categories,
-                    activityLog: activityLog,
-                    lastSync: fb.serverTimestamp()
-                });
+                await fb.setDoc(userDocRef, { categories, activityLog, lastSync: fb.serverTimestamp() });
             }
         } else {
             const data = userDoc.data();
@@ -169,11 +165,15 @@ const setupUserCloudData = async (uid) => {
             const q = fb.query(fb.collection(fb.db, 'users', uid, 'goals'));
             const goalsSnapshot = await fb.getDocs(q);
             goals = goalsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+
+            // Resolve potential ID mismatch (Firestore doc.id vs inner .id)
+            goals.forEach(g => { if (!g.id) g.id = Date.now(); });
+
             renderGoals();
             updateDashboard();
         }
     } catch (e) {
-        console.error("Cloud sync failed:", e);
+        console.error("Initial Cloud load failed:", e);
     }
 };
 
@@ -244,8 +244,8 @@ const showConfirm = (title, message, onConfirm) => {
     document.getElementById('confirm-cancel').onclick = () => overlay.style.display = 'none';
 };
 
-// --- Core Logic ---
-goalForm.onsubmit = async (e) => {
+// --- Core Logic (Optimistic Updates) ---
+goalForm.onsubmit = (e) => {
     e.preventDefault();
     const titleValue = document.getElementById('goal-title').value.trim();
     const categoryValue = document.getElementById('goal-category').value.trim();
@@ -268,9 +268,8 @@ goalForm.onsubmit = async (e) => {
         } else if (val === 'this-month') {
             const lastDay = new Date(dNow.getFullYear(), dNow.getMonth() + 1, 0);
             deadline = `${lastDay.getFullYear()}.${lastDay.getMonth() + 1}.${lastDay.getDate()}`;
-        } else if (val === 'this-year') {
-            deadline = `${dNow.getFullYear()}.12.31`;
-        } else if (val === 'custom' && dateInput.value) {
+        } else if (val === 'this-year') { deadline = `${dNow.getFullYear()}.12.31`; }
+        else if (val === 'custom' && dateInput.value) {
             const dInput = new Date(dateInput.value);
             deadline = `${dInput.getFullYear()}.${dInput.getMonth() + 1}.${dInput.getDate()}`;
         }
@@ -296,13 +295,15 @@ goalForm.onsubmit = async (e) => {
         const idx = goals.findIndex(g => String(g.id) === String(editingGoalId));
         goals[idx] = { ...goals[idx], ...goalData };
         if (currentUser) {
-            try { await fb.setDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(editingGoalId)), goals[idx]); } catch (err) { console.error("Cloud update failed", err); }
+            fb.setDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(editingGoalId)), goals[idx])
+                .catch(err => console.error("Cloud update failed (API may be disabled):", err));
         }
     } else {
         const newGoal = { id: Date.now(), ...goalData };
         goals.push(newGoal);
         if (currentUser) {
-            try { await fb.setDoc(fb.doc(fb.collection(fb.db, 'users', currentUser.uid, 'goals'), String(newGoal.id)), newGoal); } catch (err) { console.error("Cloud save failed", err); }
+            fb.setDoc(fb.doc(fb.collection(fb.db, 'users', currentUser.uid, 'goals'), String(newGoal.id)), newGoal)
+                .catch(err => console.error("Cloud save failed (API may be disabled):", err));
         }
         logActivity();
     }
@@ -314,7 +315,7 @@ goalForm.onsubmit = async (e) => {
     if (!editingGoalId) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 };
 
-const toggleTask = async (goalId, taskId) => {
+const toggleTask = (goalId, taskId) => {
     const goal = goals.find(g => String(g.id) === String(goalId));
     if (!goal) return;
     const task = goal.tasks.find(t => String(t.id) === String(taskId));
@@ -331,10 +332,9 @@ const toggleTask = async (goalId, taskId) => {
     }
 
     if (currentUser) {
-        try {
-            const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(goalId));
-            await fb.updateDoc(gRef, { tasks: goal.tasks, progress: goal.progress });
-        } catch (err) { console.error("Cloud toggle failed", err); }
+        const gRef = fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(goalId));
+        fb.updateDoc(gRef, { tasks: goal.tasks, progress: goal.progress })
+            .catch(err => console.error("Cloud toggle failed:", err));
     }
     saveGoals();
     renderGoals();
@@ -342,11 +342,13 @@ const toggleTask = async (goalId, taskId) => {
     if (goal.progress === 100 && task.done) confetti({ particleCount: 50 });
 };
 
-const deleteGoal = async (id) => {
-    showConfirm("目標の削除", "この目標を削除しますか？", async () => {
-        goals = goals.filter(g => String(g.id) !== String(id));
+const deleteGoal = (id) => {
+    showConfirm("目標の削除", "この目標を削除しますか？", () => {
+        const goalIdStr = String(id);
+        goals = goals.filter(g => String(g.id) !== goalIdStr);
         if (currentUser) {
-            try { await fb.deleteDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', String(id))); } catch (err) { console.error("Cloud delete failed", err); }
+            fb.deleteDoc(fb.doc(fb.db, 'users', currentUser.uid, 'goals', goalIdStr))
+                .catch(err => console.error("Cloud delete failed:", err));
         }
         saveGoals();
         renderGoals();
@@ -385,12 +387,9 @@ const updateDashboard = () => {
     const total = goals.length;
     const active = goals.filter(g => g.progress < 100).length;
     const achieved = goals.filter(g => g.progress === 100).length;
-    const sTotal = document.getElementById('stat-total');
-    if (sTotal) sTotal.innerText = total;
-    const sActive = document.getElementById('stat-active');
-    if (sActive) sActive.innerText = active;
-    const sDone = document.getElementById('stat-completed');
-    if (sDone) sDone.innerText = achieved;
+    const sTotal = document.getElementById('stat-total'); if (sTotal) sTotal.innerText = total;
+    const sActive = document.getElementById('stat-active'); if (sActive) sActive.innerText = active;
+    const sDone = document.getElementById('stat-completed'); if (sDone) sDone.innerText = achieved;
     const mFlow = document.getElementById('momentum-flow');
     if (mFlow) {
         mFlow.innerHTML = '';
