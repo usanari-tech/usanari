@@ -7,6 +7,7 @@ let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・�
 let activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
 let editingGoalId = null;
 let currentUser = null;
+let isLoading = true;
 
 // --- DOM Elements ---
 const goalsContainer = document.getElementById('goals-container');
@@ -27,7 +28,7 @@ const categoryManagerList = document.getElementById('category-manager-list');
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.protocol === 'file:') {
-        alert("⚠️ ローカルファイル (file://) として開かれています。Firebase連携を動作させるにはサーバー経由で開く必要があります。");
+        setTimeout(() => showToast("ローカル環境で実行中です。クラウド同期にはサーバー起動が必要です。", "error"), 1000);
     }
     try {
         sanitizeData();
@@ -47,6 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modalOverlay) modalOverlay.onclick = (e) => { if (e.target === modalOverlay) closeModal(); };
         if (loginBtn) loginBtn.onclick = handleLogin;
         if (logoutBtn) logoutBtn.onclick = handleLogout;
+
+        // --- Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
 
         deadlinePresets.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -111,7 +121,7 @@ const handleLogin = async () => {
         await fb.signInWithPopup(fb.auth, fb.provider);
     } catch (error) {
         console.error("Login failed:", error);
-        alert("ログインに失敗しました。Firebase ConsoleでGoogle AuthとFirestoreを有効にしているか確認してください。");
+        showToast("ログインに失敗しました。接続状況を確認してみてくださいね。", "error");
     }
 };
 
@@ -130,7 +140,12 @@ fb.onAuthStateChanged(fb.auth, async (user) => {
         if (userProfile) userProfile.style.display = 'flex';
         if (userAvatar) userAvatar.src = user.photoURL || '';
         if (userNameEl) userNameEl.innerText = user.displayName || 'User';
+        isLoading = true;
+        renderGoals();
         await setupUserCloudData(user.uid);
+        isLoading = false;
+        renderGoals();
+        updateDashboard();
     } else {
         currentUser = null;
         if (loginBtn) loginBtn.style.display = 'flex';
@@ -139,6 +154,7 @@ fb.onAuthStateChanged(fb.auth, async (user) => {
         goals = JSON.parse(localStorage.getItem('goals')) || [];
         categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
         activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
+        isLoading = false;
         renderGoals();
         updateDashboard();
     }
@@ -253,7 +269,7 @@ goalForm.onsubmit = (e) => {
     const tasksValue = document.getElementById('goal-tasks').value;
     const deadlineBtn = document.querySelector('.preset-btn.active');
 
-    if (!titleValue || !categoryValue) return alert('入力内容が不足しています。');
+    if (!titleValue || !categoryValue) return showToast('目標の名前とカテゴリーを入力しましょう！', 'error');
 
     if (!categories.includes(categoryValue)) { categories.push(categoryValue); updateCategoryDatalist(); }
 
@@ -391,6 +407,10 @@ const deleteGoal = (id) => {
 // --- Rendering ---
 const renderGoals = () => {
     goalsContainer.innerHTML = '';
+    if (isLoading) {
+        goalsContainer.innerHTML = Array(3).fill('<div class="skeleton-card"></div>').join('');
+        return;
+    }
     const filtered = goals.filter(g => currentView === 'completed' ? g.progress === 100 : g.progress < 100);
     if (filtered.length === 0) {
         goalsContainer.innerHTML = `<div class="empty-state"><p>${currentView === 'completed' ? '達成された目標はありません。' : '2026年の挑戦を始めましょう。'}</p></div>`;
@@ -459,6 +479,20 @@ const deleteCategoryPrompt = (e, cat) => {
         saveGoals();
         updateCategoryDatalist();
     });
+};
+
+const showToast = (message, type = 'info') => {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerText = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
 };
 
 // --- Exports ---
