@@ -1,4 +1,4 @@
-const CACHE_NAME = 'goal-horizon-v2';
+const CACHE_NAME = 'goal-horizon-v3';
 const ASSETS = [
     './',
     './index.html',

@@ -1539,6 +1539,7 @@ main {
         font-size: 1.25rem;
     }
 }
+
 /* Toast Notifications */
 .toast-container {
     position: fixed;
@@ -1600,8 +1601,13 @@ main {
 }
 
 @keyframes skeleton-loading {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 /* Momentum Chart Styles */
@@ -1647,35 +1653,45 @@ main {
 /* --- Continuity Dashboard Enhancements --- */
 
 .vision-bridge {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     padding: 2rem;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
-    border: 1px solid rgba(68, 136, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    /* ダークな背景でコントラスト確保 */
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* 背景にうっすらとゴールドのグラデーションを配置（視認性を妨げない程度） */
+.vision-bridge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.1), transparent);
+    z-index: 0;
+    pointer-events: none;
 }
 
 .bridge-label {
-    font-size: 0.7rem;
-    font-weight: 800;
+    font-size: 0.75rem;
     letter-spacing: 0.2em;
-    color: var(--accent-blue);
-    margin-bottom: 0.8rem;
-    opacity: 0.8;
+    color: #f59e0b;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
 }
 
 .next-task-container {
-    max-width: 800px;
+    position: relative;
+    z-index: 1;
 }
 
 .next-task-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(to right, #fff, var(--accent-blue));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1766,7 +1782,21 @@ main {
     .next-task-title {
         font-size: 1.2rem;
     }
+
     .confidence-gallery {
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     }
+}
+
+/* --- タブに応じたダッシュボード要素の表示制御 --- */
+/* 目標（Active）ページ: Vision Bridgeのみ表示、他は隠す */
+body[data-view="active"] .momentum-card,
+body[data-view="active"] .gallery-card,
+body[data-view="active"] #mission-control {
+    display: none !important;
+}
+
+/* 達成（Completed）ページ: チャートとギャラリーを表示、Vision Bridgeを隠す */
+body[data-view="completed"] .vision-bridge {
+    display: none !important;
 }

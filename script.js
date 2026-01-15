@@ -214,10 +214,17 @@ const switchTab = (view) => {
     currentView = view;
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`tab-${view}`).classList.add('active');
-    const dbEls = document.querySelectorAll('.mission-control, .dashboard-section');
-    dbEls.forEach(el => el.style.display = 'block');
+
+    document.body.setAttribute('data-view', view);
+
+    const dashboard = document.getElementById('dashboard');
+    if (dashboard) dashboard.style.display = 'block';
+
+    const missionControl = document.getElementById('mission-control');
+    if (missionControl) missionControl.style.display = 'block';
+
     renderGoals();
-    drawMomentumChart();
+    updateDashboard();
 };
 
 const openModal = (goalId = null) => {
