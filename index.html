@@ -82,10 +82,29 @@
             <section id="dashboard" class="dashboard-section">
                 <!-- 1. Future: Vision Bridge -->
                 <div id="vision-bridge" class="vision-bridge glass-panel">
-                    <div class="bridge-label">NEXT STEP</div>
-                    <div id="next-task-container" class="next-task-container">
-                        <h2 id="next-task-title" class="next-task-title">2026年の挑戦をロード中...</h2>
-                        <p id="next-task-goal" class="next-task-goal">あなたの次の一歩を準備しています</p>
+                    <div class="bridge-header">
+                        <div class="bridge-label">NEXT STEP</div>
+                        <div id="next-task-deadline" class="bridge-deadline">ロード中...</div>
+                    </div>
+
+                    <div class="bridge-main">
+                        <div id="next-task-container" class="next-task-container">
+                            <h2 id="next-task-title" class="next-task-title">2026年の挑戦をロード中...</h2>
+                            <p id="next-task-goal" class="next-task-goal">あなたの次の一歩を準備しています</p>
+                        </div>
+
+                        <div class="bridge-progress-container">
+                            <div class="progress-label">Goal Progress</div>
+                            <div class="progress-bar-mini">
+                                <div id="bridge-progress-fill" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <div id="bridge-progress-text" class="progress-percentage">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="bridge-footer">
+                        <div class="ai-coach-icon">🧠</div>
+                        <div id="ai-bridge-message" class="ai-message">「素晴らしい一歩を、ここから始めましょう。」</div>
                     </div>
                 </div>
 

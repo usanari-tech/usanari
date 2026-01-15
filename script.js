@@ -477,12 +477,18 @@ const animateValue = (id, value) => {
 const updateVisionBridge = () => {
     const titleEl = document.getElementById('next-task-title');
     const goalEl = document.getElementById('next-task-goal');
+    const progressFill = document.getElementById('bridge-progress-fill');
+    const progressText = document.getElementById('bridge-progress-text');
+    const deadlineEl = document.getElementById('next-task-deadline');
+    const aiMessageEl = document.getElementById('ai-bridge-message');
+
     if (!titleEl || !goalEl) return;
 
     const activeGoals = goals.filter(g => g.progress < 100);
     if (activeGoals.length === 0) {
         titleEl.innerText = "すべての目標を達成しました！";
         goalEl.innerText = "新しい挑戦をセットして、さらなる高みへ。";
+        if (deadlineEl) deadlineEl.innerText = "";
         return;
     }
 
@@ -502,9 +508,35 @@ const updateVisionBridge = () => {
         titleEl.innerText = nextTask.text;
         goalEl.innerText = `Goal: ${targetGoal.title}`;
 
+        // Progress Update
+        if (progressFill) progressFill.style.width = `${targetGoal.progress}%`;
+        if (progressText) progressText.innerText = `${Math.round(targetGoal.progress)}%`;
+
+        // Deadline Calculation
+        if (deadlineEl && targetGoal.deadline) {
+            const now = new Date();
+            const end = new Date(targetGoal.deadline);
+            const diffTime = end - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            deadlineEl.innerText = diffDays > 0 ? `残り ${diffDays} 日` : "締切直前 / 経過";
+        }
+
+        // AI Messages
+        const messages = [
+            "この一歩が、大きな未来へ繋がっています。",
+            "順調なペースです。この調子で進めましょう！",
+            "今日はこれを終わらせて、自分を褒めてあげませんか？",
+            "着実な積み重ねが、あなたを目標に近づけています。",
+            "集中。今のあなたなら、軽々と越えられます。"
+        ];
+        if (aiMessageEl) {
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            aiMessageEl.innerText = `「${randomMsg}」`;
+        }
+
         // Entrance animation
-        gsap.set('#vision-bridge', { opacity: 0, scale: 0.95 });
-        gsap.to('#vision-bridge', { opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out' });
+        gsap.set('#vision-bridge', { opacity: 0, scale: 0.98, y: 10 });
+        gsap.to('#vision-bridge', { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: 'expo.out' });
     } else {
         titleEl.innerText = "今日もお疲れ様でした！";
         goalEl.innerText = "すべてのタスクが完了しています。ゆっくり休んでくださいね。";
