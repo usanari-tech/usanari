@@ -121,19 +121,22 @@
                     <!-- Action Momentum (Activity Chart) -->
                     <div class="analytics-card momentum-card glass-panel">
                         <div class="card-header">
-                            <h4>Action Momentum</h4>
+                            <div>
+                                <h4>推進力チャート</h4>
+                                <div id="momentum-status" class="momentum-status">データを分析中...</div>
+                            </div>
                             <div class="score-badge" id="momentum-score">0</div>
                         </div>
-                        <div id="momentum-flow" class="momentum-flow">
-                            <!-- Bars will be injected here -->
+                        <div class="chart-container">
+                            <canvas id="momentum-chart"></canvas>
                         </div>
                         <div class="momentum-footer">
                             <div class="stat-pill">
-                                <span class="label">7-Day Avg</span>
+                                <span class="label">週平均</span>
                                 <span class="value" id="stat-avg">0.0</span>
                             </div>
                             <div class="stat-pill">
-                                <span class="label">Best Day</span>
+                                <span class="label">最高記録</span>
                                 <span class="value" id="stat-max">0</span>
                             </div>
                         </div>
