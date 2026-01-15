@@ -35,12 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCategoryDatalist();
 
         const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
-        dashboardElements.forEach(el => el.style.display = 'none');
+        dashboardElements.forEach(el => el.style.display = 'block');
 
         renderGoals();
 
         setTimeout(() => {
             gsap.from('.glass-nav', { y: -20, opacity: 0, duration: 0.5, ease: 'power2.out' });
+            drawMomentumChart();
         }, 100);
 
         if (addGoalBtn) addGoalBtn.onclick = () => openModal();
@@ -214,13 +215,9 @@ const switchTab = (view) => {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`tab-${view}`).classList.add('active');
     const dbEls = document.querySelectorAll('.mission-control, .dashboard-section');
-    if (view === 'completed') {
-        dbEls.forEach(el => { el.style.display = 'block'; gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3 }); });
-        updateDashboard();
-    } else {
-        dbEls.forEach(el => el.style.display = 'none');
-    }
+    dbEls.forEach(el => el.style.display = 'block');
     renderGoals();
+    drawMomentumChart();
 };
 
 const openModal = (goalId = null) => {
