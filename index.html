@@ -78,6 +78,58 @@
         </nav>
 
         <main>
+            <!-- Dashboard / Analytics (Continuity Journey) -->
+            <section id="dashboard" class="dashboard-section">
+                <!-- 1. Future: Vision Bridge -->
+                <div id="vision-bridge" class="vision-bridge glass-panel">
+                    <div class="bridge-label">NEXT STEP</div>
+                    <div id="next-task-container" class="next-task-container">
+                        <h2 id="next-task-title" class="next-task-title">2026年の挑戦をロード中...</h2>
+                        <p id="next-task-goal" class="next-task-goal">あなたの次の一歩を準備しています</p>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <!-- 2. Present: Inertia Meter (Activity Chart) -->
+                    <div class="analytics-card momentum-card glass-panel">
+                        <div class="card-header">
+                            <div>
+                                <h4>推進力（今日に集中）</h4>
+                                <div id="momentum-status" class="momentum-status">データを分析中...</div>
+                            </div>
+                            <div class="score-badge" id="momentum-score">0</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="momentum-chart"></canvas>
+                        </div>
+                        <div class="momentum-footer">
+                            <div class="stat-pill">
+                                <span class="label">週平均</span>
+                                <span class="value" id="stat-avg">0.0</span>
+                            </div>
+                            <div class="stat-pill">
+                                <span class="label">最高記録</span>
+                                <span class="value" id="stat-max">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Past: Confidence Gallery -->
+                    <div class="analytics-card glass-panel gallery-card">
+                        <div class="card-header">
+                            <h4>達成の軌跡（自信の蓄積）</h4>
+                            <div class="achieved-count-badge">🏆 <span id="gallery-count">0</span></div>
+                        </div>
+                        <div id="confidence-gallery" class="confidence-gallery">
+                            <!-- Achieved goals will be injected here as trophy cards -->
+                            <div class="gallery-empty">
+                                <p>達成した目標がここに輝きます</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Mission Control: Energy & Stats -->
             <section id="mission-control" class="mission-control glass-panel">
                 <div class="control-header">
@@ -115,42 +167,6 @@
                 </div>
             </section>
 
-            <!-- Dashboard / Analytics -->
-            <section id="dashboard" class="dashboard-section">
-                <div class="analytics-grid">
-                    <!-- Action Momentum (Activity Chart) -->
-                    <div class="analytics-card momentum-card glass-panel">
-                        <div class="card-header">
-                            <div>
-                                <h4>推進力チャート</h4>
-                                <div id="momentum-status" class="momentum-status">データを分析中...</div>
-                            </div>
-                            <div class="score-badge" id="momentum-score">0</div>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="momentum-chart"></canvas>
-                        </div>
-                        <div class="momentum-footer">
-                            <div class="stat-pill">
-                                <span class="label">週平均</span>
-                                <span class="value" id="stat-avg">0.0</span>
-                            </div>
-                            <div class="stat-pill">
-                                <span class="label">最高記録</span>
-                                <span class="value" id="stat-max">0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Category Balance or empty slot for future -->
-                    <div class="analytics-card glass-panel">
-                        <h4>Category Balance</h4>
-                        <div id="cat-balance-container" class="cat-stats-container">
-                            <!-- Category progress bars will be injected here -->
-                        </div>
-                    </div>
-                </div>
-            </section>
             <div id="goals-container" class="goals-grid">
                 <!-- Goals will be injected here -->
                 <div class="empty-state">
@@ -219,7 +235,32 @@
     </div>
     <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
-    <script type="module" src="script.js"></script>
+    <!-- Fallback for Local File Access (CORS protection) -->
+    <script>
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                if (window.location.protocol === 'file:' && !window.goalsRendered) {
+                    const container = document.getElementById('toast-container');
+                    const warning = document.createElement('div');
+                    warning.className = 'toast error show';
+                    warning.innerHTML = '<strong>Security Alert:</strong> <br>ブラウザのセキュリティ制限により、ファイルを直接開くと一部機能が動作しません。<br><code>npx serve</code> 等のサーバー経由で開くか、GitHub等にアップロードしてご利用ください。';
+                    warning.style.position = 'fixed';
+                    warning.style.bottom = '20px';
+                    warning.style.left = '50%';
+                    warning.style.transform = 'translateX(-50%)';
+                    warning.style.zIndex = '9999';
+                    warning.style.width = '90%';
+                    warning.style.maxWidth = '500px';
+                    warning.style.textAlign = 'center';
+                    document.body.appendChild(warning);
+                }
+            }, 1500);
+        });
+    </script>
+    <script type="module">
+        import './script.js';
+        window.goalsRendered = true;
+    </script>
 </body>
 
 </html>

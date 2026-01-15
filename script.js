@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             gsap.from('.glass-nav', { y: -20, opacity: 0, duration: 0.5, ease: 'power2.out' });
-            drawMomentumChart();
+            updateDashboard(); // Ensure dashboard is updated on load
         }, 100);
 
         if (addGoalBtn) addGoalBtn.onclick = () => openModal();
@@ -439,11 +439,96 @@ const updateDashboard = () => {
     const active = goals.filter(g => g.progress < 100).length;
     const achieved = goals.filter(g => g.progress === 100).length;
 
-    document.getElementById('stat-total') && (document.getElementById('stat-total').innerText = total);
-    document.getElementById('stat-active') && (document.getElementById('stat-active').innerText = active);
-    document.getElementById('stat-completed') && (document.getElementById('stat-completed').innerText = achieved);
+    // Numerical stats with simple animation (performance first)
+    animateValue('stat-total', total);
+    animateValue('stat-active', active);
+    animateValue('stat-completed', achieved);
+    animateValue('gallery-count', achieved);
 
+    updateVisionBridge();
+    renderConfidenceGallery();
     drawMomentumChart();
+};
+
+const animateValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const start = parseInt(el.innerText) || 0;
+    if (start === value) return;
+
+    // Performance: Simple GSAP counter for numerical values
+    gsap.to({ val: start }, {
+        val: value,
+        duration: 0.8,
+        ease: 'power2.out',
+        onUpdate: function () {
+            el.innerText = Math.floor(this.targets()[0].val);
+        }
+    });
+};
+
+const updateVisionBridge = () => {
+    const titleEl = document.getElementById('next-task-title');
+    const goalEl = document.getElementById('next-task-goal');
+    if (!titleEl || !goalEl) return;
+
+    const activeGoals = goals.filter(g => g.progress < 100);
+    if (activeGoals.length === 0) {
+        titleEl.innerText = "すべての目標を達成しました！";
+        goalEl.innerText = "新しい挑戦をセットして、さらなる高みへ。";
+        return;
+    }
+
+    // Logic: Find the first incomplete task across any active goal (prioritize first active goal)
+    let nextTask = null;
+    let targetGoal = null;
+
+    for (const goal of activeGoals) {
+        nextTask = (goal.tasks || []).find(t => !t.done);
+        if (nextTask) {
+            targetGoal = goal;
+            break;
+        }
+    }
+
+    if (nextTask && targetGoal) {
+        titleEl.innerText = nextTask.text;
+        goalEl.innerText = `Goal: ${targetGoal.title}`;
+
+        // Entrance animation
+        gsap.set('#vision-bridge', { opacity: 0, scale: 0.95 });
+        gsap.to('#vision-bridge', { opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out' });
+    } else {
+        titleEl.innerText = "今日もお疲れ様でした！";
+        goalEl.innerText = "すべてのタスクが完了しています。ゆっくり休んでくださいね。";
+    }
+};
+
+const renderConfidenceGallery = () => {
+    const gallery = document.getElementById('confidence-gallery');
+    if (!gallery) return;
+
+    const achievedGoals = goals.filter(g => g.progress === 100);
+    if (achievedGoals.length === 0) {
+        gallery.innerHTML = '<div class="gallery-empty"><p>達成した目標がここに輝きます</p></div>';
+        return;
+    }
+
+    // Performance: Use DocumentFragment for bulk DOM injection
+    const fragment = document.createDocumentFragment();
+    achievedGoals.forEach(g => {
+        const card = document.createElement('div');
+        card.className = 'trophy-card';
+        card.onclick = () => openModal(g.id);
+        card.innerHTML = `
+            <span class="trophy-icon">🏆</span>
+            <span class="trophy-title">${g.title}</span>
+        `;
+        fragment.appendChild(card);
+    });
+
+    gallery.innerHTML = '';
+    gallery.appendChild(fragment);
 };
 
 const drawMomentumChart = () => {
