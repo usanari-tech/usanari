@@ -10,6 +10,8 @@
     --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --btn-primary-bg: #1e293b;
     --btn-primary-hover: #334155;
+    --premium-gold: linear-gradient(135deg, #f59e0b, #d97706);
+    --premium-glow: 0 0 15px rgba(245, 158, 11, 0.3);
 }
 
 * {
@@ -229,6 +231,8 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-feature-settings: "ss01", "ss02";
+    text-transform: uppercase;
 }
 
 .logo-subtitle {
@@ -363,6 +367,18 @@ body {
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-primary);
+}
+
+.premium-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    background: var(--premium-gold);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    box-shadow: var(--premium-glow);
+    margin-left: 4px;
 }
 
 .btn-icon {
@@ -918,7 +934,11 @@ main {
 
 .stack-content {
     position: relative;
-    padding-top: 0;
+    padding-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    /* Direct gap ensure cards NEVER touch */
 }
 
 .goal-card-wrapper {
@@ -967,17 +987,23 @@ main {
 
 /* Single Goal Card */
 .goal-card {
-    background: var(--bg-card);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    padding: 1.25rem 1.75rem;
+    border-radius: 1.2rem;
+    padding: 1.5rem;
     box-shadow: var(--card-shadow);
-    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .goal-card:hover {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.75);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     border-color: var(--accent-blue);
 }
 
@@ -1023,35 +1049,42 @@ main {
     margin-top: 1.5rem;
 }
 
+/* Removing duplicate card block to avoid specificity confusion */
+
 .goal-card:hover {
     background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
 }
 
 .goal-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     gap: 1rem;
 }
 
 .btn-delete-goal {
-    background: transparent;
-    border: none;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     color: var(--text-muted);
     font-size: 1.2rem;
     line-height: 1;
     cursor: pointer;
-    padding: 0.2rem;
-    border-radius: 4px;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
     transition: all 0.2s;
-    opacity: 0.5;
+    opacity: 0.6;
+    flex-shrink: 0;
 }
 
 .btn-delete-goal:hover {
     color: #ef4444;
     background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
     opacity: 1;
+    transform: scale(1.1);
 }
 
 .goal-card h4 {

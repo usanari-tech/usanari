@@ -192,6 +192,7 @@ const migrateToCloud = async (uid) => {
 
 // --- UI Actions ---
 const switchTab = (view) => {
+    closeModal();
     if (currentView === view) return;
     currentView = view;
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -339,7 +340,38 @@ const toggleTask = (goalId, taskId) => {
     saveGoals();
     renderGoals();
     updateDashboard();
-    if (goal.progress === 100 && task.done) confetti({ particleCount: 50 });
+    if (goal.progress === 100 && task.done) {
+        // Standard Confetti
+        confetti({ particleCount: 50 });
+
+        // Premium Achievement Placeholder (Future: Trigger if user is Premium)
+        if (currentUser && currentUser.isPremium) {
+            triggerPremiumAchievement();
+        }
+    }
+};
+
+const triggerPremiumAchievement = () => {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        // since particles fall down, start a bit higher than random
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+    }, 250);
 };
 
 const deleteGoal = (id) => {
@@ -370,13 +402,15 @@ const renderGoals = () => {
         stack.className = 'category-stack';
         stack.innerHTML = `<div class="category-header"><div class="category-label">${cat}</div><div class="stack-count">${catGoals.length}</div></div>
             <div class="stack-content">${catGoals.map(g => `
-                <div class="goal-card" onclick="openModal('${g.id}')">
-                    <div class="goal-header"><h4>${g.title}</h4><button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal('${g.id}')">&times;</button></div>
-                    <div class="progress-mini-bar"><div class="progress-fill" style="width: ${g.progress}%"></div></div>
-                    <div class="task-mini-list">${(g.tasks || []).map(t => `
-                        <div class="task-mini-item ${t.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask('${g.id}', '${t.id}')">
-                            <div class="mini-checkbox"></div><span class="mini-task-text">${t.text}</span>
-                        </div>`).join('')}
+                <div class="goal-card-wrapper">
+                    <div class="goal-card" onclick="openModal('${g.id}')">
+                        <div class="goal-header"><h4>${g.title}</h4><button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal('${g.id}')">&times;</button></div>
+                        <div class="progress-mini-bar"><div class="progress-fill" style="width: ${g.progress}%"></div></div>
+                        <div class="task-mini-list" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">${(g.tasks || []).map(t => `
+                            <div class="task-mini-item ${t.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask('${g.id}', '${t.id}')" style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0;">
+                                <div class="mini-checkbox"></div><span class="mini-task-text" style="font-size: 0.85rem; line-height: 1.4;">${t.text}</span>
+                            </div>`).join('')}
+                        </div>
                     </div>
                 </div>`).join('')}</div>`;
         goalsContainer.appendChild(stack);
