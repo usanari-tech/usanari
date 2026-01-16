@@ -42,23 +42,7 @@ body {
     padding-bottom: 5rem;
 }
 
-/* Background Visuals - DISABLED for stability */
-.bg-glow,
-.fluid-bg {
-    display: none !important;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1) translate(0, 0);
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: scale(1.1) translate(2%, 2%);
-        opacity: 0.8;
-    }
-}
+/* Background Visuals - Removed for Cleanup */
 
 /* Dark Mode Overrides */
 @media (prefers-color-scheme: dark) {
@@ -476,7 +460,6 @@ main {
 /* Mission Control & Analytics */
 .mission-control,
 .dashboard-section {
-    display: none;
     margin-bottom: 2rem;
 }
 
@@ -1864,4 +1847,70 @@ body[data-view="active"] #mission-control {
 /* 達成（Completed）ページ: チャートとギャラリーを表示、Vision Bridgeを隠す */
 body[data-view="completed"] .vision-bridge {
     display: none !important;
+}
+
+/* --- Goals Sorting & Validation Styles --- */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.section-header h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sort-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.btn-sort {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-sort:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.btn-sort.active {
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.form-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    text-align: center;
+}
+
+.form-error.hidden {
+    display: none;
 }

@@ -24,9 +24,7 @@
 
 <body data-view="active">
     <div class="app-container">
-        <!-- Background Elements -->
-        <div class="bg-glow"></div>
-        <div class="fluid-bg" id="fluid-bg"></div>
+        <!-- Background Elements Removed for Cleanup -->
 
         <nav class="glass-nav">
             <div class="nav-content">
@@ -185,8 +183,16 @@
                     </div>
                 </div>
             </section>
-
-            <div id="goals-container" class="goals-grid">
+            <!-- Goals Section -->
+            <div class="section-header">
+                <h3>Your Goals</h3>
+                <div class="sort-controls">
+                    <span class="sort-label">並び替え:</span>
+                    <button class="btn-sort active" id="sort-deadline" onclick="setSort('deadline')">締切順</button>
+                    <button class="btn-sort" id="sort-progress" onclick="setSort('progress')">進捗順</button>
+                </div>
+            </div>
+            <div id="goals-container" class="goals-container">
                 <!-- Goals will be injected here -->
                 <div class="empty-state">
                     <p>まだ目標がありません。＋ボタンから追加してください。</p>
@@ -235,7 +241,8 @@
                         <input type="date" id="goal-deadline" class="hidden-date">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="btn-submit" class="btn-submit">登録</button>
+                        <div id="form-error" class="form-error hidden"></div>
+                        <button type="submit" form="goal-form" id="submit-goal" class="btn-primary">保存する</button>
                     </div>
                 </form>
             </div>

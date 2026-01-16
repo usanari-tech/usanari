@@ -1,4 +1,5 @@
 import * as fb from './firebase-config.js';
+import { drawMomentumChart } from './charts.js';
 
 // --- State Management ---
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
@@ -262,19 +263,58 @@ const showConfirm = (title, message, onConfirm) => {
     document.getElementById('confirm-cancel').onclick = () => overlay.style.display = 'none';
 };
 
+// --- Sorting Logic ---
+let sortBy = 'deadline'; // default
+
+const setSort = (type) => {
+    sortBy = type;
+    document.querySelectorAll('.btn-sort').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`sort-${type}`).classList.add('active');
+    renderGoals();
+};
+
+const sortGoals = (goalsArray) => {
+    return [...goalsArray].sort((a, b) => {
+        if (sortBy === 'deadline') {
+            if (a.deadline === '未定') return 1;
+            if (b.deadline === '未定') return -1;
+            return new Date(a.deadline.replace(/\./g, '/')) - new Date(b.deadline.replace(/\./g, '/'));
+        } else if (sortBy === 'progress') {
+            return b.progress - a.progress;
+        }
+        return 0;
+    });
+};
+
 // --- Core Logic (Optimistic Updates) ---
 goalForm.onsubmit = (e) => {
     e.preventDefault();
+    const errorEl = document.getElementById('form-error');
+    errorEl.classList.add('hidden');
+
     const titleValue = document.getElementById('goal-title').value.trim();
     const categoryValue = document.getElementById('goal-category').value.trim();
     const tasksValue = document.getElementById('goal-tasks').value;
     const deadlineBtn = document.querySelector('.preset-btn.active');
 
-    if (!titleValue || !categoryValue) return showToast('目標の名前とカテゴリーを入力しましょう！', 'error');
-
-    if (!categories.includes(categoryValue)) { categories.push(categoryValue); updateCategoryDatalist(); }
+    // Validation
+    if (!titleValue) {
+        errorEl.innerText = '目標の名前を入力してください。';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    if (!categoryValue) {
+        errorEl.innerText = 'カテゴリーを選択または入力してください。';
+        errorEl.classList.remove('hidden');
+        return;
+    }
 
     const taskLines = tasksValue.split('\n').filter(l => l.trim() !== '');
+    if (taskLines.length === 0) {
+        errorEl.innerText = '少なくとも1つのタスクを入力してください。';
+        errorEl.classList.remove('hidden');
+        return;
+    }
     let deadline = '未定';
     if (deadlineBtn) {
         const val = deadlineBtn.dataset.value;
@@ -412,12 +452,15 @@ const renderGoals = () => {
         goalsContainer.innerHTML = Array(3).fill('<div class="skeleton-card"></div>').join('');
         return;
     }
-    const filtered = goals.filter(g => currentView === 'completed' ? g.progress === 100 : g.progress < 100);
-    if (filtered.length === 0) {
-        goalsContainer.innerHTML = `<div class="empty-state"><p>${currentView === 'completed' ? '達成された目標はありません。' : '2026年の挑戦を始めましょう。'}</p></div>`;
+    const filtered = goals.filter(g => currentView === 'active' ? g.progress < 100 : g.progress === 100);
+    const sorted = sortGoals(filtered);
+
+    if (sorted.length === 0) {
+        goalsContainer.innerHTML = `<div class="empty-state"><p>${currentView === 'active' ? 'まだ目標がありません。＋ボタンから追加してください。' : '達成した目標はまだありません。最初の一歩を踏み出しましょう！'}</p></div>`;
         return;
     }
-    const grouped = filtered.reduce((acc, g) => { (acc[g.category] = acc[g.category] || []).push(g); return acc; }, {});
+
+    const grouped = sorted.reduce((acc, g) => { (acc[g.category] = acc[g.category] || []).push(g); return acc; }, {});
     Object.entries(grouped).forEach(([cat, catGoals]) => {
         const stack = document.createElement('div');
         stack.className = 'category-stack';
@@ -451,207 +494,7 @@ const updateDashboard = () => {
 
     updateVisionBridge();
     renderConfidenceGallery();
-    drawMomentumChart();
-};
-
-const animateValue = (id, value) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const start = parseInt(el.innerText) || 0;
-    if (start === value) return;
-
-    // Performance: Simple GSAP counter for numerical values
-    gsap.to({ val: start }, {
-        val: value,
-        duration: 0.8,
-        ease: 'power2.out',
-        onUpdate: function () {
-            el.innerText = Math.floor(this.targets()[0].val);
-        }
-    });
-};
-
-const updateVisionBridge = () => {
-    const titleEl = document.getElementById('next-task-title');
-    const goalEl = document.getElementById('next-task-goal');
-    const progressFill = document.getElementById('bridge-progress-fill');
-    const progressText = document.getElementById('bridge-progress-text');
-    const deadlineEl = document.getElementById('next-task-deadline');
-    const aiMessageEl = document.getElementById('ai-bridge-message');
-
-    if (!titleEl || !goalEl) return;
-
-    const activeGoals = goals.filter(g => g.progress < 100);
-    if (activeGoals.length === 0) {
-        titleEl.innerText = "すべての目標を達成しました！";
-        goalEl.innerText = "新しい挑戦をセットして、さらなる高みへ。";
-        if (deadlineEl) deadlineEl.innerText = "";
-        return;
-    }
-
-    // Logic: Find the first incomplete task across any active goal (prioritize first active goal)
-    let nextTask = null;
-    let targetGoal = null;
-
-    for (const goal of activeGoals) {
-        nextTask = (goal.tasks || []).find(t => !t.done);
-        if (nextTask) {
-            targetGoal = goal;
-            break;
-        }
-    }
-
-    if (nextTask && targetGoal) {
-        titleEl.innerText = nextTask.text;
-        goalEl.innerText = `Goal: ${targetGoal.title}`;
-
-        // Progress Update
-        if (progressFill) progressFill.style.width = `${targetGoal.progress}%`;
-        if (progressText) progressText.innerText = `${Math.round(targetGoal.progress)}%`;
-
-        // Deadline Calculation
-        if (deadlineEl && targetGoal.deadline) {
-            const now = new Date();
-            const end = new Date(targetGoal.deadline);
-            const diffTime = end - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            deadlineEl.innerText = diffDays > 0 ? `残り ${diffDays} 日` : "締切直前 / 経過";
-        }
-
-        // AI Messages
-        const messages = [
-            "この一歩が、大きな未来へ繋がっています。",
-            "順調なペースです。この調子で進めましょう！",
-            "今日はこれを終わらせて、自分を褒めてあげませんか？",
-            "着実な積み重ねが、あなたを目標に近づけています。",
-            "集中。今のあなたなら、軽々と越えられます。"
-        ];
-        if (aiMessageEl) {
-            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-            aiMessageEl.innerText = `「${randomMsg}」`;
-        }
-
-        // Entrance animation
-        gsap.set('#vision-bridge', { opacity: 0, scale: 0.98, y: 10 });
-        gsap.to('#vision-bridge', { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: 'expo.out' });
-    } else {
-        titleEl.innerText = "今日もお疲れ様でした！";
-        goalEl.innerText = "すべてのタスクが完了しています。ゆっくり休んでくださいね。";
-    }
-};
-
-const renderConfidenceGallery = () => {
-    const gallery = document.getElementById('confidence-gallery');
-    if (!gallery) return;
-
-    const achievedGoals = goals.filter(g => g.progress === 100);
-    if (achievedGoals.length === 0) {
-        gallery.innerHTML = '<div class="gallery-empty"><p>達成した目標がここに輝きます</p></div>';
-        return;
-    }
-
-    // Performance: Use DocumentFragment for bulk DOM injection
-    const fragment = document.createDocumentFragment();
-    achievedGoals.forEach(g => {
-        const card = document.createElement('div');
-        card.className = 'trophy-card';
-        card.onclick = () => openModal(g.id);
-        card.innerHTML = `
-            <span class="trophy-icon">🏆</span>
-            <span class="trophy-title">${g.title}</span>
-        `;
-        fragment.appendChild(card);
-    });
-
-    gallery.innerHTML = '';
-    gallery.appendChild(fragment);
-};
-
-const drawMomentumChart = () => {
-    const canvas = document.getElementById('momentum-chart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const container = canvas.parentElement;
-
-    // Resize canvas to match display size
-    canvas.width = container.clientWidth * window.devicePixelRatio;
-    canvas.height = container.clientHeight * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    const dates = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date(); d.setDate(d.getDate() - (6 - i));
-        return d.toISOString().split('T')[0];
-    });
-    const counts = dates.map(d => activityLog[d] || 0);
-    const maxCount = Math.max(...counts, 1);
-    const avgCount = (counts.reduce((a, b) => a + b, 0) / 7).toFixed(1);
-
-    // Update Text Stats
-    document.getElementById('stat-avg') && (document.getElementById('stat-avg').innerText = avgCount);
-    document.getElementById('stat-max') && (document.getElementById('stat-max').innerText = maxCount);
-    document.getElementById('momentum-score') && (document.getElementById('momentum-score').innerText = Math.round(avgCount * 10));
-
-    const statusEl = document.getElementById('momentum-status');
-    if (statusEl) {
-        if (avgCount > 3) statusEl.innerText = "🌪️ 圧倒的な推進力";
-        else if (avgCount > 1) statusEl.innerText = "🔥 燃え上がる勢い";
-        else if (avgCount > 0) statusEl.innerText = "✨ 着実な一歩";
-        else statusEl.innerText = "🌱 準備期間";
-    }
-
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    const padding = 20;
-    const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 2;
-
-    ctx.clearRect(0, 0, width, height);
-
-    // Create Gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, 'rgba(245, 158, 11, 0.4)'); // Noble Gold
-    gradient.addColorStop(1, 'rgba(245, 158, 11, 0)');
-
-    // Draw Area
-    ctx.beginPath();
-    ctx.moveTo(padding, height - padding);
-
-    counts.forEach((count, i) => {
-        const x = padding + (i * (chartWidth / (counts.length - 1)));
-        const y = padding + (chartHeight - (count / maxCount) * chartHeight);
-        ctx.lineTo(x, y);
-    });
-
-    ctx.lineTo(width - padding, height - padding);
-    ctx.closePath();
-    ctx.fillStyle = gradient;
-    ctx.fill();
-
-    // Draw Line
-    ctx.beginPath();
-    counts.forEach((count, i) => {
-        const x = padding + (i * (chartWidth / (counts.length - 1)));
-        const y = padding + (chartHeight - (count / maxCount) * chartHeight);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 3;
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-
-    // Draw Points
-    counts.forEach((count, i) => {
-        const x = padding + (i * (chartWidth / (counts.length - 1)));
-        const y = padding + (chartHeight - (count / maxCount) * chartHeight);
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    });
+    drawMomentumChart(activityLog);
 };
 
 const updateCategoryDatalist = () => {
