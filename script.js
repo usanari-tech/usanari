@@ -34,9 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sanitizeData();
         updateCategoryDatalist();
 
-        const dashboardElements = document.querySelectorAll('.mission-control, .dashboard-section');
-        dashboardElements.forEach(el => el.style.display = 'block');
-
         renderGoals();
 
         setTimeout(() => {
