@@ -16,17 +16,18 @@ export async function generateStaticParams() {
     ];
 }
 
-export default function CategoryPage({
+export default async function CategoryPage({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
+    const { slug } = await params;
     // If slug is 'all' or 'collection', return all items, otherwise filter
     // For now, we only have a few items, so mapping logic is simple
-    const categoryName = params.slug.toUpperCase();
-    const displayItems = params.slug === 'all' || params.slug === 'collection'
+    const categoryName = slug.toUpperCase();
+    const displayItems = slug === 'all' || slug === 'collection'
         ? items
-        : getItemsByCategory(params.slug);
+        : getItemsByCategory(slug);
 
     // If no items found (e.g. empty category), just show all for demo
     const finalItems = displayItems.length > 0 ? displayItems : items;

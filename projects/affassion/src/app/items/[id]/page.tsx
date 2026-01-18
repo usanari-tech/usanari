@@ -8,12 +8,13 @@ export async function generateStaticParams() {
     }));
 }
 
-export default function ItemDetail({
+export default async function ItemDetail({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
-    const item = getItemById(params.id);
+    const { id } = await params;
+    const item = getItemById(id);
 
     if (!item) {
         // Fallback for safety, though generateStaticParams covers it
