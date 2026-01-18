@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 0
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -26,5 +28,6 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOAL_HORIZON_2026 }}'
           channelId: live
           projectId: goal-horizon-2026
+          target: affassion
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
