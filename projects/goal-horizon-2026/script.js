@@ -2,7 +2,8 @@ import * as fb from './firebase-config.js';
 import { drawMomentumChart } from './charts.js';
 
 // --- State Management ---
-// Last updated: 2026-01-18 17:10 (forced redeploy)
+// Last updated: 2026-01-18 17:15 (debug logs added)
+console.log('DEBUG: script.js initialized');
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
 let currentView = 'active'; // 'active' or 'completed'
 let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
@@ -589,3 +590,4 @@ window.deleteGoal = deleteGoal;
 window.setSort = setSort;
 window.selectCategory = selectCategory;
 window.deleteCategoryPrompt = deleteCategoryPrompt;
+console.log('DEBUG: script.js reached the end');
