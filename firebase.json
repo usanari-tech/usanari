@@ -1,0 +1,13 @@
+{
+  "hosting": [
+    {
+      "target": "goal-horizon",
+      "public": "projects/goal-horizon-2026",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    }
+  ]
+}

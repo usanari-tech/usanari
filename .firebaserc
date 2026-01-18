@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "goal-horizon-2026"
+  },
+  "targets": {
+    "goal-horizon-2026": {
+      "hosting": {
+        "goal-horizon": [
+          "goal-horizon-2026"
+        ]
+      }
+    }
+  }
+}
