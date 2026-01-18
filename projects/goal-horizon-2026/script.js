@@ -228,7 +228,7 @@ const switchTab = (view) => {
 const openModal = (goalId = null) => {
     editingGoalId = goalId;
     const modalTitle = document.getElementById('modal-title');
-    const submitBtn = document.getElementById('btn-submit');
+    const submitBtn = document.getElementById('submit-goal');
     const tasksInput = document.getElementById('goal-tasks');
     const categoryInput = document.getElementById('goal-category');
     const titleInput = document.getElementById('goal-title');
@@ -481,20 +481,97 @@ const renderGoals = () => {
     });
 };
 
-const updateDashboard = () => {
-    const total = goals.length;
-    const active = goals.filter(g => g.progress < 100).length;
-    const achieved = goals.filter(g => g.progress === 100).length;
+// Numerical stats with simple animation
+animateValue('stat-total', total);
+animateValue('stat-active', active);
+animateValue('stat-completed', achieved);
+animateValue('gallery-count', achieved);
 
-    // Numerical stats with simple animation (performance first)
-    animateValue('stat-total', total);
-    animateValue('stat-active', active);
-    animateValue('stat-completed', achieved);
-    animateValue('gallery-count', achieved);
+updateVisionBridge();
+renderConfidenceGallery();
+drawMomentumChart(activityLog);
+};
 
-    updateVisionBridge();
-    renderConfidenceGallery();
-    drawMomentumChart(activityLog);
+const animateValue = (id, endValue) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const startValue = parseInt(el.innerText) || 0;
+    const obj = { val: startValue };
+    gsap.to(obj, {
+        val: endValue,
+        duration: 0.8,
+        ease: "power2.out",
+        onUpdate: () => {
+            el.innerText = Math.round(obj.val);
+        }
+    });
+};
+
+const updateVisionBridge = () => {
+    const bridgeTitle = document.getElementById('next-task-title');
+    const bridgeGoal = document.getElementById('next-task-goal');
+    const bridgeDeadline = document.getElementById('next-task-deadline');
+    const bridgeProgressFill = document.getElementById('bridge-progress-fill');
+    const bridgeProgressText = document.getElementById('bridge-progress-text');
+    const aiMessage = document.getElementById('ai-bridge-message');
+
+    if (!bridgeTitle) return;
+
+    const activeGoals = goals.filter(g => g.progress < 100);
+    if (activeGoals.length === 0) {
+        bridgeTitle.innerText = "すべての目標を達成しました！";
+        bridgeGoal.innerText = "新しい挑戦を始めましょう。";
+        bridgeDeadline.innerText = "Legendary Status";
+        bridgeProgressFill.style.width = '100%';
+        bridgeProgressText.innerText = '100%';
+        aiMessage.innerText = "「究極の達成。あなたは今、最高の景色を見ています。」";
+        return;
+    }
+
+    // Pick a goal (prioritize nearest deadline or lowest progress)
+    const sorted = [...activeGoals].sort((a, b) => {
+        if (a.deadline === '未定') return 1;
+        if (b.deadline === '未定') return -1;
+        return new Date(a.deadline.replace(/\./g, '/')) - new Date(b.deadline.replace(/\./g, '/')) || a.progress - b.progress;
+    });
+
+    const nextGoal = sorted[0];
+    const nextTask = nextGoal.tasks.find(t => !t.done) || nextGoal.tasks[0];
+
+    bridgeTitle.innerText = nextTask.text;
+    bridgeGoal.innerText = `Goal: ${nextGoal.title}`;
+    bridgeDeadline.innerText = nextGoal.deadline === '未定' ? 'No Deadline' : `Due: ${nextGoal.deadline}`;
+    bridgeProgressFill.style.width = `${nextGoal.progress}%`;
+    bridgeProgressText.innerText = `${nextGoal.progress}%`;
+
+    const messages = [
+        "「一歩ずつ、確実に。あなたは進んでいます。」",
+        "「このタスクが、未来のあなたを作ります。」",
+        "「集中。今の自分を超えていきましょう。」",
+        "「リズムに乗ってきましたね。その調子です！」"
+    ];
+    aiMessage.innerText = messages[Math.floor(Math.random() * messages.length)];
+};
+
+const renderConfidenceGallery = () => {
+    const gallery = document.getElementById('confidence-gallery');
+    if (!gallery) return;
+
+    const completed = goals.filter(g => g.progress === 100);
+    if (completed.length === 0) {
+        gallery.innerHTML = '<div class="gallery-empty"><p>達成した目標がここに輝きます</p></div>';
+        return;
+    }
+
+    gallery.innerHTML = completed.map(g => `
+        <div class="trophy-card glass">
+            <div class="trophy-icon">🏆</div>
+            <div class="trophy-info">
+                <div class="trophy-title">${g.title}</div>
+                <div class="trophy-date">${g.category}</div>
+            </div>
+        </div>
+    `).join('');
 };
 
 const updateCategoryDatalist = () => {
