@@ -480,16 +480,20 @@ const renderGoals = () => {
         goalsContainer.appendChild(stack);
     });
 };
+const updateDashboard = () => {
+    const total = goals.length;
+    const active = goals.filter(g => g.progress < 100).length;
+    const achieved = goals.filter(g => g.progress === 100).length;
 
-// Numerical stats with simple animation
-animateValue('stat-total', total);
-animateValue('stat-active', active);
-animateValue('stat-completed', achieved);
-animateValue('gallery-count', achieved);
+    // Numerical stats with simple animation
+    animateValue('stat-total', total);
+    animateValue('stat-active', active);
+    animateValue('stat-completed', achieved);
+    animateValue('gallery-count', achieved);
 
-updateVisionBridge();
-renderConfidenceGallery();
-drawMomentumChart(activityLog);
+    updateVisionBridge();
+    renderConfidenceGallery();
+    drawMomentumChart(activityLog);
 };
 
 const animateValue = (id, endValue) => {
