@@ -17,6 +17,15 @@
         "**/.*",
         "**/node_modules/**"
       ]
+    },
+    {
+      "target": "affassion",
+      "public": "projects/affassion/out",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     }
   ]
 }

@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #2c5e68;
+  --color-accent-gold: #B89C6F;
+  --color-background-light: #f5f2ef;
+  --color-background-dark: #1a1a1a;
+  --color-card-white: #ffffff;
+
+  --font-display: var(--font-noto-serif);
+  --font-sans: var(--font-manrope);
+}
+
+@layer utilities {
+  .serif-text {
+    font-family: var(--font-display);
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

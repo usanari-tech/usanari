@@ -10,6 +10,9 @@
         ],
         "clock": [
           "usanari-clock"
+        ],
+        "affassion": [
+          "usanari-affassion"
         ]
       }
     }
