@@ -9,6 +9,7 @@ let activityLog = JSON.parse(localStorage.getItem('activityLog')) || {};
 let editingGoalId = null;
 let currentUser = null;
 let isLoading = true;
+let sortBy = 'deadline'; // default sorting
 
 // --- DOM Elements ---
 const goalsContainer = document.getElementById('goals-container');
@@ -43,7 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
             updateDashboard();
         }, 100);
 
-        if (addGoalBtn) addGoalBtn.onclick = () => openModal();
+        // UI Event Handlers
+        if (addGoalBtn) {
+            addGoalBtn.onclick = (e) => {
+                e.preventDefault();
+                openModal();
+            };
+        }
         if (closeModalBtn) closeModalBtn.onclick = closeModal;
         if (modalOverlay) modalOverlay.onclick = (e) => { if (e.target === modalOverlay) closeModal(); };
         if (loginBtn) loginBtn.onclick = handleLogin;
@@ -264,6 +271,57 @@ const showConfirm = (title, message, onConfirm) => {
     if (cancelBtn) cancelBtn.onclick = () => { if (overlay) overlay.style.display = 'none'; };
 };
 
+// --- Sorting Logic ---
+const setSort = (type) => {
+    sortBy = type;
+    document.querySelectorAll('.btn-sort').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`sort-${type}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    renderGoals();
+};
+
+const sortGoals = (goalsArray) => {
+    return [...goalsArray].sort((a, b) => {
+        if (sortBy === 'deadline') {
+            if (a.deadline === '未定') return 1;
+            if (b.deadline === '未定') return -1;
+            const dA = new Date(a.deadline.replace(/\./g, '/'));
+            const dB = new Date(b.deadline.replace(/\./g, '/'));
+            return dA - dB;
+        } else if (sortBy === 'progress') {
+            return b.progress - a.progress;
+        }
+        return 0;
+    });
+};
+
+// --- Category Management ---
+const updateCategoryDatalist = () => {
+    if (categoryDatalist) categoryDatalist.innerHTML = categories.map(c => `<option value="${c}">`).join('');
+    if (categoryManagerList) {
+        categoryManagerList.innerHTML = categories.map(c => `
+            <div class="cat-chip" onclick="selectCategory('${c}')">
+                <span>${c}</span><span class="delete-cat" onclick="event.stopPropagation(); deleteCategoryPrompt(event, '${c}')">&times;</span>
+            </div>`).join('');
+    }
+};
+
+const selectCategory = (cat) => {
+    const input = document.getElementById('goal-category');
+    if (input) {
+        input.value = cat;
+        input.focus();
+    }
+};
+
+const deleteCategoryPrompt = (e, cat) => {
+    showConfirm("カテゴリーの削除", `「${cat}」を削除しますか？`, () => {
+        categories = categories.filter(c => c !== cat);
+        saveGoals();
+        updateCategoryDatalist();
+    });
+};
+
 // --- Core Logic ---
 if (goalForm) {
     goalForm.onsubmit = (e) => {
@@ -281,6 +339,12 @@ if (goalForm) {
             return;
         }
 
+        // New category addition
+        if (!categories.includes(categoryValue)) {
+            categories.push(categoryValue);
+            updateCategoryDatalist();
+        }
+
         const taskLines = tasksValue.split('\n').filter(l => l.trim() !== '');
         let deadline = '未定';
         if (deadlineBtn) {
@@ -290,6 +354,11 @@ if (goalForm) {
                 const tempDate = new Date();
                 const sunday = new Date(tempDate.setDate(tempDate.getDate() + (7 - tempDate.getDay())));
                 deadline = `${sunday.getFullYear()}.${sunday.getMonth() + 1}.${sunday.getDate()}`;
+            } else if (val === 'this-month') {
+                const lastDay = new Date(dNow.getFullYear(), dNow.getMonth() + 1, 0);
+                deadline = `${lastDay.getFullYear()}.${lastDay.getMonth() + 1}.${lastDay.getDate()}`;
+            } else if (val === 'this-year') {
+                deadline = `${dNow.getFullYear()}.12.31`;
             } else if (val === 'custom' && dateInput?.value) {
                 const dInput = new Date(dateInput.value);
                 deadline = `${dInput.getFullYear()}.${dInput.getMonth() + 1}.${dInput.getDate()}`;
@@ -333,6 +402,7 @@ if (goalForm) {
         renderGoals();
         updateDashboard();
         closeModal();
+        if (!editingGoalId && window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     };
 }
 
@@ -362,6 +432,44 @@ const deleteGoal = (id) => {
         saveGoals();
         renderGoals();
         updateDashboard();
+    });
+};
+
+// --- Rendering ---
+const renderGoals = () => {
+    if (!goalsContainer) return;
+    goalsContainer.innerHTML = '';
+    if (isLoading) {
+        goalsContainer.innerHTML = Array(3).fill('<div class="skeleton-card"></div>').join('');
+        return;
+    }
+    const filtered = goals.filter(g => currentView === 'active' ? g.progress < 100 : g.progress === 100);
+    const sorted = sortGoals(filtered);
+
+    if (sorted.length === 0) {
+        goalsContainer.innerHTML = `<div class="empty-state"><p>${currentView === 'active' ? 'まだ目標がありません。＋ボタンから追加してください。' : '達成した目標はまだありません。'}</p></div>`;
+        return;
+    }
+
+    const grouped = sorted.reduce((acc, g) => { (acc[g.category] = acc[g.category] || []).push(g); return acc; }, {});
+    Object.entries(grouped).forEach(([cat, catGoals]) => {
+        const stack = document.createElement('div');
+        stack.className = 'category-stack';
+        stack.innerHTML = `<div class="category-header"><div class="category-label">${cat}</div><div class="stack-count">${catGoals.length}</div></div>
+            <div class="stack-content">${catGoals.map(g => `
+                <div class="goal-card-wrapper">
+                    <div class="goal-card" onclick="openModal('${g.id}')">
+                        <div class="goal-header"><h4>${g.title}</h4><button class="btn-delete-goal" onclick="event.stopPropagation(); deleteGoal('${g.id}')">&times;</button></div>
+                        <div class="progress-mini-bar"><div class="progress-fill" style="width: ${g.progress}%"></div></div>
+                        <div class="task-mini-list" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">${(g.tasks || []).map(t => `
+                            <div class="task-mini-item ${t.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask('${g.id}', '${t.id}')" style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0;">
+                                <div class="mini-checkbox"></div><span class="mini-task-text" style="font-size: 0.85rem; line-height: 1.4;">${t.text}</span>
+                            </div>`).join('')}
+                        </div>
+                        <div class="goal-footer-info" style="margin-top: 0.8rem; font-size: 0.75rem; opacity: 0.6;">締切: ${g.deadline}</div>
+                    </div>
+                </div>`).join('')}</div>`;
+        goalsContainer.appendChild(stack);
     });
 };
 
@@ -403,21 +511,37 @@ const animateValue = (id, endValue) => {
 const updateVisionBridge = () => {
     const bridgeTitle = document.getElementById('next-task-title');
     const bridgeGoal = document.getElementById('next-task-goal');
+    const bridgeDeadline = document.getElementById('next-task-deadline');
+    const bridgeProgressFill = document.getElementById('bridge-progress-fill');
+    const bridgeProgressText = document.getElementById('bridge-progress-text');
     const aiMessage = document.getElementById('ai-bridge-message');
     if (!bridgeTitle) return;
 
     const activeGoals = goals.filter(g => g.progress < 100);
     if (activeGoals.length === 0) {
-        bridgeTitle.innerText = "目標を達成しました！";
+        bridgeTitle.innerText = "すべての目標を達成しました！";
         if (bridgeGoal) bridgeGoal.innerText = "次は何に挑戦しますか？";
+        if (bridgeDeadline) bridgeDeadline.innerText = "Legendary Status";
+        if (bridgeProgressFill) bridgeProgressFill.style.width = '100%';
+        if (bridgeProgressText) bridgeProgressText.innerText = '100%';
         return;
     }
 
-    const nextGoal = activeGoals[0];
+    // Sort active goals by deadline
+    const sortedActive = [...activeGoals].sort((a, b) => {
+        if (a.deadline === '未定') return 1;
+        if (b.deadline === '未定') return -1;
+        return new Date(a.deadline.replace(/\./g, '/')) - new Date(b.deadline.replace(/\./g, '/'));
+    });
+
+    const nextGoal = sortedActive[0];
     const nextTask = nextGoal.tasks.find(t => !t.done) || nextGoal.tasks[0];
     bridgeTitle.innerText = nextTask.text;
     if (bridgeGoal) bridgeGoal.innerText = `Goal: ${nextGoal.title}`;
-    if (aiMessage) aiMessage.innerText = "その調子です！";
+    if (bridgeDeadline) bridgeDeadline.innerText = `Due: ${nextGoal.deadline}`;
+    if (bridgeProgressFill) bridgeProgressFill.style.width = `${nextGoal.progress}%`;
+    if (bridgeProgressText) bridgeProgressText.innerText = `${nextGoal.progress}%`;
+    if (aiMessage) aiMessage.innerText = "その調子です！一歩ずつ積み上げましょう。";
 };
 
 const renderConfidenceGallery = () => {
@@ -425,18 +549,34 @@ const renderConfidenceGallery = () => {
     if (!gallery) return;
     const completed = goals.filter(g => g.progress === 100);
     if (completed.length === 0) {
-        gallery.innerHTML = '<p>達成した目標がここに表示されます</p>';
+        gallery.innerHTML = '<div class="gallery-empty"><p>達成した目標がここに輝きます</p></div>';
         return;
     }
-    gallery.innerHTML = completed.map(g => `<div class="trophy-card">🏆 ${g.title}</div>`).join('');
-};
-
-const updateCategoryDatalist = () => {
-    if (categoryDatalist) categoryDatalist.innerHTML = categories.map(c => `<option value="${c}">`).join('');
+    gallery.innerHTML = completed.map(g => `
+        <div class="trophy-card glass">
+            <div class="trophy-icon">🏆</div>
+            <div class="trophy-info">
+                <div class="trophy-title">${g.title}</div>
+                <div class="trophy-date">${g.category}</div>
+            </div>
+        </div>
+    `).join('');
 };
 
 const showToast = (message, type = 'info') => {
-    console.log(`Toast (${type}): ${message}`);
+    const container = document.getElementById('toast-container');
+    if (!container) {
+        console.log(`Toast (${type}): ${message}`);
+        return;
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast ${type} show`;
+    toast.innerText = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
 };
 
 // --- Exports ---
@@ -445,3 +585,6 @@ window.openModal = openModal;
 window.closeModal = closeModal;
 window.toggleTask = toggleTask;
 window.deleteGoal = deleteGoal;
+window.setSort = setSort;
+window.selectCategory = selectCategory;
+window.deleteCategoryPrompt = deleteCategoryPrompt;
