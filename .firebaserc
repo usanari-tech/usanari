@@ -6,7 +6,10 @@
     "goal-horizon-2026": {
       "hosting": {
         "goal-horizon": [
-          "goal-horizon-2026"
+          "usanari-goal"
+        ],
+        "clock": [
+          "usanari-clock"
         ]
       }
     }

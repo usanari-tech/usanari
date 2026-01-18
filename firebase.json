@@ -8,6 +8,15 @@
         "**/.*",
         "**/node_modules/**"
       ]
+    },
+    {
+      "target": "clock",
+      "public": "projects/clock",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     }
   ]
 }
