@@ -2,6 +2,7 @@ import * as fb from './firebase-config.js';
 import { drawMomentumChart } from './charts.js';
 
 // --- State Management ---
+// Last updated: 2026-01-18 17:10 (forced redeploy)
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
 let currentView = 'active'; // 'active' or 'completed'
 let categories = JSON.parse(localStorage.getItem('categories')) || ['学習・スキル', '健康・習慣', '仕事・キャリア', 'マインドセット'];
