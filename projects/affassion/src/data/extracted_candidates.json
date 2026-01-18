@@ -1,0 +1,50 @@
+[
+    {
+        "id": "shein-001",
+        "name": "Polyresin Flower Vase (White/Minimal)",
+        "price_yen": 850,
+        "search_term": "minimalist white resin vase",
+        "description": "シンプルなマット質感の樹脂製花瓶。韓国インテリアの定番。",
+        "target_url": "https://us.shein.com/pdsearch/polyresin%20vase"
+    },
+    {
+        "id": "shein-002",
+        "name": "Mini Strawberry Vase",
+        "price_yen": 450,
+        "search_term": "strawberry vase red ceramic",
+        "description": "SNSで話題のイチゴ型花瓶。ポップなアクセントに。",
+        "target_url": "https://us.shein.com/pdsearch/strawberry%20vase"
+    },
+    {
+        "id": "shein-003",
+        "name": "Modern Geometric Striped Plastic Vase",
+        "price_yen": 320,
+        "search_term": "ribbed cylinder vase white",
+        "description": "北欧風の幾何学ラインが入った軽量花瓶。",
+        "target_url": "https://us.shein.com/pdsearch/geometric%20vase"
+    },
+    {
+        "id": "shein-004",
+        "name": "Bohemian Style Bow Vase",
+        "price_yen": 1200,
+        "search_term": "ceramic vase with bow tie",
+        "description": "リボンがあしらわれたガーリーかつ上品なデザイン。",
+        "target_url": "https://us.shein.com/pdsearch/bow%20vase"
+    },
+    {
+        "id": "shein-005",
+        "name": "Pleated Ceramic Table Lamp",
+        "price_yen": 2500,
+        "search_term": "pleated lamp shade ceramic base",
+        "description": "プリーツシェードのテーブルランプ。淡い光が特徴。",
+        "target_url": "https://us.shein.com/pdsearch/pleated%20lamp"
+    },
+    {
+        "id": "shein-006",
+        "name": "Decorative Art Mirror (Irregular/Bean)",
+        "price_yen": 600,
+        "search_term": "irregular wavy mirror",
+        "description": "ビーンズ型の変形ミラー。壁掛け・卓上両用。",
+        "target_url": "https://us.shein.com/pdsearch/irregular%20mirror"
+    }
+]

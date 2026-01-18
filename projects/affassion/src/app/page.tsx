@@ -4,8 +4,18 @@ import Hero from "@/components/Hero";
 import CategoryNav from "@/components/CategoryNav";
 import ProductCard from "@/components/ProductCard";
 import BottomNav from "@/components/BottomNav";
+import { items, getItemById } from "@/data/items";
 
 export default function Home() {
+  const pickup1 = getItemById("pickup-1")!;
+  const pickup2 = getItemById("pickup-2")!; // Strawberry Vase
+
+  // Helper to find other items
+  const article1 = getItemById("article-1")!;
+  const article2 = getItemById("article-2")!;
+  const collection1 = getItemById("collection-1")!;
+  const collection2 = getItemById("collection-2")!;
+
   return (
     <>
       <Header />
@@ -32,7 +42,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* New Articles */}
+        {/* New Articles (Reading from Data) */}
         <div className="flex items-center justify-between px-6 mb-6">
           <h3 className="serif-text text-[#131516] dark:text-white text-lg font-bold tracking-widest">
             新着記事
@@ -41,12 +51,11 @@ export default function Home() {
         </div>
         <section className="px-6 mb-12">
           <div className="grid grid-cols-2 gap-4">
-            <Link href="/items/article-1" className="flex flex-col gap-3 group">
+            <Link href={`/items/${article1.id}`} className="flex flex-col gap-3 group">
               <div
                 className="aspect-[3/4] rounded-lg overflow-hidden bg-cover bg-center shadow-md transition-transform duration-500 group-hover:scale-105"
                 style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuArg1tOoSSuc_L5XVmsno_KLA8qXLK__S3TfhpB61O76CJImOk5KDOh2r9bvFYxqgH_PfLmrHruGg-diOotiJ8nPER0sTiqR5IexPuUrSbkxPuLvu0S1PpYH-Moe7Mq3DTGxOuEUq-uigR3747NOi106RgUbqBhLP2aadpNQWOzDdhBn1fbCila7Bsj16ZtuaWFaf3a2zl-tWEQkMQizct3AvQ0RACitB8JXsfLK4K5TR27c4WkqXr2KBFCgqnCEN_9tS1sH3DQ3ZRb')",
+                  backgroundImage: `url('${article1.image}')`,
                 }}
               ></div>
               <div>
@@ -54,16 +63,15 @@ export default function Home() {
                   Architecture
                 </p>
                 <h4 className="serif-text text-sm font-bold leading-tight dark:text-white">
-                  ミニマリストの書斎：美しき調和
+                  {article1.name}
                 </h4>
               </div>
             </Link>
-            <Link href="/items/article-2" className="flex flex-col gap-3 group mt-8">
+            <Link href={`/items/${article2.id}`} className="flex flex-col gap-3 group mt-8">
               <div
                 className="aspect-[3/4] rounded-lg overflow-hidden bg-cover bg-center shadow-md transition-transform duration-500 group-hover:scale-105"
                 style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1OUPSr9UyKwwCcY-jsrzvzvbSjI4mY4lpVur8KOJt_eXfpZDkGnzRD8ppZnXuhrkoOGHdCRvHknZFztICcRtpKapDXVqXJwVF80oXXO-G0-U5fjd7Pq4BJMe4fLxb1gKPn4MxCRTdoaR8vu9reueyltJpzaeV5gIr5yoBXyEWQiHTbAt_u0cXPJOfR1bhNOmfuFwRb_I_UVLZ3hf8PESf_3XB0ZmSnUpJGxJtF4kmgtKxAi9yrh4zPwzwXjCTSSCOyK1LDPwmtA7n')",
+                  backgroundImage: `url('${article2.image}')`,
                 }}
               ></div>
               <div>
@@ -71,14 +79,14 @@ export default function Home() {
                   Style
                 </p>
                 <h4 className="serif-text text-sm font-bold leading-tight dark:text-white">
-                  春のパレット：アースカラーの誘い
+                  {article2.name}
                 </h4>
               </div>
             </Link>
           </div>
         </section>
 
-        {/* Pickup Items */}
+        {/* Pickup Items (Reading from Data) */}
         <div className="flex items-center justify-between px-6 mb-6">
           <h3 className="serif-text text-[#131516] dark:text-white text-lg font-bold tracking-widest">
             ピックアップ・アイテム
@@ -87,22 +95,22 @@ export default function Home() {
         <section className="px-6 mb-12">
           <div className="grid grid-cols-2 gap-6">
             <ProductCard
-              image="https://lh3.googleusercontent.com/aida-public/AB6AXuAQrCAkpRlxp2iCIIKaEq8q6xPXt38UIzLdSSUA_XR-79MRFi2u0_Zh1K_YQLEHWnm8PtQFbVp2jhTbBywyu9tgCwJZtS2QuYV5QzKduXBldizYtv12aT5KvyhtBuM430eIrCbwRa45ZCaeGFegGd360YKrarJlMYVkXN5LYZFRJjl7HYTViwFS2DyQC1oZVokxn21p6PKs5jaj_Ghq9eJRNlvxY7OnKQrF8F8PcDGasfWz_cenfC_mq9Qz8W7cXqpngWV0_SANQnRF"
-              name="クラシック・レザーケース"
-              price="¥48,000"
-              id="pickup-1"
+              image={pickup1.image}
+              name={pickup1.name}
+              price={pickup1.price}
+              id={pickup1.id}
             />
             <ProductCard
-              image="https://lh3.googleusercontent.com/aida-public/AB6AXuC_H_0XXDOKq4V5IpGeqG7jlB22WukSHzZBbW6qgUvlz65vwK_jQYjhjY6yCvAcCNEL4VNSOJgcIgA7Ley30mrKML_ip4t1FWoaPszLZ5LZTcl2np99uHcG4lgRrFGp7cEhm7dszkHKL9G2yNmRlfTn7RDtho0SHOZeafTEQHFVCBZeUOlHcKGBrB4NqkCj_5e0JOaA50WrdCSBPelv6HRQ39xCj6X1fmakI58RWaDSRaVUEYDJuNJR4fAr34_4gBclEhMTx1epneDH"
-              name="シルク・フローラルスカーフ"
-              price="¥32,000"
+              image={pickup2.image}
+              name={pickup2.name}
+              price={pickup2.price}
               delay={100}
-              id="pickup-2"
+              id={pickup2.id}
             />
           </div>
         </section>
 
-        {/* Collection */}
+        {/* Collection (Reading from Data) */}
         <section className="mb-12">
           <div className="px-6 mb-4 flex justify-between items-end">
             <div>
@@ -118,18 +126,16 @@ export default function Home() {
             </Link>
           </div>
           <div className="flex gap-4 overflow-x-auto no-scrollbar px-6">
-            <Link href="/items/collection-1"
+            <Link href={`/items/${collection1.id}`}
               className="min-w-[220px] aspect-[2/3] rounded-lg bg-cover bg-center shadow-lg"
               style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCv3N51lY2MpIDkJff95aeBs3i6t6DZJozw4QebLQThMemNcVrCFu44mPCpLa5ciL6oOWtkG-kfkOAFX-L2zRS4_1jxV45r9obOKww2SkF66Qu7xRs3ZCGGRbm4y923rSdji4uaX0FZriD2xnK5kyLRil7NVqLqa7gGlW0l2tOLRTm8LOICmaeCgk_SvW4J9GLp_R4Uy_4be66jIzEOxXn5Ytt9QkbhSW0sCDImNbkIaBGScvbOeHI8T2SJT2Yrm1Xr7VEDukhATMQf')",
+                backgroundImage: `url('${collection1.image}')`,
               }}
             ></Link>
-            <Link href="/items/collection-2"
+            <Link href={`/items/${collection2.id}`}
               className="min-w-[220px] aspect-[2/3] rounded-lg bg-cover bg-center shadow-lg"
               style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1OUPSr9UyKwwCcY-jsrzvzvbSjI4mY4lpVur8KOJt_eXfpZDkGnzRD8ppZnXuhrkoOGHdCRvHknZFztICcRtpKapDXVqXJwVF80oXXO-G0-U5fjd7Pq4BJMe4fLxb1gKPn4MxCRTdoaR8vu9reueyltJpzaeV5gIr5yoBXyEWQiHTbAt_u0cXPJOfR1bhNOmfuFwRb_I_UVLZ3hf8PESf_3XB0ZmSnUpJGxJtF4kmgtKxAi9yrh4zPwzwXjCTSSCOyK1LDPwmtA7n')",
+                backgroundImage: `url('${collection2.image}')`,
               }}
             ></Link>
           </div>
@@ -141,24 +147,14 @@ export default function Home() {
             <h3 className="serif-text text-sm font-bold dark:text-white tracking-wider border-b border-primary/10 pb-2">あなたへのおすすめ</h3>
           </div>
           <div className="flex gap-3 overflow-x-auto no-scrollbar px-6 pb-4">
-            <Link href="/items/rec-1" className="flex-none w-32 group">
-              <div className="aspect-square rounded-lg border border-primary/10 dark:border-white/10 overflow-hidden mb-2">
-                <img className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArg1tOoSSuc_L5XVmsno_KLA8qXLK__S3TfhpB61O76CJImOk5KDOh2r9bvFYxqgH_PfLmrHruGg-diOotiJ8nPER0sTiqR5IexPuUrSbkxPuLvu0S1PpYH-Moe7Mq3DTGxOuEUq-uigR3747NOi106RgUbqBhLP2aadpNQWOzDdhBn1fbCila7Bsj16ZtuaWFaf3a2zl-tWEQkMQizct3AvQ0RACitB8JXsfLK4K5TR27c4WkqXr2KBFCgqnCEN_9tS1sH3DQ3ZRb" alt="aroma" />
-              </div>
-              <p className="serif-text text-[10px] leading-tight dark:text-white/80 line-clamp-2">アロマキャンドル <br />No.05</p>
-            </Link>
-            <Link href="/items/rec-2" className="flex-none w-32 group">
-              <div className="aspect-square rounded-lg border border-primary/10 dark:border-white/10 overflow-hidden mb-2">
-                <img className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQrCAkpRlxp2iCIIKaEq8q6xPXt38UIzLdSSUA_XR-79MRFi2u0_Zh1K_YQLEHWnm8PtQFbVp2jhTbBywyu9tgCwJZtS2QuYV5QzKduXBldizYtv12aT5KvyhtBuM430eIrCbwRa45ZCaeGFegGd360YKrarJlMYVkXN5LYZFRJjl7HYTViwFS2DyQC1oZVokxn21p6PKs5jaj_Ghq9eJRNlvxY7OnKQrF8F8PcDGasfWz_cenfC_mq9Qz8W7cXqpngWV0_SANQnRF" alt="wallet" />
-              </div>
-              <p className="serif-text text-[10px] leading-tight dark:text-white/80 line-clamp-2">ウォレット <br />テラコッタ</p>
-            </Link>
-            <Link href="/items/rec-3" className="flex-none w-32 group">
-              <div className="aspect-square rounded-lg border border-primary/10 dark:border-white/10 overflow-hidden mb-2">
-                <img className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_H_0XXDOKq4V5IpGeqG7jlB22WukSHzZBbW6qgUvlz65vwK_jQYjhjY6yCvAcCNEL4VNSOJgcIgA7Ley30mrKML_ip4t1FWoaPszLZ5LZTcl2np99uHcG4lgRrFGp7cEhm7dszkHKL9G2yNmRlfTn7RDtho0SHOZeafTEQHFVCBZeUOlHcKGBrB4NqkCj_5e0JOaA50WrdCSBPelv6HRQ39xCj6X1fmakI58RWaDSRaVUEYDJuNJR4fAr34_4gBclEhMTx1epneDH" alt="silk" />
-              </div>
-              <p className="serif-text text-[10px] leading-tight dark:text-white/80 line-clamp-2">シルクバンド <br />ボタニカル</p>
-            </Link>
+            {items.slice(0, 3).map((item) => (
+              <Link key={item.id} href={`/items/${item.id}`} className="flex-none w-32 group">
+                <div className="aspect-square rounded-lg border border-primary/10 dark:border-white/10 overflow-hidden mb-2">
+                  <img className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all" src={item.image} alt={item.name} />
+                </div>
+                <p className="serif-text text-[10px] leading-tight dark:text-white/80 line-clamp-2">{item.name}</p>
+              </Link>
+            ))}
           </div>
         </section>
       </main>
