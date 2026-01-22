@@ -33,3 +33,9 @@ temp/
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
+
+# Auto-generated & Local
+transcript.txt
+.venv/
+obsidian_vault
+
