@@ -30,12 +30,12 @@ description: 食べたもの.mdの写真から栄養解析を行い、Vaultを�
     3. **メニュー別ログ**: **Markdownの標準テーブルを使用し、セル内に幅固定 ＆ タイポグラフィ調整用の `<div>` を入れること。**
        - 構造（最速表示 ＆ スマホ最適化 ＆ 凝縮レイアウト）：
          ```markdown
-         | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**1. 料理名 (XXXkcal)**</div> | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**2. 料理名 (XXXkcal)**</div> |
+         | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**1. 料理名**<br>**(XXXkcal)**</div> | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**2. 料理名**<br>**(XXXkcal)**</div> |
          | :--- | :--- |
          | ![[image1.jpg\|300]] | ![[image2.jpg\|300]] |
          | <div style="font-size: 0.85em; line-height: 1.4;">**P: Xg / F: Xg / C: Xg**<br>**コメント**: ...<br>**辛酷な現実**: ...</div> | <div style="font-size: 0.85em; line-height: 1.4;">**P: Xg / F: Xg / C: Xg**<br>**コメント**: ...<br>**辛酷な現実**: ...</div> |
          ```
-       - これにより情報密度を高めつつ、スマホでも快適に閲覧できるレスポンシブな2列表示を実現します。
+       - **重要**: 料理名とカロリーの間に `<br>` を入れ、スマホで料理名が不自然に改行されるのを防ぐこと。
        - 辛口コメントは語彙力を駆使し、**「突き刺さるような表現」**で長めに書くこと。
     4. **最終宣告**: `> [!CAUTION]` アラートボックスを用いた総括。
 
