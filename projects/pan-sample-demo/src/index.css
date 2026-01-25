@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3D2B1F;
+  --color-bakery-beige: #F5F2ED;
+  --color-bakery-toast: #C4A484;
+  --color-bakery-wheat: #E3C9A6;
+  --color-background-dark: #1A1614;
+
+  --font-display: "Shippori Mincho", serif;
+  --font-sans: "Noto Serif JP", serif;
+}
+
+:root {
+  background-color: var(--color-bakery-beige);
+  color: var(--color-primary);
+}
+
+.dark {
+  background-color: var(--color-background-dark);
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.line-accent {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 3s forwards ease-out;
+}
