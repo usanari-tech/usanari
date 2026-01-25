@@ -27,17 +27,17 @@ description: 食べたもの.mdの写真から栄養解析を行い、Vaultを�
 - **重要：レポート形式の固定化**: 以下の構造、テーブルレイアウト、およびトーンを厳守すること。
     1. **タイトル**: `# 🍴 栄養解析レポート (YYYY-MM-DD)`
     2. **サマリーテーブル**: エネルギー、P、F、Cの4項目。実績値と評価（絵文字付き）を含む。
-    3. **メニュー別ログ**: **Markdownの標準テーブルを使用し、HTMLタグを用いてレイアウトを制御すること。**
-       - 構造（最速表示 ＆ スマホ最適化 ＆ 凝縮レイアウト）：
+    3. **メニュー別ログ**: **Markdownの標準テーブルを使用し、セル内に幅固定用の `<div>` を入れること。**
+       - 構造（最速表示 ＆ スマホ最適化 ＆ 均等分割 ＆ 凝縮レイアウト）：
          ```markdown
-         | <div style="font-size: 0.9em; font-weight: bold; line-height: 1.2;">**1. 料理名**</div> | <div style="font-size: 0.9em; font-weight: bold; line-height: 1.2;">**2. 料理名**</div> |
+         | <div style="width: 50%; font-size: 0.9em; font-weight: bold; line-height: 1.2;">**1. 料理名**</div> | <div style="width: 50%; font-size: 0.9em; font-weight: bold; line-height: 1.2;">**2. 料理名**</div> |
          | :--- | :--- |
-         | <img src="file:///絶対パス/画像.jpg" style="width: 100%; max-width: 300px; border-radius: 8px;"> | <img src="file:///絶対パス/画像.jpg" style="width: 100%; max-width: 300px; border-radius: 8px;"> |
+         | ![[image1.jpg\|300]] | ![[image2.jpg\|300]] |
          | <div style="font-size: 0.85em; line-height: 1.4;">**XXXkcal**<br>**P15g F20g C30g**<br>**コメント :**<br>内容...<br><br>**辛辣なコメント：**<br>内容...</div> | <div style="font-size: 0.85em; line-height: 1.4;">**XXXkcal**<br>**P15g F20g C30g**<br>**コメント :**<br>内容...<br><br>**辛辣なコメント：**<br>内容...</div> |
          ```
        - **重要事項**: 
-         - **画像表示**: `file:///` から始まる絶対パスを用いた `<img>` タグを使用。`width: 100%; max-width: 300px;` を指定し、スマホでの横スクロール防止とPCでの適正サイズを両立させる。
-         - **料理名**: タイトルの `div` から `width: 50%` を除去（テーブル本来の挙動に任せる）し、不自然な改行を防ぐ。
+         - **均等分割**: ヘッダーの `div` に必ず `width: 50%` を指定し、左右が均等に割れるようにすること。
+         - **画像表示**: `![[画像名\|300]]` のように、Obsidian内部リンク記法（Wiki記法）を使用し、パイプをエスケープ（`\|`）すること。
          - **数値情報**: PFCは `P15g F20g C30g` 形式。
          - **ラベル**: 「コメント : 」「辛辣なコメント：」を用い、直後で改行、項目間に空行。
          - 辛口コメントは語彙力を駆使し、**「突き刺さるような表現」**で長めに書くこと。
