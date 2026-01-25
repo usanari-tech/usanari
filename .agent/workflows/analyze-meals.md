@@ -30,13 +30,16 @@ description: 食べたもの.mdの写真から栄養解析を行い、Vaultを�
     3. **メニュー別ログ**: **Markdownの標準テーブルを使用し、セル内に幅固定 ＆ タイポグラフィ調整用の `<div>` を入れること。**
        - 構造（最速表示 ＆ スマホ最適化 ＆ 凝縮レイアウト）：
          ```markdown
-         | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**1. 料理名**<br>**(XXXkcal)**</div> | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**2. 料理名**<br>**(XXXkcal)**</div> |
+         | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**1. 料理名**</div> | <div style="width: 50%; font-size: 0.9em; line-height: 1.3;">**2. 料理名**</div> |
          | :--- | :--- |
          | ![[image1.jpg\|300]] | ![[image2.jpg\|300]] |
-         | <div style="font-size: 0.85em; line-height: 1.4;">**P: Xg / F: Xg / C: Xg**<br>**コメント**: ...<br>**辛酷な現実**: ...</div> | <div style="font-size: 0.85em; line-height: 1.4;">**P: Xg / F: Xg / C: Xg**<br>**コメント**: ...<br>**辛酷な現実**: ...</div> |
+         | <div style="font-size: 0.85em; line-height: 1.4;">**XXXkcal**<br>**P15g F20g C30g**<br>**コメント :**<br>内容...<br><br>**辛辣なコメント：**<br>内容...</div> | <div style="font-size: 0.85em; line-height: 1.4;">**XXXkcal**<br>**P15g F20g C30g**<br>**コメント :**<br>内容...<br><br>**辛辣なコメント：**<br>内容...</div> |
          ```
-       - **重要**: 料理名とカロリーの間に `<br>` を入れ、スマホで料理名が不自然に改行されるのを防ぐこと。
-       - 辛口コメントは語彙力を駆使し、**「突き刺さるような表現」**で長めに書くこと。
+       - **重要事項**: 
+         - PFCは `P15g F20g C30g` 形式（スペースや記号を最小化）にすること。
+         - ラベル（コメント : / 辛辣なコメント：）の直後で改行すること。
+         - 辛辣なコメントの前に1行空行を入れること。
+         - 辛口コメントは語彙力を駆使し、**「突き刺さるような表現」**で長めに書くこと。
     4. **最終宣告**: `> [!CAUTION]` アラートボックスを用いた総括。
 
 
