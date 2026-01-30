@@ -360,6 +360,40 @@ class ProsperPublisherV10:
                     in_list_mode = False
                     await asyncio.sleep(0.2)
                 
+                # 太字行の処理 (**text**)
+                # NoteはMarkdownの太字を自動変換しないため、手動でCmd+Bを入れる
+                bold_match = re.match(r'^\*\*(.+?)\*\*$', stripped_line)
+                if bold_match:
+                    content = bold_match.group(1)
+                    # 1. テキスト入力
+                    await self.paste_text(content)
+                    await asyncio.sleep(0.2)
+                    
+                    # 2. 全選択 (行末にいるのでShift+Cmd+Left)
+                    await self.page.keyboard.down("Shift")
+                    await self.page.keyboard.down("Meta")
+                    await self.page.keyboard.press("ArrowLeft")
+                    await self.page.keyboard.up("Meta")
+                    await self.page.keyboard.up("Shift")
+                    await asyncio.sleep(0.2)
+
+                    # 3. 太字ショートカット (Cmd+B) -> 選択範囲が太字になる
+                    await self.page.keyboard.press("Meta+b")
+                    await asyncio.sleep(0.2)
+
+                    # 4. 選択解除 (右矢印) -> カーソルはまだ「太字モード」のまま
+                    await self.page.keyboard.press("ArrowRight")
+                    await asyncio.sleep(0.2)
+
+                    # 5. 太字モード解除 (ここでもう一度Cmd+Bし、以降の入力をRegularに戻す)
+                    await self.page.keyboard.press("Meta+b")
+                    await asyncio.sleep(0.2)
+                    
+                    # 6. 改行
+                    await self.page.keyboard.press("Enter")
+                    await asyncio.sleep(0.5)
+                    continue
+
                 # 埋め込み(URL)の場合
                 if stripped_line.startswith("http"):
                      await self.paste_text(stripped_line)
