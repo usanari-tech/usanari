@@ -39,3 +39,7 @@ transcript.txt
 .venv/
 obsidian_vault
 
+
+# Prosper Investigator Generated Files
+projects/prosper/investigator/reports/
+projects/prosper/investigator/state/
