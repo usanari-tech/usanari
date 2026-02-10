@@ -32,7 +32,7 @@ export default function PostModal() {
                     onClick={() => setIsOpen(false)}
                 >
                     <div
-                        className="modal-content animate-slide-up p-6 relative"
+                        className="modal-content animate-slide-up p-6 relative w-full max-w-md mx-auto mb-safe sm:mb-0 max-h-[85vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <button
