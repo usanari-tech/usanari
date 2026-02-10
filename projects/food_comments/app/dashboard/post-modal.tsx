@@ -1,13 +1,17 @@
-'use client'
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Plus, X, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import UploadForm from './upload-form'
 
 export default function PostModal() {
     const [isOpen, setIsOpen] = useState(false)
+    const [mounted, setMounted] = useState(false)
     const router = useRouter()
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const handleSuccess = () => {
         setTimeout(() => {
@@ -17,17 +21,12 @@ export default function PostModal() {
     }
 
     // 背景スクロールロック
-    useState(() => {
-        if (typeof window !== 'undefined') {
-            document.body.style.overflow = isOpen ? 'hidden' : 'unset'
+    useEffect(() => {
+        if (mounted && isOpen) {
+            document.body.style.overflow = 'hidden'
             return () => { document.body.style.overflow = 'unset' }
         }
-    })
-
-    // isOpenが変わるたびに実行
-    if (typeof window !== 'undefined') {
-        document.body.style.overflow = isOpen ? 'hidden' : 'unset'
-    }
+    }, [mounted, isOpen])
 
     return (
         <>
@@ -39,7 +38,7 @@ export default function PostModal() {
                 <Plus size={24} strokeWidth={2.5} />
             </button>
 
-            {isOpen && (
+            {isOpen && mounted && createPortal(
                 <div
                     className="fixed inset-0 z-[100] overflow-y-auto bg-black/70 backdrop-blur-sm animate-fade-in"
                     onClick={() => setIsOpen(false)}
@@ -70,7 +69,8 @@ export default function PostModal() {
                             <UploadForm onSuccess={handleSuccess} />
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </>
     )
