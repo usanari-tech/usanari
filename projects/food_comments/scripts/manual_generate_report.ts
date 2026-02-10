@@ -35,8 +35,8 @@ if (!supabaseUrl || !supabaseServiceKey || !googleApiKey) {
     process.exit(1)
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
-const genAI = new GoogleGenerativeAI(googleApiKey)
+const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
+const genAI = new GoogleGenerativeAI(googleApiKey!)
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
 async function main() {
