@@ -28,11 +28,11 @@ export default function PostModal() {
 
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-overlay animate-fade-in"
+                    className="fixed inset-0 z-50 flex items-center justify-center modal-overlay animate-fade-in p-4 pb-10 sm:p-0"
                     onClick={() => setIsOpen(false)}
                 >
                     <div
-                        className="modal-content animate-slide-up p-6 relative w-full max-w-md mx-auto mb-safe sm:mb-0 max-h-[85vh] overflow-y-auto"
+                        className="modal-content animate-slide-up p-6 relative w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <button
