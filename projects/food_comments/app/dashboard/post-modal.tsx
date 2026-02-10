@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { Plus, X, Sparkles } from 'lucide-react'
