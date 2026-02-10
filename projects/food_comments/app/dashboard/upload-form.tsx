@@ -3,39 +3,56 @@
 import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import imageCompression from 'browser-image-compression'
-import { Upload, X, Loader2 } from 'lucide-react'
+import { Camera, Image as ImageIcon, X, Loader2, Check, Sparkles } from 'lucide-react'
 
-export default function UploadForm() {
-    const [file, setFile] = useState<File | null>(null)
-    const [preview, setPreview] = useState<string | null>(null)
+type FileWithPreview = {
+    file: File
+    preview: string
+    id: string
+}
+
+export default function UploadForm({ onSuccess }: { onSuccess?: () => void }) {
+    const [files, setFiles] = useState<FileWithPreview[]>([])
     const [memo, setMemo] = useState('')
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-    const fileInputRef = useRef<HTMLInputElement>(null)
+    const cameraInputRef = useRef<HTMLInputElement>(null)
+    const galleryInputRef = useRef<HTMLInputElement>(null)
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const originalFile = e.target.files[0]
-
-            // Preview immediately
-            const objectUrl = URL.createObjectURL(originalFile)
-            setPreview(objectUrl)
-            setFile(originalFile)
+    const handleFilesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const newFiles: FileWithPreview[] = []
+            for (const file of Array.from(e.target.files)) {
+                const objectUrl = URL.createObjectURL(file)
+                newFiles.push({
+                    file,
+                    preview: objectUrl,
+                    id: `${Date.now()}-${Math.random()}`
+                })
+            }
+            setFiles(prev => [...prev, ...newFiles])
             setMessage(null)
         }
+        e.target.value = ''
     }
 
-    const clearFile = () => {
-        setFile(null)
-        setPreview(null)
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ''
-        }
+    const removeFile = (id: string) => {
+        setFiles(prev => {
+            const file = prev.find(f => f.id === id)
+            if (file) URL.revokeObjectURL(file.preview)
+            return prev.filter(f => f.id !== id)
+        })
+    }
+
+    const clearAll = () => {
+        files.forEach(f => URL.revokeObjectURL(f.preview))
+        setFiles([])
+        setMemo('')
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!file) return
+        if (files.length === 0) return
 
         setLoading(true)
         setMessage(null)
@@ -44,107 +61,177 @@ export default function UploadForm() {
             const supabase = createClient()
             const { data: { user } } = await supabase.auth.getUser()
 
-            if (!user) throw new Error('User not found')
+            if (!user) throw new Error('ログインが必要です')
 
-            // Compress image
             const options = {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1024,
+                maxSizeMB: 0.3,
+                maxWidthOrHeight: 800,
                 useWebWorker: true,
-                fileType: 'image/webp'
+                fileType: 'image/webp' as const
             }
 
-            const compressedFile = await imageCompression(file, options)
+            for (const { file } of files) {
+                const compressedFile = await imageCompression(file, options)
+                const fileName = `${user.id}/${Date.now()}.webp`
 
-            // Upload to Storage
-            const fileExt = 'webp'
-            const fileName = `${user.id}/${Date.now()}.${fileExt}`
+                const { error: uploadError } = await supabase.storage
+                    .from('meal_photos')
+                    .upload(fileName, compressedFile)
 
-            const { error: uploadError } = await supabase.storage
-                .from('meal_photos')
-                .upload(fileName, compressedFile)
+                if (uploadError) throw uploadError
 
-            if (uploadError) throw uploadError
+                const { error: dbError } = await supabase
+                    .from('meal_logs')
+                    .insert({
+                        user_id: user.id,
+                        image_path: fileName,
+                        memo: memo,
+                    })
 
-            // Insert record
-            const { error: dbError } = await supabase
-                .from('meal_logs')
-                .insert({
-                    user_id: user.id,
-                    image_path: fileName,
-                    memo: memo,
-                })
+                if (dbError) throw dbError
+            }
 
-            if (dbError) throw dbError
+            clearAll()
+            setMessage({ type: 'success', text: `${files.length}件の投稿を受け付けました！` })
+            onSuccess?.()
 
-            // Reset form
-            clearFile()
-            setMemo('')
-            setMessage({ type: 'success', text: '投稿しました！深夜に罵倒されます。' })
-
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : '不明なエラー'
             console.error('Upload error:', error)
-            setMessage({ type: 'error', text: `エラーが発生しました: ${error.message}` })
+            setMessage({ type: 'error', text: `エラー: ${errorMessage}` })
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <div className="w-full max-w-md bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
-            <h3 className="text-lg font-bold mb-4">食事を記録する</h3>
+        <div className="w-full">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {/* Image Preview / Selection */}
-                <div className="relative w-full aspect-video bg-zinc-800 rounded-md flex items-center justify-center overflow-hidden border border-zinc-700 border-dashed hover:border-zinc-500 transition-colors cursor-pointer"
-                    onClick={() => fileInputRef.current?.click()}>
+                {/* カメラ / ギャラリー選択ボタン */}
+                <div className="flex gap-3">
+                    <button
+                        type="button"
+                        onClick={() => cameraInputRef.current?.click()}
+                        className="flex-1 btn-secondary flex flex-col items-center gap-2 py-5"
+                    >
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                            <Camera size={24} className="text-indigo-500" />
+                        </div>
+                        <span className="font-medium text-gray-700 text-sm">カメラ</span>
+                    </button>
 
-                    {preview ? (
-                        <>
-                            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                    <button
+                        type="button"
+                        onClick={() => galleryInputRef.current?.click()}
+                        className="flex-1 btn-secondary flex flex-col items-center gap-2 py-5"
+                    >
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
+                            <ImageIcon size={24} className="text-emerald-500" />
+                        </div>
+                        <span className="font-medium text-gray-700 text-sm">ギャラリー</span>
+                    </button>
+                </div>
+
+                {/* Hidden inputs */}
+                <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    ref={cameraInputRef}
+                    onChange={handleFilesChange}
+                    className="hidden"
+                />
+                <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    ref={galleryInputRef}
+                    onChange={handleFilesChange}
+                    className="hidden"
+                />
+
+                {/* プレビュー一覧 */}
+                {files.length > 0 && (
+                    <div className="space-y-3 animate-fade-in">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-600">{files.length}枚選択中</span>
                             <button
                                 type="button"
-                                onClick={(e) => { e.stopPropagation(); clearFile(); }}
-                                className="absolute top-2 right-2 bg-black/60 p-1 rounded-full text-white hover:bg-black/80"
+                                onClick={clearAll}
+                                className="text-xs text-gray-400 hover:text-red-500 transition-colors"
                             >
-                                <X size={20} />
+                                すべて削除
                             </button>
-                        </>
-                    ) : (
-                        <div className="flex flex-col items-center text-zinc-400">
-                            <Upload size={32} className="mb-2" />
-                            <span className="text-sm">写真をアップロード</span>
                         </div>
-                    )}
+                        <div className="grid grid-cols-4 gap-2">
+                            {files.map(({ id, preview }) => (
+                                <div key={id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm group">
+                                    <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeFile(id)}
+                                        className="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center bg-black/60 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-                    <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        className="hidden"
+                {/* メモ入力 */}
+                <div>
+                    <label className="text-xs font-medium text-gray-400 mb-2 block">メモ (任意)</label>
+                    <textarea
+                        value={memo}
+                        onChange={(e) => setMemo(e.target.value)}
+                        placeholder="例: ラーメン大盛り、野菜抜き"
+                        className="input-field w-full resize-none h-20"
                     />
                 </div>
 
-                {/* Memo Input */}
-                <textarea
-                    value={memo}
-                    onChange={(e) => setMemo(e.target.value)}
-                    placeholder="メモ (例: ラーメン大盛り、野菜抜き)"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-900 resize-none h-20"
-                />
-
-                {/* Submit Button */}
+                {/* 投稿ボタン */}
                 <button
                     type="submit"
-                    disabled={!file || loading}
-                    className="w-full bg-red-700 hover:bg-red-800 disabled:bg-zinc-700 disabled:cursor-not-allowed text-white font-bold py-2 rounded-md transition-colors flex items-center justify-center"
+                    disabled={files.length === 0 || loading}
+                    className="btn-primary w-full flex items-center justify-center gap-2"
                 >
-                    {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : '投稿する'}
+                    {loading ? (
+                        <>
+                            <Loader2 className="animate-spin" size={20} />
+                            <span>アップロード中...</span>
+                        </>
+                    ) : files.length > 0 ? (
+                        <>
+                            <Check size={20} />
+                            <span>投稿する ({files.length}件)</span>
+                        </>
+                    ) : (
+                        <>
+                            <Sparkles size={20} />
+                            <span>写真を選択してください</span>
+                        </>
+                    )}
                 </button>
 
+                {/* メッセージ */}
                 {message && (
-                    <div className={`p-3 rounded text-sm ${message.type === 'success' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
+                    <div className={`p-4 rounded-xl text-sm font-medium flex items-center gap-3 animate-fade-in ${message.type === 'success'
+                        ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-100'
+                        : 'bg-gradient-to-r from-red-50 to-rose-50 text-red-600 border border-red-100'
+                        }`}>
+                        {message.type === 'success' ? (
+                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                <Check size={16} className="text-green-600" />
+                            </div>
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                                <X size={16} className="text-red-600" />
+                            </div>
+                        )}
                         {message.text}
                     </div>
                 )}
