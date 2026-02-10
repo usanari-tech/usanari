@@ -41,12 +41,12 @@ export default function PostModal() {
 
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fade-in"
+                    className="fixed inset-0 z-[100] overflow-y-auto bg-black/70 backdrop-blur-sm animate-fade-in"
                     onClick={() => setIsOpen(false)}
                 >
-                    <div className="min-h-screen px-4 py-8 flex items-center justify-center">
+                    <div className="min-h-full w-full px-4 py-12 flex flex-col items-center sm:justify-center pointer-events-none">
                         <div
-                            className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 relative animate-slide-up mx-auto"
+                            className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 relative animate-slide-up pointer-events-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button
