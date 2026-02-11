@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Food Comments (仮)",
-  description: "ドS管理栄養士があなたの食生活を罵倒します",
+  title: "辛口献立簿",
+  description: "あなたの食生活を辛口コメントで管理栄養士が指導します",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

@@ -34,10 +34,10 @@ export default function PostModal() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="fab"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-black text-white hover:bg-gray-800 transition-colors shadow-md"
                 title="食事を記録"
             >
-                <Plus size={24} strokeWidth={2.5} />
+                <Plus size={20} strokeWidth={2.5} />
             </button>
 
             {isOpen && mounted && createPortal(
