@@ -34,8 +34,6 @@ export default function PostModal() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-            <button
-                onClick={() => setIsOpen(true)}
                 className="w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
                 title="食事を記録"
             >
