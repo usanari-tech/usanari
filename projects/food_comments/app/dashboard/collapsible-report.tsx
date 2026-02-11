@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ChevronDown, Flame, Utensils } from 'lucide-react'
 import type { ReportSummary } from './actions'
 import ImageWithZoom from './image-with-zoom'
+import ShareButton from './components/share-button'
 
 type MealAnalysis = {
     menu_name: string
@@ -52,15 +53,27 @@ export default function CollapsibleReport({
                         </div>
                     </div>
                 </div>
-                <ChevronDown
-                    size={18}
-                    className={`text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                />
+                <div className="flex items-center gap-3">
+                    <ShareButton
+                        text={`【Spicy】${report.report_date}の食生活スコア: ${report.score}点\nAI「${report.ai_comment.substring(0, 40)}${report.ai_comment.length > 40 ? '...' : ''}」\n#SpicyApp`}
+                        className="hidden sm:flex"
+                    />
+                    <ChevronDown
+                        size={18}
+                        className={`text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                </div>
             </button>
 
             {/* 展開コンテンツ */}
             {isOpen && (
                 <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3 animate-fade-in">
+                    {/* モバイル用シェアボタン */}
+                    <div className="sm:hidden flex justify-end">
+                        <ShareButton
+                            text={`【Spicy】${report.report_date}の食生活スコア: ${report.score}点\nAI「${report.ai_comment.substring(0, 40)}${report.ai_comment.length > 40 ? '...' : ''}」\n#SpicyApp`}
+                        />
+                    </div>
                     {/* 食事カード */}
                     {meals && meals.length > 0 ? (
                         meals.map((meal, i) => {

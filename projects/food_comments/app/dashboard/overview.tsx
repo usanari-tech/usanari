@@ -5,6 +5,7 @@ import { Clock, Flame } from 'lucide-react'
 import ImageWithZoom from './image-with-zoom'
 import TodayMealCard from './today-meal-card'
 import HistoryView from './history-view'
+import ShareButton from './components/share-button'
 
 // コンポーネント定義
 const MealCard = ({ meal, index, supabaseUrl }: { meal: MealAnalysis; index: number; supabaseUrl: string }) => {
@@ -60,7 +61,7 @@ const MealCard = ({ meal, index, supabaseUrl }: { meal: MealAnalysis; index: num
 }
 
 const ScoreDisplay = ({ score }: { score: number }) => {
-    const colorClass = score < 50 ? 'score-low' : score < 80 ? 'score-mid' : 'score-good'
+    const colorClass = score < 40 ? 'score-low' : score < 80 ? 'score-mid' : 'score-good'
     return (
         <div className="flex items-center gap-2">
             <div className={`text-3xl font-black ${colorClass}`}>{score}</div>
@@ -69,56 +70,62 @@ const ScoreDisplay = ({ score }: { score: number }) => {
     )
 }
 
-const ReportCard = ({ report, isLatest = false }: { report: PastReport; isLatest?: boolean }) => (
-    <div className={`card overflow-hidden ${isLatest ? 'animate-slide-up' : ''}`}>
-        <div className="px-5 py-4 border-b border-gray-100/80 flex justify-between items-center bg-gradient-to-r from-gray-50/50 to-transparent">
-            <div className="flex items-center gap-3">
-                <div className="text-lg font-bold text-gray-900">{report.report_date}</div>
-                {isLatest && <span className="badge-accent">新着</span>}
+const ReportCard = ({ report, isLatest = false }: { report: PastReport; isLatest?: boolean }) => {
+    const shareText = `【Spicy】今日の食生活スコア: ${report.score}点\nAI「${report.ai_comment.substring(0, 40)}${report.ai_comment.length > 40 ? '...' : ''}」\n#SpicyApp`
+
+    return (
+        <div className={`card overflow-hidden ${isLatest ? 'animate-slide-up' : ''}`}>
+            <div className="px-5 py-4 border-b border-gray-100/80 flex justify-between items-center bg-gradient-to-r from-gray-50/50 to-transparent">
+                <div className="flex items-center gap-3">
+                    <div className="text-lg font-bold text-gray-900">{report.report_date}</div>
+                    {isLatest && <span className="badge-accent">新着</span>}
+                </div>
+                <div className="flex items-center gap-3">
+                    <ShareButton text={shareText} />
+                    <ScoreDisplay score={report.score} />
+                </div>
             </div>
-            <ScoreDisplay score={report.score} />
-        </div>
 
-        <div className="p-5 space-y-4">
-            {report.total_calories && (
-                <div className="flex items-center justify-between py-3 px-4 bg-gray-50/80 rounded-xl">
-                    <span className="text-sm text-gray-500 font-medium">本日の摂取量</span>
-                    <span className="text-lg font-bold text-gray-800">
-                        {report.total_calories.toLocaleString()} <span className="text-sm font-normal text-gray-400">kcal</span>
-                    </span>
-                </div>
-            )}
+            <div className="p-5 space-y-4">
+                {report.total_calories && (
+                    <div className="flex items-center justify-between py-3 px-4 bg-gray-50/80 rounded-xl">
+                        <span className="text-sm text-gray-500 font-medium">本日の摂取量</span>
+                        <span className="text-lg font-bold text-gray-800">
+                            {report.total_calories.toLocaleString()} <span className="text-sm font-normal text-gray-400">kcal</span>
+                        </span>
+                    </div>
+                )}
 
-            {report.meals.length > 0 ? (
-                <div className="space-y-3">
-                    {report.meals.map((meal, i) => (
-                        <MealCard key={i} meal={meal} index={i} supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!} />
-                    ))}
-                </div>
-            ) : (
-                <div className="empty-state py-8">
-                    <div className="empty-state-icon">🍽️</div>
-                    <p className="text-gray-400">食事データがありません</p>
-                </div>
-            )}
+                {report.meals.length > 0 ? (
+                    <div className="space-y-3">
+                        {report.meals.map((meal, i) => (
+                            <MealCard key={i} meal={meal} index={i} supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="empty-state py-8">
+                        <div className="empty-state-icon">🍽️</div>
+                        <p className="text-gray-400">食事データがありません</p>
+                    </div>
+                )}
 
-            {report.ai_comment && (
-                <div className="pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center shadow-sm">
-                            <Flame size={16} className="text-white" />
+                {report.ai_comment && (
+                    <div className="pt-4 border-t border-gray-100">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center shadow-sm">
+                                <Flame size={16} className="text-white" />
+                            </div>
+                            <span className="font-bold text-gray-800">辛口コメント</span>
                         </div>
-                        <span className="font-bold text-gray-800">辛口コメント</span>
+                        <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border border-gray-100">
+                            <p className="text-gray-700 text-sm leading-relaxed">{report.ai_comment}</p>
+                        </div>
                     </div>
-                    <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border border-gray-100">
-                        <p className="text-gray-700 text-sm leading-relaxed">{report.ai_comment}</p>
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
-    </div>
-)
-
+    )
+}
 export default async function DashboardContent() {
     // 今週の月曜日を算出
     const today = getJSTDateString()

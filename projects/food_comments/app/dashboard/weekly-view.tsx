@@ -130,7 +130,7 @@ export default function WeeklyView({
                                     <div
                                         className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-sm
                                             ${weekSlots[i]!.score >= 80 ? 'bg-gradient-to-br from-green-400 to-emerald-500' :
-                                                weekSlots[i]!.score >= 50 ? 'bg-gradient-to-br from-yellow-400 to-amber-500' :
+                                                weekSlots[i]!.score >= 40 ? 'bg-gradient-to-br from-yellow-400 to-amber-500' :
                                                     'bg-gradient-to-br from-red-400 to-rose-500'}`}
                                     >
                                         {weekSlots[i]!.score}
@@ -155,7 +155,7 @@ export default function WeeklyView({
                     <div className="grid grid-cols-3 gap-3 text-center">
                         <div>
                             <div className="text-xs text-gray-400 mb-1">平均スコア</div>
-                            <div className={`text-xl font-black ${avgScore < 50 ? 'score-low' : avgScore < 80 ? 'score-mid' : 'score-good'}`}>
+                            <div className={`text-xl font-black ${avgScore < 40 ? 'score-low' : avgScore < 80 ? 'score-mid' : 'score-good'}`}>
                                 {avgScore}
                             </div>
                         </div>

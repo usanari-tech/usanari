@@ -117,8 +117,8 @@ export default function MonthlyView({
                     <>
                         {/* 曜日ヘッダー */}
                         <div className="grid grid-cols-7 gap-1 mb-2">
-                            {dayLabels.map(label => (
-                                <div key={label} className="text-center text-[11px] font-medium text-gray-400 py-1">
+                            {dayLabels.map((label, i) => (
+                                <div key={label} className={`text-center text-[10px] font-bold py-1 ${i === 6 ? 'text-red-400' : i === 5 ? 'text-blue-400' : 'text-gray-400'}`}>
                                     {label}
                                 </div>
                             ))}
@@ -134,22 +134,30 @@ export default function MonthlyView({
                                 const report = reportMap.get(dateStr)
                                 const day = new Date(dateStr + 'T00:00:00Z').getUTCDate()
 
+                                // スコアに基づくスタイル
+                                let cellClass = 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                                let scoreLabel = null
+
+                                if (report) {
+                                    if (report.score >= 80) {
+                                        cellClass = 'bg-green-100 text-green-700 hover:bg-green-200 ring-1 ring-inset ring-green-200'
+                                    } else if (report.score >= 40) {
+                                        cellClass = 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ring-1 ring-inset ring-yellow-200'
+                                    } else {
+                                        cellClass = 'bg-red-100 text-red-700 hover:bg-red-200 ring-1 ring-inset ring-red-200'
+                                    }
+                                    scoreLabel = report.score
+                                }
+
                                 return (
                                     <button
                                         key={dateStr}
                                         onClick={() => onSelectDate?.(dateStr)}
-                                        className="aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5 hover:bg-gray-50 transition-colors relative"
+                                        className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all relative ${cellClass}`}
                                     >
-                                        <span className="text-xs font-medium text-gray-600">{day}</span>
-                                        {report ? (
-                                            <div
-                                                className={`w-2.5 h-2.5 rounded-full
-                                                    ${report.score >= 80 ? 'bg-green-400' :
-                                                        report.score >= 50 ? 'bg-yellow-400' :
-                                                            'bg-red-400'}`}
-                                            />
-                                        ) : (
-                                            <div className="w-2.5 h-2.5" />
+                                        <span className="text-xs font-bold leading-none">{day}</span>
+                                        {scoreLabel !== null && (
+                                            <span className="text-[9px] font-medium leading-none opacity-80">{scoreLabel}</span>
                                         )}
                                     </button>
                                 )
@@ -165,7 +173,7 @@ export default function MonthlyView({
                     <div className="grid grid-cols-3 gap-3 text-center">
                         <div>
                             <div className="text-xs text-gray-400 mb-1">平均スコア</div>
-                            <div className={`text-xl font-black ${avgScore < 50 ? 'score-low' : avgScore < 80 ? 'score-mid' : 'score-good'}`}>
+                            <div className={`text-xl font-black ${avgScore < 40 ? 'score-low' : avgScore < 80 ? 'score-mid' : 'score-good'}`}>
                                 {avgScore}
                             </div>
                         </div>
