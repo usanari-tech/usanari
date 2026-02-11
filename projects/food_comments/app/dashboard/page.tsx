@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
-import DashboardHeader from './header'
+import { Suspense } from 'react'
+import DashboardHeader from './header-wrapper'
 import DashboardContent from './overview'
 import Loading from './loading'
 

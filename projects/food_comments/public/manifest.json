@@ -1,6 +1,6 @@
 {
-    "name": "辛口献立簿",
-    "short_name": "辛口献立簿",
+    "name": "Spicy",
+    "short_name": "Spicy",
     "description": "あなたの食生活を辛口コメントで管理栄養士が指導します",
     "start_url": "/dashboard",
     "display": "standalone",

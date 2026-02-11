@@ -8,8 +8,8 @@ export default function Loading() {
                 <div className="absolute inset-0 bg-indigo-100 rounded-full animate-ping opacity-20"></div>
 
                 {/* アイコンコンテナ */}
-                <div className="relative w-20 h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center shadow-xl animate-bounce-subtle">
-                    <ChefHat size={40} className="text-white" />
+                <div className="relative w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-xl animate-bounce-subtle p-4">
+                    <img src="/icon.png" alt="Loading" className="w-full h-full object-contain" />
                 </div>
             </div>
 

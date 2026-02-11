@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "辛口献立簿",
+  title: "Spicy",
   description: "あなたの食生活を辛口コメントで管理栄養士が指導します",
   manifest: "/manifest.json",
 };
