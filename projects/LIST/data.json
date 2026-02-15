@@ -1,0 +1,362 @@
+[
+  {
+    "name": "Antigravity Dashboard",
+    "dir_name": "LIST",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/LIST",
+    "type": "Script",
+    "description": "全プロジェクトのステータス、技術スタック、成果物を一元管理・可視化するダッシュボード。",
+    "status": "Operational",
+    "last_modified": "2026-02-15 12:14",
+    "api": [],
+    "tools": [
+      "Tailwind CSS",
+      "Alpine.js",
+      "Python"
+    ],
+    "outputs": [
+      "Project Dashboard (HTML)"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Twitter Automation",
+    "dir_name": "twitter",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/twitter",
+    "type": "Automation",
+    "description": "Prosper開発ログの技術発信、フォロワー獲得。",
+    "status": "Operational",
+    "last_modified": "2026-02-14 14:39",
+    "api": [],
+    "tools": [
+      "Node.js",
+      "Puppeteer"
+    ],
+    "outputs": [
+      "X (Twitter) Post"
+    ],
+    "depends_on": [
+      "prosper"
+    ],
+    "related_to": [],
+    "service": [],
+    "account": [
+      "X (@User)"
+    ]
+  },
+  {
+    "name": "Yahoo Affiliate Research",
+    "dir_name": "AFF_yahoo",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/AFF_yahoo",
+    "type": "Docs",
+    "description": "Yahoo!ショッピングアフィリエイトの新プログラム調査と戦略立案。",
+    "status": "Research",
+    "last_modified": "2026-02-14 13:32",
+    "api": [],
+    "tools": [
+      "Markdown"
+    ],
+    "outputs": [
+      "Research Report (Markdown)"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": [
+      "ValueCommerce"
+    ]
+  },
+  {
+    "name": "Real Estate Dashboard",
+    "dir_name": "Gov_API",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/Gov_API",
+    "type": "Web App",
+    "description": "e-Gov APIを利用した不動産価格トレンドの可視化と分析。",
+    "status": "Review",
+    "last_modified": "2026-02-14 12:31",
+    "api": [
+      "e-Gov API"
+    ],
+    "tools": [
+      "Leaflet",
+      "Recharts",
+      "Next.js",
+      "Next.js (Nested)"
+    ],
+    "outputs": [
+      "Web Dashboard"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "AI Image Generator",
+    "dir_name": "create_images",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/create_images",
+    "type": "AI Tool",
+    "description": "記事用画像の生成ツールのインターフェース提供。",
+    "status": "Operational",
+    "last_modified": "2026-02-14 12:01",
+    "api": [
+      "Google GenAI (Imagen 3)"
+    ],
+    "tools": [
+      "Gemini API",
+      "Gradio",
+      "Python",
+      "Pillow"
+    ],
+    "outputs": [
+      "Generated Images (Files)"
+    ],
+    "depends_on": [],
+    "related_to": [
+      "prosper"
+    ],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Food Comments",
+    "dir_name": "food_comments",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/food_comments",
+    "type": "Web App",
+    "description": "食事写真からの栄養解析と「辛口」コメントによる食生活改善。",
+    "status": "Prototype",
+    "last_modified": "2026-02-12 18:38",
+    "api": [
+      "Google GenAI (Gemini Vision)"
+    ],
+    "tools": [
+      "Supabase",
+      "Supabase (DB/Auth)",
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "React"
+    ],
+    "outputs": [
+      "Web App (Vercel)"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": [
+      "Supabase"
+    ]
+  },
+  {
+    "name": "Prosper (Create)",
+    "dir_name": "prosper",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/prosper",
+    "type": "AI/Auto",
+    "description": "Note記事の自動調査・執筆・投稿システム。技術的権威性の確立。",
+    "status": "Development",
+    "last_modified": "2026-02-12 13:47",
+    "api": [
+      "Google GenAI (Gemini 2.5 Flash)",
+      "Google Search Grounding"
+    ],
+    "tools": [
+      "Playwright",
+      "Python",
+      "Gemini"
+    ],
+    "outputs": [
+      "Note.com Article"
+    ],
+    "depends_on": [],
+    "related_to": [
+      "twitter",
+      "create_images"
+    ],
+    "service": [],
+    "account": [
+      "Google AI Studio",
+      "Note (User)"
+    ]
+  },
+  {
+    "name": "Simple Merge Game",
+    "dir_name": "app_ios",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/app_ios",
+    "type": "Other",
+    "description": "物理演算を用いたマージパズルゲームのプロトタイプ開発。",
+    "status": "Prototype",
+    "last_modified": "2026-02-12 12:02",
+    "api": [],
+    "tools": [
+      "Vite",
+      "Framer Motion",
+      "React",
+      "Howler.js"
+    ],
+    "outputs": [
+      "Mobile Game (iOS)"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Fighters Data Scraper",
+    "dir_name": "fighters_history",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/fighters_history",
+    "type": "Data",
+    "description": "格闘技選手データ（RIZIN等）の収集と分析。",
+    "status": "Maintenance",
+    "last_modified": "2026-02-01 16:43",
+    "api": [],
+    "tools": [
+      "BeautifulSoup",
+      "Python"
+    ],
+    "outputs": [
+      "JSON Data"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Pan Animation Demo",
+    "dir_name": "pan-sample-demo",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/pan-sample-demo",
+    "type": "Web App",
+    "description": "パンのアニメーション演出の技術検証デモ。",
+    "status": "Completed",
+    "last_modified": "2026-01-24 19:53",
+    "api": [],
+    "tools": [
+      "Framer Motion",
+      "TypeScript",
+      "Vite",
+      "GSAP",
+      "Tailwind",
+      "React"
+    ],
+    "outputs": [
+      "Web Demo"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Remotion Video Test",
+    "dir_name": "remotion-test",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/remotion-test",
+    "type": "Video",
+    "description": "Reactコードによる動画生成の技術検証。",
+    "status": "Experiment",
+    "last_modified": "2026-01-23 00:44",
+    "api": [],
+    "tools": [
+      "React",
+      "TypeScript",
+      "Remotion"
+    ],
+    "outputs": [
+      "MP4 Video"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Affassion",
+    "dir_name": "affassion",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/affassion",
+    "type": "Web App",
+    "description": "Next.jsベースのWebアプリケーション（詳細要定義）。",
+    "status": "Planning",
+    "last_modified": "2026-01-18 23:52",
+    "api": [],
+    "tools": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind"
+    ],
+    "outputs": [
+      "Web App"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Goal Horizon",
+    "dir_name": "goal-horizon-2026",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/goal-horizon-2026",
+    "type": "Other",
+    "description": "長期目標の管理と進捗可視化。",
+    "status": "Active",
+    "last_modified": "2026-01-18 17:23",
+    "api": [],
+    "tools": [
+      "Firebase",
+      "Chart.js"
+    ],
+    "outputs": [
+      "Web App"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": [
+      "Firebase"
+    ]
+  },
+  {
+    "name": "Simple Clock",
+    "dir_name": "clock",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/clock",
+    "type": "Other",
+    "description": "シンプルな時計アプリケーション。",
+    "status": "Completed",
+    "last_modified": "2026-01-18 15:55",
+    "api": [],
+    "tools": [
+      "HTML/JS"
+    ],
+    "outputs": [
+      "Web Page"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Hello Gemini",
+    "dir_name": "hello-gemini-pro",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/hello-gemini-pro",
+    "type": "Other",
+    "description": "Gemini APIの最小構成接続テスト。",
+    "status": "Archived",
+    "last_modified": "2026-01-02 08:51",
+    "api": [
+      "Gemini Pro"
+    ],
+    "tools": [
+      "Python"
+    ],
+    "outputs": [
+      "Console Output"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  }
+]

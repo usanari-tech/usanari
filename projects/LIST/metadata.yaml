@@ -1,0 +1,194 @@
+# Antigravity Projects Metadata
+# ここにプロジェクトごとの詳細情報を記述してください。
+
+prosper:
+  name: "Prosper (Create)"
+  purpose: "Note記事の自動調査・執筆・投稿システム。技術的権威性の確立。"
+  status: "Development"
+  api: 
+    - "Google GenAI (Gemini 2.5 Flash)"
+    - "Google Search Grounding"
+  outputs: 
+    - "Note.com Article"
+  tools: 
+    - "Playwright"
+    - "Python"
+  account: 
+    - "Google AI Studio"
+    - "Note (User)"
+  related_to:
+    - "twitter" # Twitterで拡散
+    - "create_images" # 画像生成を利用
+
+twitter:
+  name: "Twitter Automation"
+  purpose: "Prosper開発ログの技術発信、フォロワー獲得。"
+  status: "Operational"
+  api: []
+  outputs: 
+    - "X (Twitter) Post"
+  tools: 
+    - "Puppeteer"
+    - "Node.js"
+  account: 
+    - "X (@User)"
+  depends_on:
+    - "prosper" # Prosperのコンテンツを投稿元とする
+
+food_comments:
+  name: "Food Comments"
+  purpose: "食事写真からの栄養解析と「辛口」コメントによる食生活改善。"
+  status: "Prototype"
+  api: 
+    - "Google GenAI (Gemini Vision)"
+  outputs: 
+    - "Web App (Vercel)"
+  tools: 
+    - "Next.js"
+    - "Tailwind"
+    - "Supabase (DB/Auth)"
+  account:
+    - "Supabase"
+
+Gov_API:
+  name: "Real Estate Dashboard"
+  purpose: "e-Gov APIを利用した不動産価格トレンドの可視化と分析。"
+  status: "Review"
+  api: 
+    - "e-Gov API"
+  outputs: 
+    - "Web Dashboard"
+  tools: 
+    - "Leaflet"
+    - "Recharts"
+    - "Next.js"
+
+affassion:
+  name: "Affassion"
+  purpose: "Next.jsベースのWebアプリケーション（詳細要定義）。"
+  status: "Planning"
+  api: []
+  outputs: 
+    - "Web App"
+  tools: 
+    - "Next.js"
+
+pan-sample-demo:
+  name: "Pan Animation Demo"
+  purpose: "パンのアニメーション演出の技術検証デモ。"
+  status: "Completed"
+  api: []
+  outputs: 
+    - "Web Demo"
+  tools: 
+    - "GSAP"
+    - "Framer Motion"
+    - "React"
+    - "Vite"
+
+app_ios:
+  name: "Simple Merge Game"
+  purpose: "物理演算を用いたマージパズルゲームのプロトタイプ開発。"
+  status: "Prototype"
+  api: []
+  outputs: 
+    - "Mobile Game (iOS)"
+  tools: 
+    - "Howler.js"
+    - "Framer Motion"
+    - "React"
+    - "Vite"
+
+create_images:
+  name: "AI Image Generator"
+  purpose: "記事用画像の生成ツールのインターフェース提供。"
+  status: "Operational"
+  api: 
+    - "Google GenAI (Imagen 3)"
+  outputs: 
+    - "Generated Images (Files)"
+  tools: 
+    - "Gradio"
+    - "Pillow"
+    - "Python"
+  related_to:
+    - "prosper" # Prosper用の画像を生成
+
+goal-horizon-2026:
+  name: "Goal Horizon"
+  purpose: "長期目標の管理と進捗可視化。"
+  status: "Active"
+  api: []
+  outputs: 
+    - "Web App"
+  tools: 
+    - "Chart.js"
+    - "Firebase"
+  account:
+    - "Firebase"
+
+AFF_yahoo:
+  name: "Yahoo Affiliate Research"
+  purpose: "Yahoo!ショッピングアフィリエイトの新プログラム調査と戦略立案。"
+  status: "Research"
+  api: []
+  outputs: 
+    - "Research Report (Markdown)"
+  tools: 
+    - "Markdown"
+  account:
+    - "ValueCommerce"
+
+fighters_history:
+  name: "Fighters Data Scraper"
+  purpose: "格闘技選手データ（RIZIN等）の収集と分析。"
+  status: "Maintenance"
+  api: []
+  outputs: 
+    - "JSON Data"
+  tools: 
+    - "BeautifulSoup"
+    - "Python"
+
+remotion-test:
+  name: "Remotion Video Test"
+  purpose: "Reactコードによる動画生成の技術検証。"
+  status: "Experiment"
+  api: []
+  outputs: 
+    - "MP4 Video"
+  tools: 
+    - "Remotion"
+    - "React"
+
+hello-gemini-pro:
+  name: "Hello Gemini"
+  purpose: "Gemini APIの最小構成接続テスト。"
+  status: "Archived"
+  api: 
+    - "Gemini Pro"
+  outputs: 
+    - "Console Output"
+  tools: 
+    - "Python"
+
+clock:
+  name: "Simple Clock"
+  purpose: "シンプルな時計アプリケーション。"
+  status: "Completed"
+  outputs: 
+    - "Web Page"
+  tools: 
+    - "HTML/JS"
+
+LIST:
+  name: "Antigravity Dashboard"
+  purpose: "全プロジェクトのステータス、技術スタック、成果物を一元管理・可視化するダッシュボード。"
+  status: "Operational"
+  api: []
+  outputs: 
+    - "Project Dashboard (HTML)"
+  tools: 
+    - "Python"
+    - "Alpine.js"
+    - "Tailwind CSS"
