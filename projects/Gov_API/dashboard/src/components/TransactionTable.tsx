@@ -142,12 +142,13 @@ export default function TransactionTable({ data }: TransactionTableProps) {
                                     <SortIcon columnKey="FloorPlan" />
                                 </div>
                             </th>
+                            <th className="px-6 py-4 bg-stone-50">築年数</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-100">
                         {currentData.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="px-6 py-8 text-center text-stone-400">
+                                <td colSpan={7} className="px-6 py-8 text-center text-stone-400">
                                     データが見つかりません
                                 </td>
                             </tr>
@@ -171,6 +172,15 @@ export default function TransactionTable({ data }: TransactionTableProps) {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">{item.Area}m²</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{item.FloorPlan || '-'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-stone-500">
+                                        {(() => {
+                                            if (!item.BuildingYear) return '-';
+                                            const match = item.BuildingYear.match(/(\d{4})/);
+                                            if (!match) return item.BuildingYear;
+                                            const age = new Date().getFullYear() - parseInt(match[1]);
+                                            return age >= 0 ? `築${age}年` : '-';
+                                        })()}
+                                    </td>
                                 </tr>
                             ))
                         )}
