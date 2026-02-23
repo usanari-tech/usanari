@@ -68,9 +68,9 @@ export async function GET(request: Request) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            console.error('Upstream API error:', response.status);
             return NextResponse.json(
-                { error: 'Upstream API error', details: errorData },
+                { error: 'Data fetch failed' },
                 { status: response.status }
             );
         }
