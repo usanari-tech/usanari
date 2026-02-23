@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const API_BASE_URL = 'https://www.reinfolib.mlit.go.jp/ex-api/external';
 
@@ -23,10 +24,28 @@ const PREFECTURES = [
 ];
 
 export async function GET(request: Request) {
-    console.log('[API/AREAS] Request received:', request.url);
+    // レート制限チェック（1分あたり30リクエスト/IP - エリア選択は連続操作が多いため緩め）
+    const clientIp = getClientIp(request);
+    const { allowed } = rateLimit(clientIp, { maxRequests: 30, windowMs: 60_000 });
+
+    if (!allowed) {
+        return NextResponse.json(
+            { error: 'Too many requests. Please try again later.' },
+            { status: 429 }
+        );
+    }
+
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type'); // 'prefecture' | 'city'
     const areaCode = searchParams.get('area'); // Prefecture code (needed for city list)
+
+    // パラメータバリデーション
+    if (type && !['prefecture', 'city'].includes(type)) {
+        return NextResponse.json({ error: 'Invalid type parameter' }, { status: 400 });
+    }
+    if (areaCode && !/^\d{2}$/.test(areaCode)) {
+        return NextResponse.json({ error: 'Invalid area code format' }, { status: 400 });
+    }
 
     const apiKey = process.env.REINS_API_KEY;
     if (!apiKey) {

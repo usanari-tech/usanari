@@ -1,18 +1,47 @@
 import { NextResponse } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const API_BASE_URL = 'https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001';
 
 export async function GET(request: Request) {
+    // レート制限チェック（1分あたり20リクエスト/IP）
+    const clientIp = getClientIp(request);
+    const { allowed, remaining, resetAt } = rateLimit(clientIp, { maxRequests: 20, windowMs: 60_000 });
+
+    if (!allowed) {
+        return NextResponse.json(
+            { error: 'Too many requests. Please try again later.' },
+            {
+                status: 429,
+                headers: {
+                    'Retry-After': String(Math.ceil((resetAt - Date.now()) / 1000)),
+                    'X-RateLimit-Remaining': '0',
+                },
+            }
+        );
+    }
+
     const { searchParams } = new URL(request.url);
     const year = searchParams.get('year');
     const area = searchParams.get('area');
     const city = searchParams.get('city');
 
+    // パラメータバリデーション
     if (!year || (!area && !city)) {
         return NextResponse.json(
             { error: 'Missing required parameters: year, and either area or city' },
             { status: 400 }
         );
+    }
+
+    if (!/^\d{4}$/.test(year)) {
+        return NextResponse.json({ error: 'Invalid year format' }, { status: 400 });
+    }
+    if (area && !/^\d{2}$/.test(area)) {
+        return NextResponse.json({ error: 'Invalid area format' }, { status: 400 });
+    }
+    if (city && !/^\d{5}$/.test(city)) {
+        return NextResponse.json({ error: 'Invalid city format' }, { status: 400 });
     }
 
     const apiKey = process.env.REINS_API_KEY;
