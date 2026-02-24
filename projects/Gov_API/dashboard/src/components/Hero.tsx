@@ -51,7 +51,7 @@ export default function Hero() {
                         { num: '0', unit: '円', desc: '利用料金' },
                         { num: '30', unit: '秒', desc: '結果表示まで' },
                     ].map((item, i) => (
-                        <div key={i} className="bg-white rounded-xl py-5 px-4 shadow-lg">
+                        <div key={i} className="glass-card rounded-xl py-5 px-4 shadow-xl relative overflow-hidden group">
                             <p className="text-2xl font-extrabold text-stone-800 tabular-nums">
                                 {item.num}<span className="text-sm font-bold text-teal-600 ml-1">{item.unit}</span>
                             </p>
