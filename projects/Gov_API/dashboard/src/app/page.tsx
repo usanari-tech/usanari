@@ -364,15 +364,13 @@ export default function Home() {
   }, [filteredData]);
 
   return (
-    <div className="min-h-screen bg-data-insight">
+    <div className="min-h-screen bg-stone-50">
       <Hero />
 
       <TrustSection />
 
       {/* Property Condition Form Section */}
-      <section id="property-form" className="py-20 bg-transparent relative overflow-hidden">
-        {/* Decorative background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-teal-500/5 rounded-full blur-[120px] pointer-events-none animate-slow-pulse" />
+      <section id="property-form" className="py-20 bg-white relative">
         <div className="container mx-auto px-6 max-w-xl">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-black text-stone-800 tracking-tight">
@@ -385,7 +383,7 @@ export default function Home() {
           </div>
 
           {/* Area Selector inside the form */}
-          <div className="glass-card rounded-2xl p-6 mb-6 border border-stone-200/50">
+          <div className="bg-stone-50 rounded-2xl p-6 mb-6 border border-stone-100">
             <h3 className="flex items-center gap-2 text-sm font-bold text-stone-600 mb-4">
               <Search className="w-4 h-4 text-accent" />
               エリアを選択
@@ -394,7 +392,7 @@ export default function Home() {
             <AreaSelector onSelect={handleAreaSelect} />
           </div>
 
-          <div className="glass-card rounded-2xl p-6 border border-stone-200/50">
+          <div className="bg-stone-50 rounded-2xl p-6 border border-stone-100">
             <PropertyForm
               onSubmit={(condition) => {
                 setPropertyCondition(condition);
@@ -416,7 +414,7 @@ export default function Home() {
       {/* Estimate Result Section */}
       <div ref={estimateRef}>
         {showEstimate && estimateData && (
-          <section className="py-16 bg-transparent">
+          <section className="py-16 bg-stone-50">
             <div className="container mx-auto px-6 max-w-3xl">
               <div className="text-center mb-10">
                 <p className="text-sm font-bold text-accent mb-2">分析完了</p>
@@ -429,7 +427,7 @@ export default function Home() {
           </section>
         )}
         {showEstimate && !estimateData && !loading && (
-          <section className="py-16 bg-transparent">
+          <section className="py-16 bg-stone-50">
             <div className="container mx-auto px-6 max-w-xl text-center">
               <p className="text-lg font-bold text-stone-600 mb-2">条件に一致する取引データが見つかりませんでした</p>
               <p className="text-sm text-stone-400">エリアを広げるか、条件を緩めて再検索してみてください</p>
@@ -439,8 +437,7 @@ export default function Home() {
       </div>
       {/* Detail Dashboard - shown after estimate */}
       {showEstimate && estimateData && (
-        <main id="analysis-section" className="py-20 bg-transparent relative">
-          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-stone-200/20 rounded-full blur-[120px] pointer-events-none" />
+        <main id="analysis-section" className="py-20 bg-stone-50">
           <div className="container mx-auto px-6 max-w-5xl">
             {/* Results Display */}
             <div>

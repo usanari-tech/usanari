@@ -5,7 +5,7 @@ import { Database, ShieldCheck, CheckCircle2, Building2 } from 'lucide-react';
 
 export default function TrustSection() {
     return (
-        <section className="py-12 bg-transparent border-b border-stone-200/50">
+        <section className="py-12 bg-white border-b border-stone-100">
             <div className="container mx-auto px-6 max-w-4xl">
                 {/* Main trust badge */}
                 <div className="flex flex-col items-center text-center mb-10">
@@ -21,7 +21,7 @@ export default function TrustSection() {
 
                 {/* Three pillars */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="flex items-start gap-4 p-4 rounded-xl glass-card border border-stone-200/50">
+                    <div className="flex items-start gap-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
                         <div className="shrink-0 w-9 h-9 rounded-lg bg-stone-900 flex items-center justify-center">
                             <Database className="w-4 h-4 text-white" />
                         </div>
@@ -32,7 +32,7 @@ export default function TrustSection() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-start gap-4 p-4 rounded-xl glass-card border border-stone-200/50">
+                    <div className="flex items-start gap-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
                         <div className="shrink-0 w-9 h-9 rounded-lg bg-stone-900 flex items-center justify-center">
                             <ShieldCheck className="w-4 h-4 text-white" />
                         </div>
@@ -43,7 +43,7 @@ export default function TrustSection() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-start gap-4 p-4 rounded-xl glass-card border border-stone-200/50">
+                    <div className="flex items-start gap-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
                         <div className="shrink-0 w-9 h-9 rounded-lg bg-stone-900 flex items-center justify-center">
                             <CheckCircle2 className="w-4 h-4 text-white" />
                         </div>
