@@ -43,3 +43,6 @@ obsidian_vault
 # Prosper Investigator Generated Files
 projects/prosper/investigator/reports/
 projects/prosper/investigator/state/
+projects/prosper/.note_user_data/
+__pycache__/
+*.pyc

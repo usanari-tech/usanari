@@ -1,0 +1,22 @@
+[
+    {
+        "id": "b2b_saas_consulting",
+        "url": "https://example.com/b2b-consulting-service",
+        "context": "BtoBツール、AI導入、業務効率化、DX推進、コンサルティングの文脈で紹介する。高単価案件。"
+    },
+    {
+        "id": "freelance_agent",
+        "url": "https://example.com/freelance-engineer-matching",
+        "context": "エンジニアのキャリア、フリーランス独立、高単価案件獲得の文脈で紹介する。"
+    },
+    {
+        "id": "real_estate_investment",
+        "url": "https://example.com/real-estate-investment-seminar",
+        "context": "投資、資産運用、不動産、不労所得の文脈で紹介する。"
+    },
+    {
+        "id": "amazon_tech_book",
+        "url": "https://example.amzn.com/tech-book-link",
+        "context": "IT技術、プログラミング、AI技術の学習や基礎知識の文脈において、関連書籍を紹介する。"
+    }
+]

@@ -8,7 +8,8 @@ from google.genai import types
 from dotenv import load_dotenv
 
 # 環境変数の読み込み
-env_path = os.path.join(os.path.dirname(__file__), "../../../.env")
+# ../.env (projects/prosper/.env) を参照
+env_path = os.path.join(os.path.dirname(__file__), "../.env")
 print(f"DEBUG: Looking for .env at: {os.path.abspath(env_path)}")
 print(f"DEBUG: Exists? {os.path.exists(env_path)}")
 
@@ -29,14 +30,15 @@ class ProsperInvestigator:
         # ユーザー指定があればそれを最優先、なければデフォルト順
         if model_name:
             primary = f"models/{model_name}" if not model_name.startswith("models/") else model_name
-            self.model_candidates = [primary, "models/gemini-2.5-flash", "models/gemini-2.5-flash-lite"]
+            self.model_candidates = [primary, "models/gemini-2.5-flash", "models/gemini-2.5-flash-lite", "models/gemini-3-flash-preview"]
             # 重複削除 (順序保持)
             self.model_candidates = list(dict.fromkeys(self.model_candidates))
         else:
-            self.model_candidates = ["models/gemini-2.5-flash", "models/gemini-2.5-flash-lite"]
+            self.model_candidates = ["models/gemini-2.5-flash", "models/gemini-2.5-flash-lite", "models/gemini-3-flash-preview"]
             
         self.current_model_index = 0
         self.model_name = self.model_candidates[0]
+
             
         print(f"DEBUG: Initialized with model priority: {self.model_candidates}")
         self.research_rules = self._load_rules()
@@ -94,21 +96,29 @@ class ProsperInvestigator:
         except FileNotFoundError:
             return "No specific rules found."
 
-    def plan_research(self, theme, use_ai=False):
+    def plan_research(self, theme, use_ai=False, user_hypothesis=None):
         """Phase 1: 調査計画の立案 (トピック分解)"""
         print(f"   [Planning] Analyzing theme: '{theme}'...")
         
-        # Default: Use Golden Template (0 API calls)
+        # Default: Use Golden Template (Unified Standard)
         if not use_ai:
-            print("   [Planning] Using 'Golden Template' (API-free).")
-            return [
-                f"{theme}の概要、基本情報、および歴史的背景",
-                f"{theme}の主要な機能、技術的特徴、または核心的な要素",
-                f"{theme}の市場評価、競合との比較、および独自の強み",
-                f"{theme}の社会的・文化的影響、およびユーザーコミュニティの反応",
-                f"{theme}に関する批判、課題、論争、または法的問題",
-                f"{theme}の将来展望、長期的な遺産、および今後の予測"
+            print("   [Planning] Using 'Golden Template' (Unified Standard).")
+            topics = [
+                f"{theme}の概要、定義、および背景/起源 (Essentials)",
+                f"{theme}の経済的規模、ビジネスモデル、または収益構造 (Commercial/Economic Reality)",
+                f"{theme}の社会的・文化的影響、および時系列による変化 (Social Dynamics)",
+                f"{theme}に対する評価：専門家の分析と、一般大衆の反応・体験談 (Evaluation & Public Reaction)",
+                f"{theme}の核心的要素、構造、または特徴 (Core Elements & Structure)",
+                f"{theme}に関する論争、問題点、または議論 (Controversies & Issues)",
+                f"{theme}の長期的影響、または将来展望 (Legacy & Future)"
             ]
+            
+            # Dimension 0: User Hypothesis (If provided)
+            if user_hypothesis:
+                 print(f"   [Planning] Integrating User Hypothesis: '{user_hypothesis}'")
+                 topics.insert(0, f"検証課題: {user_hypothesis} の事実確認と詳細分析 (User Hypothesis)")
+            
+            return topics
 
         if self.dry_run:
             print("   [Dry Run] Returning mock topics.")
@@ -118,15 +128,17 @@ class ProsperInvestigator:
         あなたはプロの調査プランナーです。以下のテーマについて、徹底的な調査を行うための「調査トピックリスト」を作成してください。
         
         Theme: {theme}
+        User Hypothesis (Must Verify): {user_hypothesis if user_hypothesis else "None"}
         
         [Reference Rules]
         {self.research_rules}
         
         [INSTRUCTIONS]
-        1. create a list of 8-10 essential research topics to cover the theme comprehensively.
-        2. Ensure you cover all dimensions defined in the Rules.
-        3. Output MUST be a valid JSON list of strings. Example: ["Topic 1", "Topic 2", ...]
-        4. Do NOT include generic topics. Be specific to the theme.
+        1. create a list of 7-10 essential research topics to cover the theme comprehensively.
+        2. **MANDATORY**: You MUST cover all 7 dimensions defined in the [Reference Rules] above (Essentials, Commercial, Social, Evaluation & Experience, Themes, Controversies, Legacy).
+        3. Specifically for "Evaluation", include BOTH Professional Critics (Review Sites) and Individual User Voices.
+        4. Specifically for "Commercial", include Marketing Strategy and Box Office Gap.
+        5. Output MUST be a valid JSON list of strings. Example: ["Topic 1", "Topic 2", ...]
         """
         
         response = self._generate_with_fallback(
@@ -138,7 +150,7 @@ class ProsperInvestigator:
         
         try:
             topics = json.loads(response.text)
-            print(f"   [Planning] Generated {len(topics)} topics.")
+            print(f"   [Planning] Generated {len(topics)} topics (Unified Standard).")
             for t in topics:
                 print(f"      - {t}")
             return topics
@@ -207,8 +219,10 @@ class ProsperInvestigator:
             
         return report
 
-    def run(self, theme, output_path=None, use_ai_plan=False):
+    def run(self, theme, output_path=None, use_ai_plan=False, user_hypothesis=None):
         print(f"\n>>> Starting Deep Investigation for: '{theme}'\n")
+        if user_hypothesis:
+            print(f">>> Focus Hypothesis: '{user_hypothesis}'")
         
         # Resume Manager Init
         safe_theme = "".join([c for c in theme if c.isalnum() or c in (' ', '-', '_')]).strip().replace(' ', '_')
@@ -226,7 +240,7 @@ class ProsperInvestigator:
             if use_ai_plan:
                 print("   [Rate Limit] Waiting 15s before Planning (RPM limit 5)...")
                 time.sleep(15)
-            topics = self.plan_research(theme, use_ai=use_ai_plan)
+            topics = self.plan_research(theme, use_ai=use_ai_plan, user_hypothesis=user_hypothesis)
             results = {} # バンドル単位で保存するため、keyは "Batch X" などになる可能性、あるいは展開して保存
             
             # 初期状態保存
@@ -287,6 +301,9 @@ class ProsperInvestigator:
         if not output_path:
             timestamp_full = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             output_path = f"projects/prosper/investigator/reports/{timestamp_full}_{safe_theme}_DEEP.md"
+        elif os.path.isdir(output_path) or (not os.path.splitext(output_path)[1]):
+            timestamp_full = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_path = os.path.join(output_path, f"{timestamp_full}_{safe_theme}_DEEP.md")
             
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         with open(output_path, "w", encoding="utf-8") as f:
@@ -360,8 +377,9 @@ if __name__ == "__main__":
     parser.add_argument("--output", help="Output file path (optional)")
     parser.add_argument("--list-models", action="store_true", help="List available models")
     parser.add_argument("--dry-run", action="store_true", help="Run without calling API")
-    parser.add_argument("--model", help="Specify model name (e.g. gemini-2.5-flash-lite)")
+    parser.add_argument("--model", help="Specify model name (e.g. gemini-3-flash-preview)")
     parser.add_argument("--ai-plan", action="store_true", help="Use AI for planning topics (consumes API quota)")
+    parser.add_argument("--hypothesis", help="Specific user hypothesis to verify (Dimension 0)")
     args = parser.parse_args()
     
     investigator = ProsperInvestigator(model_name=args.model)
@@ -378,4 +396,4 @@ if __name__ == "__main__":
 
     # Dry Run設定の注入
     investigator.dry_run = args.dry_run
-    investigator.run(args.theme, args.output, use_ai_plan=args.ai_plan)
+    investigator.run(args.theme, args.output, use_ai_plan=args.ai_plan, user_hypothesis=args.hypothesis)

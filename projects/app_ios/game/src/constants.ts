@@ -1,0 +1,17 @@
+export const COLORS = [
+    'bg-red-500 shadow-red-500/50 from-red-400 to-red-600',
+    'bg-orange-500 shadow-orange-500/50 from-orange-400 to-orange-600',
+    'bg-yellow-500 shadow-yellow-500/50 from-yellow-400 to-yellow-600',
+    'bg-lime-500 shadow-lime-500/50 from-lime-400 to-lime-600',
+    'bg-green-500 shadow-green-500/50 from-green-400 to-green-600',
+    'bg-teal-500 shadow-teal-500/50 from-teal-400 to-teal-600',
+    'bg-cyan-500 shadow-cyan-500/50 from-cyan-400 to-cyan-600',
+    'bg-sky-500 shadow-sky-500/50 from-sky-400 to-sky-600',
+    'bg-blue-500 shadow-blue-500/50 from-blue-400 to-blue-600',
+    'bg-indigo-500 shadow-indigo-500/50 from-indigo-400 to-indigo-600',
+    'bg-violet-500 shadow-violet-500/50 from-violet-400 to-violet-600',
+    'bg-purple-500 shadow-purple-500/50 from-purple-400 to-purple-600',
+    'bg-fuchsia-500 shadow-fuchsia-500/50 from-fuchsia-400 to-fuchsia-600',
+    'bg-pink-500 shadow-pink-500/50 from-pink-400 to-pink-600',
+    'bg-rose-500 shadow-rose-500/50 from-rose-400 to-rose-600',
+];

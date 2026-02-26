@@ -1,0 +1,17 @@
+{
+    "name": "twitter-intel",
+    "version": "1.0.0",
+    "description": "X（Twitter）情報収集エンジン",
+    "main": "collect_trending.js",
+    "scripts": {
+        "trending": "node collect_trending.js",
+        "search": "node search_topic.js",
+        "niche": "node monitor_niche.js"
+    },
+    "dependencies": {
+        "dotenv": "^16.6.1",
+        "puppeteer": "^22.15.0",
+        "puppeteer-extra": "^3.3.6",
+        "puppeteer-extra-plugin-stealth": "^2.11.2"
+    }
+}

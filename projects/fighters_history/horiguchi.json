@@ -1,0 +1,895 @@
+{
+  "head" : {
+    "vars" : [ "p", "pLabel", "o", "oLabel" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P3368"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-323CF328-A7D9-4B44-8834-83B69C912E41"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P3368"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-323CF328-A7D9-4B44-8834-83B69C912E41"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P3502"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-7D9993FE-0E9B-426A-8E05-B5FD680F3BA3"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P3502"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-7D9993FE-0E9B-426A-8E05-B5FD680F3BA3"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P4985"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-CFF4DC76-AAC7-401D-94A8-00F129B94520"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P4985"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-CFF4DC76-AAC7-401D-94A8-00F129B94520"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P5421"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-98FED7DB-DD2F-4D39-AFB0-263A9798E3B3"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P5421"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-98FED7DB-DD2F-4D39-AFB0-263A9798E3B3"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P7704"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-0DC32E2C-B607-4074-83BE-37296C48E3F4"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P7704"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-0DC32E2C-B607-4074-83BE-37296C48E3F4"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-11e6a6e9-8df8-4de9-b84d-e826b282e4eb"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-11e6a6e9-8df8-4de9-b84d-e826b282e4eb"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-18870c24-16cb-47fa-9e5a-0aa53a723fa5"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-18870c24-16cb-47fa-9e5a-0aa53a723fa5"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-3a8c41a3-4e6a-47d5-8e6e-d5d9b37d8c91"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-3a8c41a3-4e6a-47d5-8e6e-d5d9b37d8c91"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-a6a71295-e4c4-4b7f-8bf5-2bf06d7c5e61"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P8687"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-a6a71295-e4c4-4b7f-8bf5-2bf06d7c5e61"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P9722"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-EE9D7F17-DAA1-46B6-97A8-A65F428D27AA"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P9722"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-EE9D7F17-DAA1-46B6-97A8-A65F428D27AA"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P9726"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-D1EA38B4-2C66-40C6-9377-4BFB1935B55C"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P9726"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-D1EA38B4-2C66-40C6-9377-4BFB1935B55C"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P9728"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-95c54e95-4a75-682f-8d2c-80e1827964ef"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P9728"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-95c54e95-4a75-682f-8d2c-80e1827964ef"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/prop/P10073"
+      },
+      "o" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/statement/Q6451952-93e0eee9-4112-7e6e-82f8-65d00c987a09"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.wikidata.org/prop/P10073"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "statement/Q6451952-93e0eee9-4112-7e6e-82f8-65d00c987a09"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/version"
+      },
+      "o" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#integer",
+        "type" : "literal",
+        "value" : "2453428218"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/version"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "2453428218"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/dateModified"
+      },
+      "o" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2026-01-10T02:37:36Z"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/dateModified"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "2026-01-10T02:37:36Z"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Japanese mixed martial artist"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Japanese mixed martial artist"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "nl",
+        "type" : "literal",
+        "value" : "Japans gemengde vechtsporten-artiest"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Japans gemengde vechtsporten-artiest"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "fr",
+        "type" : "literal",
+        "value" : "pratiquant japonais d'arts martiaux mixtes"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "pratiquant japonais d'arts martiaux mixtes"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "it",
+        "type" : "literal",
+        "value" : "artista marziale misto giapponese"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "artista marziale misto giapponese"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "ja",
+        "type" : "literal",
+        "value" : "日本の総合格闘家 (1990-)"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "日本の総合格闘家 (1990-)"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "tr",
+        "type" : "literal",
+        "value" : "Japon karma dövüş sanatları ustası"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Japon karma dövüş sanatları ustası"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "ga",
+        "type" : "literal",
+        "value" : "ealaíontóir comhraic measctha Seapánach"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "ealaíontóir comhraic measctha Seapánach"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "de",
+        "type" : "literal",
+        "value" : "japanischer Mixed-Martial-Arts-Kämpfer und Karateka"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "japanischer Mixed-Martial-Arts-Kämpfer und Karateka"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "ar",
+        "type" : "literal",
+        "value" : "مُقاتل فنون قتالية مختلطة ياباني"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "مُقاتل فنون قتالية مختلطة ياباني"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://schema.org/description"
+      },
+      "o" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "японский боец смешанного стиля"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://schema.org/description"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "японский боец смешанного стиля"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "ar",
+        "type" : "literal",
+        "value" : "كيوجي هوريجوتشي"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "كيوجي هوريجوتشي"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "ast",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "de",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "es",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "fa",
+        "type" : "literal",
+        "value" : "کیوجی هوریگوچی"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "کیوجی هوریگوچی"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "fr",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "it",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "ja",
+        "type" : "literal",
+        "value" : "堀口恭司"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "堀口恭司"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "nl",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "pl",
+        "type" : "literal",
+        "value" : "Kyōji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyōji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "pt-br",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Кёдзи Хоригути"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Кёдзи Хоригути"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "sq",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "tr",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "o" : {
+        "xml:lang" : "zh",
+        "type" : "literal",
+        "value" : "堀口恭司"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2000/01/rdf-schema#label"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "堀口恭司"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "o" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Kyōji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyōji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "o" : {
+        "xml:lang" : "pl",
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyoji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "o" : {
+        "xml:lang" : "pl",
+        "type" : "literal",
+        "value" : "Kyouji Horiguchi"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Kyouji Horiguchi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "o" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Хоригути, Кёдзи"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://www.w3.org/2004/02/skos/core#altLabel"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "Хоригути, Кёдзи"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://wikiba.se/ontology#statements"
+      },
+      "o" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#integer",
+        "type" : "literal",
+        "value" : "39"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://wikiba.se/ontology#statements"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "39"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://wikiba.se/ontology#sitelinks"
+      },
+      "o" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#integer",
+        "type" : "literal",
+        "value" : "12"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://wikiba.se/ontology#sitelinks"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "12"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://wikiba.se/ontology#identifiers"
+      },
+      "o" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#integer",
+        "type" : "literal",
+        "value" : "15"
+      },
+      "pLabel" : {
+        "type" : "literal",
+        "value" : "http://wikiba.se/ontology#identifiers"
+      },
+      "oLabel" : {
+        "type" : "literal",
+        "value" : "15"
+      }
+    } ]
+  }
+}

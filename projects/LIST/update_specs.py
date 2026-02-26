@@ -8,6 +8,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(CURRENT_DIR, "data.json")
 DOCS_FILE = os.path.join(CURRENT_DIR, "specifications.md")
 METADATA_FILE = os.path.join(CURRENT_DIR, "metadata.yaml")
+AGENT_DIR = os.path.join(os.path.dirname(PROJECTS_DIR), ".agent")
 
 EXCLUDE_DIRS = [
     "node_modules", ".git", ".idea", ".vscode", "__pycache__", "scripts", 
@@ -115,6 +116,17 @@ def detect_tech_stack(project_path):
             tech.add("Python")
             if pro_type == "Other": pro_type = "Script"
             
+    # Check for Markdown documentation if no other tech found (or just to add Markdown tool)
+    if not tech:
+        has_md = False
+        for f in os.listdir(project_path):
+            if f.endswith(".md") and f.lower() != "readme.md":
+                has_md = True
+                break
+        if has_md:
+            tech.add("Markdown")
+            if pro_type == "Other": pro_type = "Docs"
+            
     # Project specific overrides (Manual corrections for known projects)
     name = os.path.basename(project_path)
     if name == "prosper":
@@ -156,19 +168,36 @@ def get_last_modified_date(project_path):
         return datetime.datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M')
     return "Unknown"
 
+    return "No description available."
+
 def get_description(project_path):
+    # Priority 1: README.md
     readme_path = os.path.join(project_path, "README.md")
-    if os.path.exists(readme_path):
-        try:
-            with open(readme_path, 'r') as f:
-                lines = f.readlines()
-                # Try to find the first non-header line that isn't empty
-                for line in lines:
-                    line = line.strip()
-                    if line and not line.startswith("#") and not line.startswith("!"):
-                        return line[:100] + "..." if len(line) > 100 else line
-        except:
-            pass
+    
+    # Priority 2: Any other .md file
+    target_files = [readme_path]
+    try:
+        md_files = [os.path.join(project_path, f) for f in os.listdir(project_path) if f.endswith(".md") and f.lower() != "readme.md"]
+        target_files.extend(md_files)
+    except: pass
+
+    for file_path in target_files:
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, 'r') as f:
+                    lines = f.readlines()
+                    # Try to find headers or first paragraph
+                    for line in lines:
+                        line = line.strip()
+                        if line:
+                            # If header, clean it
+                            if line.startswith("#"):
+                                return line.lstrip("#").strip()
+                            # If text, return it
+                            return line[:100] + "..." if len(line) > 100 else line
+            except:
+                pass
+                
     return "No description available."
 
 def load_metadata():
@@ -179,6 +208,145 @@ def load_metadata():
         except Exception as e:
             print(f"Warning: Failed to load metadata.yaml: {e}")
     return {}
+
+def parse_frontmatter(file_path):
+    try:
+        with open(file_path, 'r') as f:
+            content = f.read()
+        match = re.match(r'^---\n(.*?)\n---\n', content, re.DOTALL)
+        if match:
+            return yaml.safe_load(match.group(1))
+    except:
+        pass
+    return {}
+
+def get_agent_resources(metadata):
+    resources = {}
+    
+    def normalize_name(name):
+        return name.lower().replace(" ", "").replace("-", "")
+
+    # Skills
+    skills_dir = os.path.join(AGENT_DIR, "skills")
+    if os.path.exists(skills_dir):
+        for d in os.listdir(skills_dir):
+            path = os.path.join(skills_dir, d)
+            skill_md = os.path.join(path, "SKILL.md")
+            if os.path.isdir(path) and os.path.exists(skill_md):
+                # Try to load from frontmatter first
+                fm_meta = parse_frontmatter(skill_md)
+                # Then overlay with centralized metadata.yaml if exists
+                central_meta = metadata.get(d, {})
+                
+                name = central_meta.get("name") or fm_meta.get("name", d).replace("-", " ").title()
+                desc = central_meta.get("purpose") or fm_meta.get("description", "No description.")
+                
+                key = normalize_name(name)
+                resources[key] = {
+                    "name": name,
+                    "dir_name": d,
+                    "path": path,
+                    "type": "Skill",
+                    "description": desc,
+                    "status": "Operational",
+                    "last_modified": get_last_modified_date(path),
+                    "api": [],
+                    "tools": ["Agent Skill"],
+                    "outputs": [],
+                    "depends_on": [],
+                    "related_to": [],
+                    "service": [],
+                    "account": []
+                }
+
+    # Workflows
+    workflows_dir = os.path.join(AGENT_DIR, "workflows")
+    if os.path.exists(workflows_dir):
+        for f in os.listdir(workflows_dir):
+            if f.endswith(".md"):
+                path = os.path.join(workflows_dir, f)
+                fm_meta = parse_frontmatter(path)
+                central_meta = metadata.get(f, {})
+                
+                name = central_meta.get("name") or fm_meta.get("name", f.replace(".md", "").replace("-", " ").title())
+                desc = central_meta.get("purpose") or fm_meta.get("description", "No description.")
+                
+                key = normalize_name(name)
+                if key in resources:
+                    # Merge with existing
+                    existing = resources[key]
+                    existing["type"] += " / Workflow"
+                    if "Agent Workflow" not in existing["tools"]:
+                        existing["tools"].append("Agent Workflow")
+                    # Keep existing description if it's longer/better, otherwise overwrite?
+                    # Usually Skill description is better, so we only overwrite if existing is empty
+                    if existing["description"] == "No description." and desc != "No description.":
+                         existing["description"] = desc
+                else:
+                    resources[key] = {
+                        "name": name,
+                        "dir_name": f,
+                        "path": path,
+                        "type": "Workflow",
+                        "description": desc,
+                        "status": "Operational",
+                        "last_modified": datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y-%m-%d %H:%M'),
+                        "api": [],
+                        "tools": ["Agent Workflow"],
+                        "outputs": [],
+                        "depends_on": [],
+                        "related_to": [],
+                        "service": [],
+                        "account": []
+                    }
+
+    # Scripts
+    scripts_dir = os.path.join(AGENT_DIR, "scripts")
+    if os.path.exists(scripts_dir):
+        for f in os.listdir(scripts_dir):
+            if f.endswith(".py") or f.endswith(".sh"):
+                path = os.path.join(scripts_dir, f)
+                central_meta = metadata.get(f, {})
+                
+                desc = central_meta.get("purpose", "Agent Script")
+                if not central_meta.get("purpose") and f.endswith(".py"):
+                    try:
+                        with open(path, 'r') as df:
+                            content = df.read()
+                            match = re.search(r'"""(.*?)"""', content, re.DOTALL)
+                            if match:
+                                desc = match.group(1).strip().split('\n')[0]
+                    except: pass
+                
+                name = central_meta.get("name", f)
+                key = normalize_name(name)
+                
+                tool_type = "Python" if f.endswith(".py") else "Shell"
+                
+                if key in resources:
+                     existing = resources[key]
+                     existing["type"] += " / Script"
+                     if tool_type not in existing["tools"]:
+                         existing["tools"].append(tool_type)
+                else:
+                    resources[key] = {
+                        "name": name,
+                        "dir_name": f,
+                        "path": path,
+                        "type": "Script",
+                        "description": desc,
+                        "status": "Operational",
+                        "last_modified": datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y-%m-%d %H:%M'),
+                        "api": [],
+                        "tools": [tool_type],
+                        "outputs": [],
+                        "depends_on": [],
+                        "related_to": [],
+                        "service": [],
+                        "account": []
+                    }
+
+    return list(resources.values())
 
 def generate_data():
     projects = []
@@ -236,6 +404,9 @@ def generate_data():
         }
         
         projects.append(project_data)
+    
+    # Add Agent Resources
+    projects.extend(get_agent_resources(metadata))
     
     # Sort by Last Modified (Descending)
     projects.sort(key=lambda x: x['last_modified'], reverse=True)

@@ -17,13 +17,14 @@ from playwright.async_api import async_playwright
 # ---------------------------------------------------------
 # 設定
 # ---------------------------------------------------------
-ARTICLE_PATH = "/Users/yukinari/Desktop/antigravity/projects/prosper/article_001_fight_club_marketing.md"
+ARTICLE_PATH = "/Users/yukinari/Desktop/antigravity/projects/prosper/writer/drafts/20260204_Lego_Investment_Draft.md"
 USER_DATA_DIR = "/Users/yukinari/Desktop/antigravity/projects/prosper/.note_user_data"
 
 class ProsperPublisherV10:
     def __init__(self, article_path):
         self.article_path = article_path
         self.title = ""
+        self.tags = [] # ハッシュタグリスト
         self.banner_path = None # バナー画像パス
         self.lines = []
         self.page = None
@@ -49,8 +50,15 @@ class ProsperPublisherV10:
                 self.banner_path = os.path.abspath(os.path.join(base_dir, rel_path))
                 continue
 
-            # タイトル（H1）は別扱い（最初の#のみ）
-            if line.startswith('# ') and not line.startswith('## '):
+            # ハッシュタグ: [TAGS]: #Tag1 #Tag2 ...
+            if line.startswith("[TAGS]:"):
+                tags_str = line.replace("[TAGS]:", "").strip()
+                # '#' を除外し、空白で分割
+                self.tags = [t.strip().replace("#", "") for t in tags_str.split() if t.strip()]
+                continue
+
+            # タイトル（H1）は別扱い（最初の#のみをタイトルとして採用）
+            if line.startswith('# ') and not line.startswith('## ') and not self.title:
                 self.title = line[2:].strip()
                 continue
             
@@ -65,7 +73,7 @@ class ProsperPublisherV10:
             
             self.lines.append(line)
 
-        print(f"パース完了: タイトル='{self.title}', バナー={'あり' if self.banner_path else 'なし'}", flush=True)
+        print(f"パース完了: タイトル='{self.title}', 以下のタグを検出={self.tags}, バナー={'あり' if self.banner_path else 'なし'}", flush=True)
         return True
 
     async def paste_text(self, text: str):
@@ -82,12 +90,32 @@ class ProsperPublisherV10:
         if plus_button:
             await plus_button.click()
             await asyncio.sleep(0.5) # メニュー展開待ち
-            
-            menu_btn = await self.page.query_selector(f'button:has-text("{menu_item_text}")')
-            if menu_btn:
+        else:
+            print(f"      [Warn] +ボタンが見つかりません。ショートカット(/)を試行します: {menu_item_text}", flush=True)
+            await self.page.keyboard.type("/")
+            await asyncio.sleep(0.5)
+
+        # メニュー内から指定テキストのボタンを探す
+        menu_btn = await self.page.query_selector(f'button:has-text("{menu_item_text}")')
+        if not menu_btn:
+            # buttonタグ以外も探す (divなど)
+            menu_btn = await self.page.query_selector(f'div[role="menuitem"]:has-text("{menu_item_text}")')
+            if not menu_btn:
+                 menu_btn = await self.page.query_selector(f':has-text("{menu_item_text}")')
+
+        if menu_btn:
+            try:
                 await menu_btn.click()
+                print(f"      [OK] メニュー項目 '{menu_item_text}' をクリックしました", flush=True)
                 await asyncio.sleep(1.0) # 実行待ち
                 return True
+            except Exception as e:
+                print(f"      [Error] メニュー項目 '{menu_item_text}' のクリックに失敗: {e}", flush=True)
+        else:
+            print(f"      [Error] メニュー項目 '{menu_item_text}' が見つかりません！", flush=True)
+            # フォールバック: バックスペースで / を消す
+            await self.page.keyboard.press("Backspace")
+            
         return False
 
     async def publish(self):
@@ -116,12 +144,8 @@ class ProsperPublisherV10:
             await asyncio.sleep(2)
 
             # バナー画像設定 (タイトル入力の前に行う)
-            if self.banner_path:
+            if self.banner_path and os.path.basename(self.banner_path) != "PLACEHOLDER" and os.path.exists(self.banner_path):
                 print(f">>> バナー画像設定: {self.banner_path}", flush=True)
-                
-                # ユーザー情報により 'aria-label="画像を追加"' が正解と判明。
-                # ただし複数ある可能性があるため、query_selector_allで取得し、
-                # 最初の方（ヘッダー付近）にあるものを対象にする。
                 buttons = await self.page.query_selector_all('button[aria-label="画像を追加"]')
                 target_btn = None
                 
@@ -200,22 +224,36 @@ class ProsperPublisherV10:
 
             # 行を順番に入力
             total = len(self.lines)
-            in_list_mode = False # リストモード管理
+            block_mode = "none" # "none", "bullet", "number", "quote", "code"
 
             for i, line in enumerate(self.lines):
                 progress = int((i + 1) / total * 100)
                 # ログ表示用
                 log_line = line[:30] + "..." if len(line) > 30 else line
-                print(f"[{progress:3d}%] 行 {i+1}/{total}: {log_line} (ListMode: {in_list_mode})", flush=True)
+                print(f"[{progress:3d}%] 行 {i+1}/{total}: {log_line} (Mode: {block_mode})", flush=True)
 
                 stripped_line = line.strip()
 
-                # --- 1. 空行処理 ---
+                # 全体的なMarkdown太字の強制解除 (コードブロック内以外)
+                if block_mode != "code" and not stripped_line.startswith('```'):
+                    # **text** を 「text」に置換し、さらに余分な太字マークを消す
+                    stripped_line = re.sub(r'\*\*(.+?)\*\*', r'「\1」', stripped_line)
+                    stripped_line = re.sub(r'__+(.+?)__+', r'「\1」', stripped_line)
+                    stripped_line = stripped_line.replace('**', '').replace('__', '')
+                    
+                    # line変数も同様に上書き（インデントを保持するため元のlineにも適用）
+                    line = re.sub(r'\*\*(.+?)\*\*', r'「\1」', line)
+                    line = re.sub(r'__+(.+?)__+', r'「\1」', line)
+                    line = line.replace('**', '').replace('__', '')                # --- 1. 空行処理 ---
                 if stripped_line == "":
-                    if in_list_mode:
-                        # リストモード中に空行 → リスト終了（Enter x 2）
+                    if block_mode == "code":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        await asyncio.sleep(0.1)
+                        continue
+                    if block_mode in ["bullet", "number", "quote"]:
+                        # ブロックモード中に空行 → ブロック終了（Enter x 2的な処理）
+                        await self.page.keyboard.press("Enter")
+                        block_mode = "none"
                     else:
                         await self.page.keyboard.press("Enter")
                     await asyncio.sleep(0.3)
@@ -223,11 +261,33 @@ class ProsperPublisherV10:
 
                 # --- 2. 機能ブロック検出 & 適用 ---
 
+                # --- コードブロック (```) ---
+                if stripped_line.startswith('```'):
+                    if block_mode == "code":
+                        # コードブロック終了 (Noteエディタでは下矢印で抜けてEnterが安全)
+                        await self.page.keyboard.press("ArrowDown")
+                        await self.page.keyboard.press("Enter")
+                        block_mode = "none"
+                    else:
+                        if block_mode != "none":
+                            await self.page.keyboard.press("Enter")
+                            block_mode = "none"
+                        await self.click_plus_menu("コード")
+                        block_mode = "code"
+                    await asyncio.sleep(0.5)
+                    continue
+
+                if block_mode == "code":
+                    await self.paste_text(line) # インデント維持のためstripped_lineではなく生line
+                    await self.page.keyboard.press("Enter")
+                    await asyncio.sleep(0.1)
+                    continue
+
                 # [IMAGE] 画像アップロード
                 if stripped_line.startswith("[IMAGE]:"):
-                    if in_list_mode:
+                    if block_mode != "none":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        block_mode = "none"
                     
                     image_path = stripped_line.replace("[IMAGE]:", "").strip()
                     print(f"   >>> 画像アップロード開始: {image_path}", flush=True)
@@ -253,30 +313,43 @@ class ProsperPublisherV10:
 
                 # [TOC] 目次
                 if stripped_line == "[TOC]":
-                    if in_list_mode:
+                    if block_mode != "none":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        block_mode = "none"
                     
+                    print("   >>> 目次(TOC)を挿入します", flush=True)
                     await self.click_plus_menu("目次")
+                    await asyncio.sleep(1.0) # 目次ブロックの生成待機
+                    
+                    # 目次ブロックの下に確実に行くため下矢印を押してからEnter
+                    await self.page.keyboard.press("ArrowDown")
                     await self.page.keyboard.press("Enter")
                     await asyncio.sleep(0.5)
                     continue
 
                 # <!-- PAYWALL --> 有料エリア
                 if "<!-- PAYWALL -->" in stripped_line:
-                    if in_list_mode:
+                    if block_mode != "none":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        block_mode = "none"
                     
                     await self.click_plus_menu("有料エリア指定")
                     await asyncio.sleep(1.0)
+                    
+                    # 再フォーカス: 有料ライン挿入後はエディタのフォーカスが外れる対策
+                    # エディタをクリックして最後尾にキャレットを移動させる
+                    editor_selector = 'div[contenteditable="true"][role="textbox"]'
+                    await self.page.click(editor_selector)
+                    await asyncio.sleep(0.5)
+                    await self.page.evaluate('() => { const el = document.querySelector(\'div[contenteditable="true"][role="textbox"]\'); if (el) { el.focus(); const sel = window.getSelection(); sel.selectAllChildren(el); sel.collapseToEnd(); } }')
+                    await asyncio.sleep(0.5)
                     continue
 
                 # --- 区切り線 (---) ---
                 if stripped_line in ['---', '***', '___']:
-                    if in_list_mode:
+                    if block_mode != "none":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        block_mode = "none"
                     
                     # 区切り線メニューをクリック
                     await self.click_plus_menu("区切り線")
@@ -285,11 +358,10 @@ class ProsperPublisherV10:
                     continue
 
                 # --- 見出し (H2: ##, H3: ###) ---
-                # insert_textでは自動変換が効かないため、メニューから指定
                 if stripped_line.startswith('## '):
-                    if in_list_mode:
+                    if block_mode != "none":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        block_mode = "none"
                     
                     content = stripped_line[3:] # "## " 除去
                     await self.click_plus_menu("大見出し")
@@ -299,9 +371,9 @@ class ProsperPublisherV10:
                     continue
                 
                 if stripped_line.startswith('### '):
-                    if in_list_mode:
+                    if block_mode != "none":
                         await self.page.keyboard.press("Enter")
-                        in_list_mode = False
+                        block_mode = "none"
                     
                     content = stripped_line[4:] # "### " 除去
                     await self.click_plus_menu("小見出し")
@@ -312,99 +384,76 @@ class ProsperPublisherV10:
 
                 # --- 引用 (> ) ---
                 if stripped_line.startswith('> '):
-                    if in_list_mode:
-                        await self.page.keyboard.press("Enter")
-                        in_list_mode = False
-                    
                     content = stripped_line[2:] # "> " 除去
-                    await self.click_plus_menu("引用")
-                    await self.paste_text(content)
+                    if block_mode == "quote":
+                        await self.paste_text(content)
+                    else:
+                        if block_mode != "none":
+                            await self.page.keyboard.press("Enter")
+                        await self.click_plus_menu("引用")
+                        await self.paste_text(content)
+                        block_mode = "quote"
+                    
                     await self.page.keyboard.press("Enter")
                     await asyncio.sleep(0.5)
                     continue
 
                 # --- 箇条書きリスト (- / *) ---
-                if stripped_line.startswith(('- ', '* ')):
-                    content = stripped_line[2:] # "- " 除去
-                    
-                    if in_list_mode:
+                if re.match(r'^\s*[-*]\s', stripped_line):
+                    content = re.sub(r'^\s*[-*]\s', '', stripped_line) # "- " 除去
+                    if block_mode == "bullet":
                         await self.paste_text(content)
                     else:
+                        if block_mode != "none":
+                            await self.page.keyboard.press("Enter")
                         await self.click_plus_menu("箇条書きリスト")
                         await self.paste_text(content)
-                        in_list_mode = True # モードON
+                        block_mode = "bullet"
                     
                     await self.page.keyboard.press("Enter")
                     await asyncio.sleep(0.5)
                     continue
 
                 # --- 番号付きリスト (1. ) ---
-                if re.match(r'^\d+\.\s', stripped_line):
-                    content = re.sub(r'^\d+\.\s', '', stripped_line) # "1. " 除去
-                    
-                    if in_list_mode:
+                if re.match(r'^\s*\d+\.\s', stripped_line):
+                    content = re.sub(r'^\s*\d+\.\s', '', stripped_line) # "1. " 除去
+                    if block_mode == "number":
                          await self.paste_text(content)
                     else:
+                        if block_mode != "none":
+                            await self.page.keyboard.press("Enter")
                         await self.click_plus_menu("番号付きリスト")
                         await self.paste_text(content)
-                        in_list_mode = True
+                        block_mode = "number"
                         
                     await self.page.keyboard.press("Enter")
                     await asyncio.sleep(0.5)
                     continue
 
-                # --- 通常テキスト・埋め込み ---
-                if in_list_mode:
-                    # リストモード終了
+                # --- 通常のテキスト・装飾（太字・埋め込み等） ---
+                if block_mode != "none":
+                    # 通常テキストなのにブロックモード継続中の場合、強制終了する。
                     await self.page.keyboard.press("Enter")
-                    in_list_mode = False
+                    block_mode = "none"
                     await asyncio.sleep(0.2)
                 
-                # 太字行の処理 (**text**)
-                # NoteはMarkdownの太字を自動変換しないため、手動でCmd+Bを入れる
-                bold_match = re.match(r'^\*\*(.+?)\*\*$', stripped_line)
-                if bold_match:
-                    content = bold_match.group(1)
-                    # 1. テキスト入力
-                    await self.paste_text(content)
-                    await asyncio.sleep(0.2)
-                    
-                    # 2. 全選択 (行末にいるのでShift+Cmd+Left)
-                    await self.page.keyboard.down("Shift")
-                    await self.page.keyboard.down("Meta")
-                    await self.page.keyboard.press("ArrowLeft")
-                    await self.page.keyboard.up("Meta")
-                    await self.page.keyboard.up("Shift")
-                    await asyncio.sleep(0.2)
-
-                    # 3. 太字ショートカット (Cmd+B) -> 選択範囲が太字になる
-                    await self.page.keyboard.press("Meta+b")
-                    await asyncio.sleep(0.2)
-
-                    # 4. 選択解除 (右矢印) -> カーソルはまだ「太字モード」のまま
-                    await self.page.keyboard.press("ArrowRight")
-                    await asyncio.sleep(0.2)
-
-                    # 5. 太字モード解除 (ここでもう一度Cmd+Bし、以降の入力をRegularに戻す)
-                    await self.page.keyboard.press("Meta+b")
-                    await asyncio.sleep(0.2)
-                    
-                    # 6. 改行
-                    await self.page.keyboard.press("Enter")
-                    await asyncio.sleep(0.5)
-                    continue
-
                 # 埋め込み(URL)の場合
                 if stripped_line.startswith("http"):
                      await self.paste_text(stripped_line)
                      await self.page.keyboard.press("Enter")
                      await asyncio.sleep(2.0) # カード化待機
                 else:
-                     await self.paste_text(line) # stripせず元のインデント等を維持しても良いが、今回は基本strip
+                     await self.paste_text(stripped_line)
                      await self.page.keyboard.press("Enter")
 
                 await asyncio.sleep(0.5)
             
+            # ハッシュタグ入力
+            # ユーザー要望により削除 (UI的に不安定で失敗回数が多いため)
+            if self.tags:
+                 print(f"\n>>> [Manual Action Required] 推奨ハッシュタグ (手動で設定してください):", flush=True)
+                 print(f">>> {' '.join(['#'+t for t in self.tags])}\n", flush=True)
+
             print(">>> 完了！下書きを確認してください。", flush=True)
             print(">>> 30秒後にブラウザを閉じます...", flush=True)
             
@@ -418,7 +467,12 @@ class ProsperPublisherV10:
             print(">>> 正常終了しました。", flush=True)
 
 if __name__ == "__main__":
-    publisher = ProsperPublisherV10(ARTICLE_PATH)
+    import sys
+    target_path = ARTICLE_PATH
+    if len(sys.argv) > 1:
+        target_path = sys.argv[1]
+    
+    publisher = ProsperPublisherV10(target_path)
     if publisher.parse_markdown():
         try:
             asyncio.run(publisher.publish())

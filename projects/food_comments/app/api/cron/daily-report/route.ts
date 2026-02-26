@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     try {
         const supabase = createAdminClient()
         const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" })
 
         // 1. 未処理のmeal_logsを取得
         const { data: logs, error: logsError } = await supabase

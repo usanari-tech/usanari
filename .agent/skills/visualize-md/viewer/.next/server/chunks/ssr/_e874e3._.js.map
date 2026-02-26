@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/yukinari/Desktop/antigravity/.agent/skills/visualize-md/viewer/src/app/layout.tsx"],"sourcesContent":["import type { Metadata } from \"next\";\nimport \"./globals.css\";\n\nexport const metadata: Metadata = {\n    title: \"Markdown Viewer\",\n    description: \"View project markdown files\",\n};\n\nexport default function RootLayout({\n    children,\n}: Readonly<{\n    children: React.ReactNode;\n}>) {\n    return (\n        <html lang=\"en\">\n            <body\n                className={`antialiased`}\n            >\n                {children}\n            </body>\n        </html>\n    );\n}\n"],"names":[],"mappings":";;;;;;;AAGO,MAAM,WAAqB;IAC9B,OAAO;IACP,aAAa;AACjB;AAEe,SAAS,WAAW,EAC/B,QAAQ,EAGV;IACE,qBACI,8OAAC;QAAK,MAAK;kBACP,cAAA,8OAAC;YACG,WAAW,CAAC,WAAW,CAAC;sBAEvB;;;;;;;;;;;AAIjB"}},
+    {"offset": {"line": 35, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}},
+    {"offset": {"line": 46, "column": 0}, "map": {"version":3,"sources":["file:///Users/yukinari/Desktop/antigravity/.agent/skills/visualize-md/viewer/node_modules/next/src/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.ts"],"sourcesContent":["module.exports = require('../../module.compiled').vendored[\n  'react-rsc'\n].ReactJsxDevRuntime\n"],"names":["module","exports","require","vendored","ReactJsxDevRuntime"],"mappings":";AAAAA,OAAOC,OAAO,GAAGC,QAAQ,0HAAyBC,QAAQ,CACxD,YACD,CAACC,kBAAkB","ignoreList":[0]}},
+    {"offset": {"line": 48, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}

@@ -1,0 +1,20 @@
+defaults:
+  aspect_ratio: "1:1"
+  guidance_scale: 0  # 0 for turbo/creative, higher for strict
+  output_dir: "output"
+
+# Presets for quick prompting
+styles:
+  none: ""
+  photographic: "photorealistic, 8k, highly detailed, sharp focus, cinematic lighting"
+  anime: "anime style, cel shaded, vibrant colors, studio ghibli inspired"
+  digital_art: "digital art, concept art, trending on artstation, vivid colors"
+  cinematic: "cinematic shot, dramatic lighting, shallow depth of field, movie still"
+  product_shot: "professional product photography, studio lighting, clean background, 4k"
+  retro_game: "pixel art, 16-bit, retro gaming aesthetic, vibrant"
+
+compositions:
+  none: ""
+  flat_lay: "flat lay photography, organized arrangement, view from top"
+  close_up: "macro shot, extreme close up, detailed texture"
+  wide_angle: "wide angle lens, expansive view"

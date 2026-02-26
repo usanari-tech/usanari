@@ -1,0 +1,11 @@
+# 環境変数・機密情報
+.env
+
+# ログインクッキー（個人情報を含む）
+x_cookies.json
+
+# 収集レポート
+reports/
+
+# Node.js
+node_modules/

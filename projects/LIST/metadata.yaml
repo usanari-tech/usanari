@@ -192,3 +192,132 @@ LIST:
     - "Python"
     - "Alpine.js"
     - "Tailwind CSS"
+
+# Agent Skills
+lead-engineer:
+  name: "Lead Engineer Skill"
+  purpose: "技術実装、システム設計、AI活用理論の専門家。堅牢なコード実装とアーキテクチャ設計を担当。"
+  status: "Operational"
+  type: "Skill"
+
+product-designer:
+  name: "Product Designer Skill"
+  purpose: "Maison Margiela風のミニマルな美学とUX戦略を統合した、洗練されたプロダクトデザインを提供。"
+  status: "Operational"
+  type: "Skill"
+
+mental-coach:
+  name: "Mental Coach Skill"
+  purpose: "開発者のメンタル支援とモチベーション管理。感情に寄り添い、Vibe（気分）を最適化する。"
+  status: "Operational"
+  type: "Skill"
+
+quality-guardian:
+  name: "Quality Guardian Skill"
+  purpose: "品質保証とビジネス視点でのレビュー。QA、PM、顧客、マーケターの4視点で成功を保証。"
+  status: "Operational"
+  type: "Skill"
+
+design-md:
+  name: "Design MD Generator"
+  purpose: "Stitchプロジェクトを解析し、セマンティックなデザインシステム（DESIGN.md）を構築・合成する。"
+  status: "Operational"
+  type: "Skill"
+
+reactcomponents:
+  name: "React Component Generator"
+  purpose: "デザイン定義を元に、ASTベースの検証を用いて堅牢なReact/Viteコンポーネントを生成する。"
+  status: "Operational"
+  type: "Skill"
+
+revenue-expert:
+  name: "Revenue Expert Skill"
+  purpose: "収益化（マネタイズ）とビジネスモデル構築の専門家。市場分析と収益最大化戦略を立案。"
+  status: "Operational"
+  type: "Skill"
+
+# Agent Workflows
+analyze-meals.md:
+  name: "Meal Analysis Workflow"
+  purpose: "食事写真から栄養（PFC/カロリー）を解析し、辛口コメントと共にObsidian(Vault)へレポートを自動生成・整理する。"
+  status: "Operational"
+  type: "Workflow"
+
+prosper-investigate.md:
+  name: "Prosper Investigator"
+  purpose: "指定テーマについてDeepResearchを行い、詳細な調査レポートを自動作成する。"
+  status: "Operational"
+  type: "Workflow"
+
+prosper-post.md:
+  name: "Prosper Auto Post"
+  purpose: "調査・執筆・画像生成・Noteへの投稿までを完全自動化するエージェントワークフロー。"
+  status: "Operational"
+  type: "Workflow"
+
+prosper-publish.md:
+  name: "Prosper Publisher"
+  purpose: "作成済みのドラフト記事をNote.comにAPI経由で投稿する。"
+  status: "Operational"
+  type: "Workflow"
+
+prosper-write.md:
+  name: "Prosper Writer"
+  purpose: "調査レポートを元に、読者を惹きつける構成で記事を執筆し、アイキャッチ画像を生成する。"
+  status: "Operational"
+  type: "Workflow"
+
+push-to-github.md:
+  name: "Git Auto Push"
+  purpose: "ローカルの変更を検知し、コミットメッセージを生成してGitHubへプッシュする。"
+  status: "Operational"
+  type: "Workflow"
+
+record_memory.md:
+  name: "Memory Recorder"
+  purpose: "会話中の重要な気づきや決定事項を抽出し、Obsidianのメモとして記録する。"
+  status: "Operational"
+  type: "Workflow"
+
+smart_url_summary.md:
+  name: "Smart URL Summary"
+  purpose: "指定URLの内容を詳細にリサーチし、客観的事実と「My Take（考察）」をセットでまとめる。"
+  status: "Operational"
+  type: "Workflow"
+
+tts-off.md:
+  name: "TTS Off"
+  purpose: "エージェントの自動音声読み上げ機能を無効化する。"
+  status: "Operational"
+  type: "Workflow"
+
+tts-on.md:
+  name: "TTS On"
+  purpose: "エージェントの自動音声読み上げ機能を有効化する。"
+  status: "Operational"
+  type: "Workflow"
+
+# Agent Scripts
+fetch_youtube_transcript.py:
+  name: "YouTube Transcript Fetcher"
+  purpose: "YouTube動画IDを指定して、字幕データ（日本語/英語）を取得・抽出する。"
+  status: "Operational"
+  type: "Script"
+
+speak.sh:
+  name: "TTS Speaker Script"
+  purpose: "テキスト入力を受け取り、音声合成エンジンを使用して読み上げを行うシェルスクリプト。"
+  status: "Operational"
+  type: "Script"
+
+tts_engine.py:
+  name: "TTS Engine Core"
+  purpose: "音声合成の中核ロジック。テキスト処理と音声ファイル生成を担当する。"
+  status: "Operational"
+  type: "Script"
+
+update-dashboard.md:
+  name: "Update Dashboard"
+  purpose: "全プロジェクトの最新状態をスキャンし、ダッシュボード(index.html)を更新する。"
+  status: "Operational"
+  type: "Workflow"

@@ -1,0 +1,902 @@
+[
+  {
+    "name": "Kyoji Horiguchi",
+    "url": "https://www.tapology.com/fightcenter/fighters/19983-kyoji-horiguchi",
+    "gym": "American Top Team",
+    "opponents_count": 40,
+    "opponents": [
+      {
+        "name": "Amir Albazi",
+        "url": "/fightcenter/fighters/84737-amir-albazi"
+      },
+      {
+        "name": "Tagir Ulanbekov",
+        "url": "/fightcenter/fighters/130955-tagir-ulanbekov"
+      },
+      {
+        "name": "Nkazimulo Zulu",
+        "url": "/fightcenter/fighters/46307-nkazimulo-zulu"
+      },
+      {
+        "name": "Sergio Pettis",
+        "url": "/fightcenter/fighters/17135-sergio-pettis"
+      },
+      {
+        "name": "Makoto Shinryu",
+        "url": "/fightcenter/fighters/128155-makoto-takahashi"
+      },
+      {
+        "name": "Ray Borg",
+        "url": "/fightcenter/fighters/22889-ray-borg"
+      },
+      {
+        "name": "Hiromasa Ougikubo",
+        "url": "/fightcenter/fighters/14229-hiromasa-ogikubo"
+      },
+      {
+        "name": "Yuto Hokamura",
+        "url": "/fightcenter/fighters/35578-kintaro-kintaro"
+      },
+      {
+        "name": "Patchy Mix",
+        "url": "/fightcenter/fighters/64036-patrick-mix"
+      },
+      {
+        "name": "Kai Asakura",
+        "url": "/fightcenter/fighters/58234-kai-asakura"
+      },
+      {
+        "name": "Darrion Caldwell",
+        "url": "/fightcenter/fighters/31762-darrion-caldwell"
+      },
+      {
+        "name": "Ben Nguyen",
+        "url": "/fightcenter/fighters/15366-ben-nguyen"
+      },
+      {
+        "name": "Tenshin Nasukawa",
+        "url": "/fightcenter/fighters/146669-tenshin-nasukawa"
+      },
+      {
+        "name": "Ian McCall",
+        "url": "/fightcenter/fighters/ian-mccall-uncle-creepy"
+      },
+      {
+        "name": "Shintaro Ishiwatari",
+        "url": "/fightcenter/fighters/shintaro-ishiwatari"
+      },
+      {
+        "name": "Manel Kape",
+        "url": "/fightcenter/fighters/70075-manel-kape-prodigio"
+      },
+      {
+        "name": "Gabriel Oliveira",
+        "url": "/fightcenter/fighters/143236-gabriel-leite-de-oliveira"
+      },
+      {
+        "name": "Hideo Tokoro",
+        "url": "/fightcenter/fighters/hideo-tokoro"
+      },
+      {
+        "name": "Yuki Motoya",
+        "url": "/fightcenter/fighters/28651-yuki-motoya"
+      },
+      {
+        "name": "Ali Bagautinov",
+        "url": "/fightcenter/fighters/31434-ali-bagautinov"
+      },
+      {
+        "name": "Neil Seery",
+        "url": "/fightcenter/fighters/17184-neil-seery"
+      },
+      {
+        "name": "Chico Camus",
+        "url": "/fightcenter/fighters/chico-camus-king"
+      },
+      {
+        "name": "Demetrious Johnson",
+        "url": "/fightcenter/fighters/demetrious-johnson-mighty-mouse"
+      },
+      {
+        "name": "Louis Gaudinot",
+        "url": "/fightcenter/fighters/11290-louis-gaudinot"
+      },
+      {
+        "name": "Jon Delos Reyes",
+        "url": "/fightcenter/fighters/31533-jon-delos-reyes-the-heat"
+      },
+      {
+        "name": "Chris Cariaso",
+        "url": "/fightcenter/fighters/chris-cariaso-kamikaze"
+      },
+      {
+        "name": "Darrell Montague",
+        "url": "/fightcenter/fighters/darrell-montague-the-mongoose"
+      },
+      {
+        "name": "Dustin Pague",
+        "url": "/fightcenter/fighters/4059-dustin-pague-the-disciple"
+      },
+      {
+        "name": "Ian Loveland",
+        "url": "/fightcenter/fighters/ian-loveland-the-barn-owl"
+      },
+      {
+        "name": "Manabu Inoue",
+        "url": "/fightcenter/fighters/manabu-inoue"
+      },
+      {
+        "name": "Tetsu Suzuki",
+        "url": "/fightcenter/fighters/2272-tetsu-suzuki-hadairo"
+      },
+      {
+        "name": "Masakatsu Ueda",
+        "url": "/fightcenter/fighters/masakatsu-ueda"
+      },
+      {
+        "name": "Naohiro Mizuno",
+        "url": "/fightcenter/fighters/20000-naohiro-mizuno-chokugeki-gamon"
+      },
+      {
+        "name": "Yuta Nezu",
+        "url": "/fightcenter/fighters/4833-yuta-nezu"
+      },
+      {
+        "name": "Takahiro Hosoi",
+        "url": "/fightcenter/fighters/4559-takahiro-hosoi"
+      },
+      {
+        "name": "Seiji Akao",
+        "url": "/fightcenter/fighters/11770-seiji-akao-sage"
+      },
+      {
+        "name": "Keita Ishibashi",
+        "url": "/fightcenter/fighters/20001-keita-ishibashi"
+      },
+      {
+        "name": "Ranki Kawana",
+        "url": "/fightcenter/fighters/4807-ranki-kawana"
+      },
+      {
+        "name": "Mamoru Uoi",
+        "url": "/fightcenter/fighters/27540-mamoru-uoi"
+      },
+      {
+        "name": "Nobutaka Naito",
+        "url": "/fightcenter/fighters/53085-koki-naito"
+      }
+    ]
+  },
+  {
+    "name": "Mikuru Asakura",
+    "url": "https://www.tapology.com/fightcenter/fighters/35200-miku-asakura",
+    "gym": "Japan Top Team",
+    "opponents_count": 35,
+    "opponents": [
+      {
+        "name": "Razhabali Shaydullaev",
+        "url": "/fightcenter/fighters/233061-razhab-shaydullaev"
+      },
+      {
+        "name": "Kleber Koike",
+        "url": "/fightcenter/fighters/3527-kleber-koike-erbst"
+      },
+      {
+        "name": "Chihiro Suzuki",
+        "url": "/fightcenter/fighters/140868-chihiro-suzuki"
+      },
+      {
+        "name": "Ren Hiramoto",
+        "url": "/fightcenter/fighters/237092-ren-hiramoto"
+      },
+      {
+        "name": "Ren Sugiyama",
+        "url": "/fightcenter/fighters/239502-ya-man"
+      },
+      {
+        "name": "Vugar Karamov",
+        "url": "/fightcenter/fighters/56450-vugar-kyarimov"
+      },
+      {
+        "name": "Juntaro Ushiku",
+        "url": "/fightcenter/fighters/31839-kentaro-ushiku"
+      },
+      {
+        "name": "Floyd Mayweather Jr.",
+        "url": "/fightcenter/fighters/200622-floyd-mayweather-jr-money"
+      },
+      {
+        "name": "Yutaka Saito",
+        "url": "/fightcenter/fighters/25976-yutaka-saito"
+      },
+      {
+        "name": "Kyohei Hagiwara",
+        "url": "/fightcenter/fighters/151549-kyohei-hagiwara"
+      },
+      {
+        "name": "Satoshi Yamasu",
+        "url": "/fightcenter/fighters/49652-satoshi-yamasu"
+      },
+      {
+        "name": "Daniel Salas",
+        "url": "/fightcenter/fighters/52791-daniel-salas-el-cazador"
+      },
+      {
+        "name": "John Teixeira",
+        "url": "/fightcenter/fighters/28052-jhon-teixeira-da-conceicao-macapa"
+      },
+      {
+        "name": "Atsushi Saito",
+        "url": "/fightcenter/fighters/15217-atsushi-saito-shibata"
+      },
+      {
+        "name": "Yusuke Yachi",
+        "url": "/fightcenter/fighters/7963-yusuke-yachi"
+      },
+      {
+        "name": "Luiz Gustavo",
+        "url": "/fightcenter/fighters/93025-luiz-gustavo-killer"
+      },
+      {
+        "name": "Takeshi Inoue",
+        "url": "/fightcenter/fighters/takeshi-inoue-lion"
+      },
+      {
+        "name": "Karshyga Dautbek",
+        "url": "/fightcenter/fighters/103936-karshira-dautbek"
+      },
+      {
+        "name": "Hatsu Hioki",
+        "url": "/fightcenter/fighters/hatsu-hioki"
+      },
+      {
+        "name": "Kosuke Terashima",
+        "url": "/fightcenter/fighters/24867-coro-coro"
+      },
+      {
+        "name": "Kil Woo Lee",
+        "url": "/fightcenter/fighters/kil-woo-lee"
+      },
+      {
+        "name": "Doo Seok Oh",
+        "url": "/fightcenter/fighters/129038-doo-seok-oh"
+      },
+      {
+        "name": "Hiroyuki Furuta",
+        "url": "/fightcenter/fighters/58195-hiroyuki-furuta"
+      },
+      {
+        "name": "Ryo Asami",
+        "url": "/fightcenter/fighters/18099-ryo-asami"
+      },
+      {
+        "name": "Takehiro Higuchi",
+        "url": "/fightcenter/fighters/30131-takehiro-higuchi"
+      },
+      {
+        "name": "Keinosuke Yoshinaga",
+        "url": "/fightcenter/fighters/31652-keinosuke-yoshinaga"
+      },
+      {
+        "name": "Morikazu Itagaki",
+        "url": "/fightcenter/fighters/35201-morikazu-itagaki"
+      },
+      {
+        "name": "Hiroki Takahashi",
+        "url": "/fightcenter/fighters/57795-daiki-takahashi-luger"
+      },
+      {
+        "name": "Kazunari Kimura",
+        "url": "/fightcenter/fighters/61317-kazunari-kimura"
+      },
+      {
+        "name": "Rikuto Shirakawa",
+        "url": "/fightcenter/fighters/58917-rikuto-yamada"
+      },
+      {
+        "name": "Yuta Ueta",
+        "url": "/fightcenter/fighters/57891-yuta-ueta"
+      },
+      {
+        "name": "Jamal Morgan",
+        "url": "/fightcenter/fighters/58276-jamal-morgan"
+      },
+      {
+        "name": "Musashi",
+        "url": "/fightcenter/fighters/58251-musashi"
+      },
+      {
+        "name": "Ryuma Anno",
+        "url": "/fightcenter/fighters/46045-ryuma-anno-shonan"
+      },
+      {
+        "name": "Kohei Shimada",
+        "url": "/fightcenter/fighters/58281-kohei-shimada"
+      }
+    ]
+  },
+  {
+    "name": "Kai Asakura",
+    "url": "https://www.tapology.com/fightcenter/fighters/58234-kai-asakura",
+    "gym": "Japan Top Team",
+    "opponents_count": 39,
+    "opponents": [
+      {
+        "name": "Tim Elliott",
+        "url": "/fightcenter/fighters/13664-timothy-elliot"
+      },
+      {
+        "name": "Alexandre Pantoja",
+        "url": "/fightcenter/fighters/12767-alexandre-pantoja"
+      },
+      {
+        "name": "Juan Archuleta",
+        "url": "/fightcenter/fighters/52666-juan-archuleta"
+      },
+      {
+        "name": "Yuki Motoya",
+        "url": "/fightcenter/fighters/28651-yuki-motoya"
+      },
+      {
+        "name": "Ji Yong Yang",
+        "url": "/fightcenter/fighters/217915-ji-yong-yang"
+      },
+      {
+        "name": "Hiromasa Ougikubo",
+        "url": "/fightcenter/fighters/14229-hiromasa-ogikubo"
+      },
+      {
+        "name": "Kenta Takizawa",
+        "url": "/fightcenter/fighters/68578-kenta-takizawa"
+      },
+      {
+        "name": "Alan Yoshihiro Yamaniha",
+        "url": "/fightcenter/fighters/25832-alan-yoshihiro-yamaniwa-hiro"
+      },
+      {
+        "name": "Shooto Watanabe",
+        "url": "/fightcenter/fighters/24861-shooto-watanabe"
+      },
+      {
+        "name": "Kyoji Horiguchi",
+        "url": "/fightcenter/fighters/19983-kyoji-horiguchi"
+      },
+      {
+        "name": "Shoji Maruyama",
+        "url": "/fightcenter/fighters/shoji-maruyama"
+      },
+      {
+        "name": "Atsushi Saito",
+        "url": "/fightcenter/fighters/15217-atsushi-saito-shibata"
+      },
+      {
+        "name": "Manel Kape",
+        "url": "/fightcenter/fighters/70075-manel-kape-prodigio"
+      },
+      {
+        "name": "Ulka Sasaki",
+        "url": "/fightcenter/fighters/19984-yuta-sasaki-ulka"
+      },
+      {
+        "name": "Justin Scoggins",
+        "url": "/fightcenter/fighters/31017-justin-scoggins-tank"
+      },
+      {
+        "name": "Je Hoon Moon",
+        "url": "/fightcenter/fighters/24197-jae-hoon-moon"
+      },
+      {
+        "name": "Topnoi Kiwram",
+        "url": "/fightcenter/fighters/128196-thanongsaklek-tigermuaythai-top-noi"
+      },
+      {
+        "name": "Kizaemon Saiga",
+        "url": "/fightcenter/fighters/78100-kizaemon-saiga"
+      },
+      {
+        "name": "Seiichiro Ito",
+        "url": "/fightcenter/fighters/45048-seiichiro-ito"
+      },
+      {
+        "name": "Alatengheili Alateng",
+        "url": "/fightcenter/fighters/57170-ala-tengheili"
+      },
+      {
+        "name": "Tatsuki Saomoto",
+        "url": "/fightcenter/fighters/93127-saomoto-mikio"
+      },
+      {
+        "name": "Yoichi Oi",
+        "url": "/fightcenter/fighters/58244-yoichi-oi"
+      },
+      {
+        "name": "Xiaoyang Liu",
+        "url": "/fightcenter/fighters/52096-liu-xiaoyang"
+      },
+      {
+        "name": "Jong Hyun Kwak",
+        "url": "/fightcenter/fighters/56520-jung-hyeon-kwak"
+      },
+      {
+        "name": "Jung Bin Choi",
+        "url": "/fightcenter/fighters/146636-jeong-bin-choi"
+      },
+      {
+        "name": "Jin Min Kim",
+        "url": "/fightcenter/fighters/44696-jin-min-kim"
+      },
+      {
+        "name": "Keigo Takayama",
+        "url": "/fightcenter/fighters/76100-keigo-takayama"
+      },
+      {
+        "name": "Satoru Date",
+        "url": "/fightcenter/fighters/45037-satoru-date"
+      },
+      {
+        "name": "Tomoya Suzuki",
+        "url": "/fightcenter/fighters/35205-tomoya-suzuki"
+      },
+      {
+        "name": "Masamichi Yoshino",
+        "url": "/fightcenter/fighters/64079-masaki-yoshino"
+      },
+      {
+        "name": "Takayuki Okugi",
+        "url": "/fightcenter/fighters/58232-takayuki-okugi"
+      },
+      {
+        "name": "Masaya Kamide",
+        "url": "/fightcenter/fighters/58286-masaya-kamide"
+      },
+      {
+        "name": "Masaharu Tsuchihashi",
+        "url": "/fightcenter/fighters/37826-masaharu-tsuchihashi"
+      },
+      {
+        "name": "Kenta Tanoue",
+        "url": "/fightcenter/fighters/49731-kenta-tanoue"
+      },
+      {
+        "name": "Shota Kaneko",
+        "url": "/fightcenter/fighters/58212-shota-kaneko"
+      },
+      {
+        "name": "Masamune",
+        "url": "/fightcenter/fighters/57905-masamune"
+      },
+      {
+        "name": "Ryota Kitamura",
+        "url": "/fightcenter/fighters/142781-ryota-kitamura"
+      },
+      {
+        "name": "Riku Shibuya",
+        "url": "/fightcenter/fighters/27284-asuka-mikami-riku-shibuya"
+      },
+      {
+        "name": "Dai Aoki",
+        "url": "/fightcenter/fighters/58203-dai-aoki"
+      }
+    ]
+  },
+  {
+    "name": "Kleber Koike Erbst",
+    "url": "https://www.tapology.com/fightcenter/fighters/3527-kleber-koike-erbst",
+    "gym": "Bonsai Jiu Jitsu",
+    "opponents_count": 44,
+    "opponents": [
+      {
+        "name": "Vugar Karamov",
+        "url": "/fightcenter/fighters/56450-vugar-kyarimov"
+      },
+      {
+        "name": "Mikuru Asakura",
+        "url": "/fightcenter/fighters/35200-miku-asakura"
+      },
+      {
+        "name": "Razhabali Shaydullaev",
+        "url": "/fightcenter/fighters/233061-razhab-shaydullaev"
+      },
+      {
+        "name": "Chihiro Suzuki",
+        "url": "/fightcenter/fighters/140868-chihiro-suzuki"
+      },
+      {
+        "name": "Juan Archuleta",
+        "url": "/fightcenter/fighters/52666-juan-archuleta"
+      },
+      {
+        "name": "Yutaka Saito",
+        "url": "/fightcenter/fighters/25976-yutaka-saito"
+      },
+      {
+        "name": "Masanori Kanehara",
+        "url": "/fightcenter/fighters/masanori-kanehara"
+      },
+      {
+        "name": "Patricio Pitbull",
+        "url": "/fightcenter/fighters/patricio-freire-pitbull"
+      },
+      {
+        "name": "Juntaro Ushiku",
+        "url": "/fightcenter/fighters/31839-kentaro-ushiku"
+      },
+      {
+        "name": "Kyohei Hagiwara",
+        "url": "/fightcenter/fighters/151549-kyohei-hagiwara"
+      },
+      {
+        "name": "Ulka Sasaki",
+        "url": "/fightcenter/fighters/19984-yuta-sasaki-ulka"
+      },
+      {
+        "name": "Kazumasa Majima",
+        "url": "/fightcenter/fighters/58945-kazumasa-majima"
+      },
+      {
+        "name": "Kyle Aguon",
+        "url": "/fightcenter/fighters/23895-kyle-aguon"
+      },
+      {
+        "name": "Akiyo Nishiura",
+        "url": "/fightcenter/fighters/akiyo-nishiura-wicky-akiyo"
+      },
+      {
+        "name": "Mateusz Gamrot",
+        "url": "/fightcenter/fighters/26305-mateusz-gamrot"
+      },
+      {
+        "name": "Marian Ziółkowski",
+        "url": "/fightcenter/fighters/44823-marian-ziolkowski"
+      },
+      {
+        "name": "Marcin Wrzosek",
+        "url": "/fightcenter/fighters/29459-marcin-wrzosek"
+      },
+      {
+        "name": "Artur Sowiński",
+        "url": "/fightcenter/fighters/artur-sowinski-kornik"
+      },
+      {
+        "name": "Tayori Matsushima",
+        "url": "/fightcenter/fighters/153323-tayori-matsushima"
+      },
+      {
+        "name": "Leszek Krakowski",
+        "url": "/fightcenter/fighters/65795-leszek-krakowski"
+      },
+      {
+        "name": "George Hickman",
+        "url": "/fightcenter/fighters/20549-george-hickman"
+      },
+      {
+        "name": "Yusuke Yachi",
+        "url": "/fightcenter/fighters/7963-yusuke-yachi"
+      },
+      {
+        "name": "Miguel Torres",
+        "url": "/fightcenter/fighters/miguel-angel-torres"
+      },
+      {
+        "name": "Takahiro Ashida",
+        "url": "/fightcenter/fighters/26432-takahiro-ashida"
+      },
+      {
+        "name": "Michael Tobin",
+        "url": "/fightcenter/fighters/46973-michael-tobin-the-great-white"
+      },
+      {
+        "name": "Tomo Kiire",
+        "url": "/fightcenter/fighters/154388-tomo-kiire"
+      },
+      {
+        "name": "Anzor Azhiev",
+        "url": "/fightcenter/fighters/22515-anzor-azhiev"
+      },
+      {
+        "name": "Katsuyoshi Beppu",
+        "url": "/fightcenter/fighters/23551-katsuyoshi-beppu-seven"
+      },
+      {
+        "name": "Hideki Kadowaki",
+        "url": "/fightcenter/fighters/hideki-kadowaki"
+      },
+      {
+        "name": "Yutaka Ueda",
+        "url": "/fightcenter/fighters/16298-yutaka-ueda"
+      },
+      {
+        "name": "Sicong Liu",
+        "url": "/fightcenter/fighters/26859-liu-si-cong"
+      },
+      {
+        "name": "Albert Cheng",
+        "url": "/fightcenter/fighters/18267-albert-cheng"
+      },
+      {
+        "name": "Teppei Hori",
+        "url": "/fightcenter/fighters/17351-teppei-hori"
+      },
+      {
+        "name": "Atsushi Ueda",
+        "url": "/fightcenter/fighters/8413-atsushi-ueda"
+      },
+      {
+        "name": "Yoshifumi Dogaki",
+        "url": "/fightcenter/fighters/23116-yoshifumi-dogaki"
+      },
+      {
+        "name": "Hidenobu Koike",
+        "url": "/fightcenter/fighters/3660-hidenobu-koike"
+      },
+      {
+        "name": "Shinichiro Tanaka",
+        "url": "/fightcenter/fighters/22749-shinichiro-tanaka"
+      },
+      {
+        "name": "Yusuke Hoshiko",
+        "url": "/fightcenter/fighters/26032-yusuke-hoshiko"
+      },
+      {
+        "name": "Toshiaki Kitada",
+        "url": "/fightcenter/fighters/4570-toshiaki-kitada"
+      },
+      {
+        "name": "Yoshiro Maeda",
+        "url": "/fightcenter/fighters/yoshiro-maeda"
+      },
+      {
+        "name": "Toshikazu Iseno",
+        "url": "/fightcenter/fighters/4085-toshikazu-iseno-ise"
+      },
+      {
+        "name": "Yasutomo Katsuki",
+        "url": "/fightcenter/fighters/37619-yasutomo-katsuki"
+      },
+      {
+        "name": "Keizo Sakuragi",
+        "url": "/fightcenter/fighters/35287-keizo-sakuragi-buro-k-man"
+      },
+      {
+        "name": "Masaki Wada",
+        "url": "/fightcenter/fighters/46067-masaki-wada"
+      }
+    ]
+  },
+  {
+    "name": "Yutaka Saito",
+    "url": "https://www.tapology.com/fightcenter/fighters/25976-yutaka-saito",
+    "gym": "Paraestra Koiwa",
+    "opponents_count": 32,
+    "opponents": [
+      {
+        "name": "Ren Sugiyama",
+        "url": "/fightcenter/fighters/239502-ya-man"
+      },
+      {
+        "name": "Yuta Kubo",
+        "url": "/fightcenter/fighters/215278-yuta-kubo"
+      },
+      {
+        "name": "Kleber Koike",
+        "url": "/fightcenter/fighters/3527-kleber-koike-erbst"
+      },
+      {
+        "name": "Ren Hiramoto",
+        "url": "/fightcenter/fighters/237092-ren-hiramoto"
+      },
+      {
+        "name": "Juntaro Ushiku",
+        "url": "/fightcenter/fighters/31839-kentaro-ushiku"
+      },
+      {
+        "name": "Mikuru Asakura",
+        "url": "/fightcenter/fighters/35200-miku-asakura"
+      },
+      {
+        "name": "Vugar Karamov",
+        "url": "/fightcenter/fighters/56450-vugar-kyarimov"
+      },
+      {
+        "name": "Kazumasa Majima",
+        "url": "/fightcenter/fighters/58945-kazumasa-majima"
+      },
+      {
+        "name": "Daisuke Nakamura",
+        "url": "/fightcenter/fighters/daisuke-nakamura"
+      },
+      {
+        "name": "Hiroyuki Takaya",
+        "url": "/fightcenter/fighters/hiroyuki-takaya-streetfight-bancho"
+      },
+      {
+        "name": "Agy Sardari",
+        "url": "/fightcenter/fighters/128978-agy-sardary-the-wolverine"
+      },
+      {
+        "name": "Markus Held",
+        "url": "/fightcenter/fighters/100478-markus-held"
+      },
+      {
+        "name": "Takeshi Inoue",
+        "url": "/fightcenter/fighters/takeshi-inoue-lion"
+      },
+      {
+        "name": "Drex Zamboanga",
+        "url": "/fightcenter/fighters/83398-drex-zamboanga"
+      },
+      {
+        "name": "Caol Uno",
+        "url": "/fightcenter/fighters/caol-uno-uno-shoten"
+      },
+      {
+        "name": "Mike Grundy",
+        "url": "/fightcenter/fighters/23283-michael-grundy"
+      },
+      {
+        "name": "Isao Kobayashi",
+        "url": "/fightcenter/fighters/5687-isao-kobayashi"
+      },
+      {
+        "name": "Min Jae Kim",
+        "url": "/fightcenter/fighters/131293-min-jae-kim"
+      },
+      {
+        "name": "Bill Algeo",
+        "url": "/fightcenter/fighters/25872-william-algeo-honey-badger"
+      },
+      {
+        "name": "Yoshifumi Nakamura",
+        "url": "/fightcenter/fighters/24167-yoshifumi-nakamura-junior"
+      },
+      {
+        "name": "Hiroaki Fujita",
+        "url": "/fightcenter/fighters/27093-hiraoki-fujita-brody"
+      },
+      {
+        "name": "Takumi Ota",
+        "url": "/fightcenter/fighters/4133-takumi-ota"
+      },
+      {
+        "name": "Mitsuhiro Toma",
+        "url": "/fightcenter/fighters/30413-toma-toma"
+      },
+      {
+        "name": "Toshiro Chihama",
+        "url": "/fightcenter/fighters/25966-toshiro-chihama"
+      },
+      {
+        "name": "Kazuhide Shirota",
+        "url": "/fightcenter/fighters/52629-kazuhide-shirota"
+      },
+      {
+        "name": "Takanori Muratsu",
+        "url": "/fightcenter/fighters/57677-takanori-gulliver"
+      },
+      {
+        "name": "Daisuke Sasaki",
+        "url": "/fightcenter/fighters/29679-sasuga-dokuganryu"
+      },
+      {
+        "name": "Daiki Takashima",
+        "url": "/fightcenter/fighters/26008-daiki-takashima"
+      },
+      {
+        "name": "Keita Kono",
+        "url": "/fightcenter/fighters/19974-keita-kono"
+      },
+      {
+        "name": "Yuta Sato",
+        "url": "/fightcenter/fighters/27104-yuta-sato-yuta-rock"
+      },
+      {
+        "name": "Shinya Yoshida",
+        "url": "/fightcenter/fighters/30005-shinya-yoshida"
+      },
+      {
+        "name": "Fumiya Sasaki",
+        "url": "/fightcenter/fighters/7510-ikuya-sasaki-kuwai-d"
+      }
+    ]
+  },
+  {
+    "name": "Ren Hiramoto",
+    "url": "https://www.tapology.com/fightcenter/fighters/237092-ren-hiramoto",
+    "gym": "RFF",
+    "opponents_count": 23,
+    "opponents": [
+      {
+        "name": "Mikuru Asakura",
+        "url": "/fightcenter/fighters/35200-miku-asakura"
+      },
+      {
+        "name": "Ren Sugiyama",
+        "url": "/fightcenter/fighters/239502-ya-man"
+      },
+      {
+        "name": "Yutaka Saito",
+        "url": "/fightcenter/fighters/25976-yutaka-saito"
+      },
+      {
+        "name": "Genji Umeno",
+        "url": "/fightcenter/fighters/153387-genji-umeno-king"
+      },
+      {
+        "name": "Satoshi Yamasu",
+        "url": "/fightcenter/fighters/49652-satoshi-yamasu"
+      },
+      {
+        "name": "Hiroaki Suzuki",
+        "url": "/fightcenter/fighters/153381-hiroaki-suzuki"
+      },
+      {
+        "name": "Chihiro Suzuki",
+        "url": "/fightcenter/fighters/140868-chihiro-suzuki"
+      },
+      {
+        "name": "Kyohei Hagiwara",
+        "url": "/fightcenter/fighters/151549-kyohei-hagiwara"
+      },
+      {
+        "name": "Takahiro Ashida",
+        "url": "/fightcenter/fighters/26432-takahiro-ashida"
+      },
+      {
+        "name": "Kaew",
+        "url": "/fightcenter/fighters/237093-kaew-weerasakreck"
+      },
+      {
+        "name": "Daizo Sasaki",
+        "url": "/fightcenter/fighters/215273-daizo-sasaki"
+      },
+      {
+        "name": "Umar Paskhaev",
+        "url": "/fightcenter/fighters/269291-umar-paskhaev"
+      },
+      {
+        "name": "Rui Wei",
+        "url": "/fightcenter/fighters/113015-rui-wei"
+      },
+      {
+        "name": "Kongnapa Weerasakreck",
+        "url": "/fightcenter/fighters/180466-gonnapar-weerasakreck"
+      },
+      {
+        "name": "Brice Delval",
+        "url": "/fightcenter/fighters/233114-brice-delval"
+      },
+      {
+        "name": "Taito",
+        "url": "/fightcenter/fighters/240053-taito"
+      },
+      {
+        "name": "Yoshiki Harada",
+        "url": "/fightcenter/fighters/17300-yoshiki-harada"
+      },
+      {
+        "name": "Massaro Glunder",
+        "url": "/fightcenter/fighters/158585-massaro-glunder"
+      },
+      {
+        "name": "Minoru Kimura",
+        "url": "/fightcenter/fighters/138438-minoru-kimura-philip"
+      },
+      {
+        "name": "Yohei Noguchi",
+        "url": "/fightcenter/fighters/269635-yohei-noguchi"
+      },
+      {
+        "name": "Yuki Izuka",
+        "url": "/fightcenter/fighters/268469-yuki-izuka"
+      },
+      {
+        "name": "Yuki Ishikawa",
+        "url": "/fightcenter/fighters/269697-yuki-ishikawa"
+      },
+      {
+        "name": "Tenma Sano",
+        "url": "/fightcenter/fighters/202859-tenma-sano"
+      }
+    ]
+  }
+]
