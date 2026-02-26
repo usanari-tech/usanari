@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { fetchTradeData } from '@/lib/api-client';
 import PriceChart from '@/components/PriceChart';
 import AreaSelector from '@/components/AreaSelector';
@@ -12,6 +13,7 @@ import TransactionTable from '@/components/TransactionTable';
 import DistrictTrendTable from '@/components/DistrictTrendTable';
 import Hero from '@/components/Hero';
 import TrustSection from '@/components/TrustSection';
+import YearSelector from '@/components/YearSelector';
 import ConversionBanner from '@/components/ConversionBanner';
 import PropertyForm, { PropertyCondition } from '@/components/PropertyForm';
 import EstimateResult, { EstimateData } from '@/components/EstimateResult';
@@ -571,16 +573,16 @@ export default function Home() {
               {/* Mini CTA */}
               <div className="bg-stone-900 p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
                 <div>
-                  <p className="text-white font-bold text-base">相場がわかったら、次は<span className="text-teal-400">プロの査定</span>で最高値を確認</p>
-                  <p className="text-stone-400 text-sm mt-1">電話ではなくメール連絡を希望できます</p>
+                  <p className="text-white font-bold text-base">相場がわかったら、実際の売却価格を<span className="text-teal-400">匿名・机上査定</span>でチェック</p>
+                  <p className="text-stone-400 text-sm mt-1">「まずは価格だけ知りたい」「営業電話は避けたい」という方に最適です。</p>
                 </div>
                 <a
-                  href="https://ieul.jp/" /* TODO: ASPアフィリエイトリンクに差し替え */
+                  href="#" /* TODO: タウンライフのASPリンクに差し替え */
                   target="_blank"
                   rel="noopener noreferrer nofollow sponsored"
                   className="shrink-0 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold text-sm transition-colors flex items-center gap-2"
                 >
-                  無料査定を試す
+                  無料・匿名で査定してみる
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -613,10 +615,11 @@ export default function Home() {
             当サイトで表示される価格は、国土交通省の過去取引データに基づく参考値であり、実際の売却価格を保証するものではありません。
             正確な査定にはプロの不動産業者による査定をお勧めします。当サイトはアフィリエイトプログラムに参加しています。
           </p>
-          <div className="flex justify-center gap-6 text-xs text-stone-500">
-            <span>プライバシーポリシー</span>
-            <span>利用規約</span>
-            <span>免責事項</span>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-xs text-stone-500">
+            <Link href="/contact" className="hover:text-stone-300 transition-colors">お問い合わせ</Link>
+            <Link href="/privacy" className="hover:text-stone-300 transition-colors">プライバシーポリシー</Link>
+            <Link href="/terms" className="hover:text-stone-300 transition-colors">利用規約</Link>
+            <Link href="/disclaimer" className="hover:text-stone-300 transition-colors">免責事項</Link>
           </div>
         </div>
       </footer>
