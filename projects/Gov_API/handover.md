@@ -12,7 +12,8 @@
     - Recharts (価格推移トレンド)
     - React Leaflet (地図表示 - 構造のみ。現在は一覧表示がメイン)
 - **Icons**: Lucide React
-- **Deployment**: Vercel
+- **Deployment**: Cloudflare Pages (OpenNext, Edge Runtime)
+- **Domain**: `gov.moguruu.com` 稼働中
 
 ## 3. システムアーキテクチャ
 - **Frontend**: `src/app/page.tsx` がメインのエントリポイント。コンポーネント指向で設計。
@@ -31,7 +32,7 @@
     - **現在 (フェーズ3)**: 「高精度クリーン」デザイン。ノイズを排除し、`stone-50` の背景とソリッドな白カード、精緻な影を用いたミニマルで清潔感のあるUI。
 
 ## 5. 現在の状態と残存タスク
-- **稼働状況**: Vercelデプロイ済み。バグ（NaN表示など）は修正済み。
+- **稼働状況**: VercelからCloudflare Pagesへのインフラ移行完了。カスタムドメイン (`gov.moguruu.com`) にて正常稼働中。Edgeランタイム (`nodejs_compat`) 対応済み。Vercel関連の記述は削除済み。
 - **残課題**:
     - [ ] **アフィリエイトリンクの差し替え**: `page.tsx:L578`, `ConversionBanner.tsx:L20`, `EstimateResult.tsx:L160`等の `TODO` コメント箇所。
         - **※状況引継ぎ**: タウンライフにて「【広告素材チェック有】おうちクラベル 不動産売却一括査定サービス（14,400円/件）」に申請中（2026/02/28時点）。承認が下り次第、ASPからテキストリンクを取得して差し替える。

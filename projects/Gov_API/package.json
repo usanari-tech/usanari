@@ -4,6 +4,9 @@
     "wrangler": "^4.71.0"
   },
   "scripts": {
-    "vercel-build": "next build"
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "eslint"
   }
 }
