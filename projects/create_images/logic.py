@@ -109,8 +109,6 @@ def generate_images(prompt, negative_prompt, style, aspect_ratio, image_count, s
     # Gemini 2.5 Flash / 3.0 Pro preview image models may return 404 or 429 on free tier.
     models_to_try = [
         "imagen-3.0-generate-001",
-        "gemini-2.5-flash-image",
-        "gemini-3-pro-image-preview",
         "gemini-2.5-flash"
     ]
 
@@ -228,7 +226,7 @@ def edit_image(base_image, mask_image, prompt):
     """
     try:
         client = get_client()
-        model_name = "gemini-3-pro-image-preview"
+        model_name = "gemini-2.5-flash"
         
         print(f"Editing with {model_name}: {prompt}")
         

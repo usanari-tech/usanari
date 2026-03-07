@@ -30,11 +30,11 @@ class ProsperInvestigator:
         # ユーザー指定があればそれを最優先、なければデフォルト順
         if model_name:
             primary = f"models/{model_name}" if not model_name.startswith("models/") else model_name
-            self.model_candidates = [primary, "models/gemini-2.5-flash", "models/gemini-2.5-flash-lite", "models/gemini-3-flash-preview"]
+            self.model_candidates = [primary, "models/gemini-2.5-flash", "models/gemini-2.5-flash-lite"]
             # 重複削除 (順序保持)
             self.model_candidates = list(dict.fromkeys(self.model_candidates))
         else:
-            self.model_candidates = ["models/gemini-2.5-flash", "models/gemini-2.5-flash-lite", "models/gemini-3-flash-preview"]
+            self.model_candidates = ["models/gemini-2.5-flash", "models/gemini-2.5-flash-lite"]
             
         self.current_model_index = 0
         self.model_name = self.model_candidates[0]
@@ -377,7 +377,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", help="Output file path (optional)")
     parser.add_argument("--list-models", action="store_true", help="List available models")
     parser.add_argument("--dry-run", action="store_true", help="Run without calling API")
-    parser.add_argument("--model", help="Specify model name (e.g. gemini-3-flash-preview)")
+    parser.add_argument("--model", help="Specify model name (e.g. gemini-2.5-flash)")
     parser.add_argument("--ai-plan", action="store_true", help="Use AI for planning topics (consumes API quota)")
     parser.add_argument("--hypothesis", help="Specific user hypothesis to verify (Dimension 0)")
     args = parser.parse_args()

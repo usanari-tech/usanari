@@ -13,7 +13,7 @@ if not api_key:
 print(f"Key: {api_key[:5]}...")
 
 client = genai.Client(api_key=api_key)
-model_name = "gemini-3-pro-image-preview"
+model_name = "gemini-2.5-flash"
 
 prompt = "A futuristic city with flying cars, cyberpunk style, aspect ratio 1:1"
 print(f"Generating with {model_name}...")

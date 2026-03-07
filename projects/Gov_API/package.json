@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
+    "wrangler": "^4.71.0"
+  },
+  "scripts": {
+    "vercel-build": "next build"
+  }
+}

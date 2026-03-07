@@ -1,29 +1,30 @@
 [
   {
-    "name": "Twitter Automation",
-    "dir_name": "twitter",
-    "path": "/Users/yukinari/Desktop/antigravity/projects/twitter",
-    "type": "Automation",
-    "description": "Prosper開発ログの技術発信、フォロワー獲得。",
+    "name": "AI Image Generator",
+    "dir_name": "create_images",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/create_images",
+    "type": "AI Tool",
+    "description": "記事用画像の生成ツールのインターフェース提供。",
     "status": "Operational",
-    "last_modified": "2026-02-22 05:32",
-    "api": [],
+    "last_modified": "2026-02-28 07:30",
+    "api": [
+      "Google GenAI (Imagen 3)"
+    ],
     "tools": [
-      "Markdown",
-      "Puppeteer",
-      "Node.js"
+      "Gemini API",
+      "Pillow",
+      "Python",
+      "Gradio"
     ],
     "outputs": [
-      "X (Twitter) Post"
+      "Generated Images (Files)"
     ],
-    "depends_on": [
+    "depends_on": [],
+    "related_to": [
       "prosper"
     ],
-    "related_to": [],
     "service": [],
-    "account": [
-      "X (@User)"
-    ]
+    "account": []
   },
   {
     "name": "Prosper (Create)",
@@ -32,16 +33,16 @@
     "type": "AI/Auto",
     "description": "Note記事の自動調査・執筆・投稿システム。技術的権威性の確立。",
     "status": "Development",
-    "last_modified": "2026-02-22 03:17",
+    "last_modified": "2026-02-28 07:29",
     "api": [
       "Google GenAI (Gemini 2.5 Flash)",
       "Google Search Grounding"
     ],
     "tools": [
+      "Playwright",
       "Gemini",
-      "Markdown",
       "Python",
-      "Playwright"
+      "Markdown"
     ],
     "outputs": [
       "Note.com Article"
@@ -55,6 +56,95 @@
     "account": [
       "Google AI Studio",
       "Note (User)"
+    ]
+  },
+  {
+    "name": "google_DialogLab",
+    "dir_name": "google_DialogLab",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/google_DialogLab",
+    "type": "Other",
+    "description": "DialogLab",
+    "status": "Active",
+    "last_modified": "2026-02-28 07:26",
+    "api": [],
+    "tools": [],
+    "outputs": [],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Antigravity Dashboard",
+    "dir_name": "LIST",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/LIST",
+    "type": "Script",
+    "description": "全プロジェクトのステータス、技術スタック、成果物を一元管理・可視化するダッシュボード。",
+    "status": "Operational",
+    "last_modified": "2026-02-28 07:12",
+    "api": [],
+    "tools": [
+      "Tailwind CSS",
+      "Alpine.js",
+      "Python"
+    ],
+    "outputs": [
+      "Project Dashboard (HTML)"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Real Estate Dashboard",
+    "dir_name": "Gov_API",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/Gov_API",
+    "type": "Web App",
+    "description": "e-Gov APIを利用した不動産価格トレンドの可視化と分析。",
+    "status": "Review",
+    "last_modified": "2026-02-27 01:22",
+    "api": [
+      "e-Gov API"
+    ],
+    "tools": [
+      "Recharts",
+      "Next.js",
+      "Leaflet",
+      "Next.js (Nested)"
+    ],
+    "outputs": [
+      "Web Dashboard"
+    ],
+    "depends_on": [],
+    "related_to": [],
+    "service": [],
+    "account": []
+  },
+  {
+    "name": "Twitter Automation",
+    "dir_name": "twitter",
+    "path": "/Users/yukinari/Desktop/antigravity/projects/twitter",
+    "type": "Automation",
+    "description": "Prosper開発ログの技術発信、フォロワー獲得。",
+    "status": "Operational",
+    "last_modified": "2026-02-22 10:55",
+    "api": [],
+    "tools": [
+      "Puppeteer",
+      "Node.js",
+      "Markdown"
+    ],
+    "outputs": [
+      "X (Twitter) Post"
+    ],
+    "depends_on": [
+      "prosper"
+    ],
+    "related_to": [],
+    "service": [],
+    "account": [
+      "X (@User)"
     ]
   },
   {
@@ -94,55 +184,6 @@
     "account": []
   },
   {
-    "name": "AI Image Generator",
-    "dir_name": "create_images",
-    "path": "/Users/yukinari/Desktop/antigravity/projects/create_images",
-    "type": "AI Tool",
-    "description": "記事用画像の生成ツールのインターフェース提供。",
-    "status": "Operational",
-    "last_modified": "2026-02-21 11:44",
-    "api": [
-      "Google GenAI (Imagen 3)"
-    ],
-    "tools": [
-      "Pillow",
-      "Gemini API",
-      "Gradio",
-      "Python"
-    ],
-    "outputs": [
-      "Generated Images (Files)"
-    ],
-    "depends_on": [],
-    "related_to": [
-      "prosper"
-    ],
-    "service": [],
-    "account": []
-  },
-  {
-    "name": "Antigravity Dashboard",
-    "dir_name": "LIST",
-    "path": "/Users/yukinari/Desktop/antigravity/projects/LIST",
-    "type": "Script",
-    "description": "全プロジェクトのステータス、技術スタック、成果物を一元管理・可視化するダッシュボード。",
-    "status": "Operational",
-    "last_modified": "2026-02-21 10:38",
-    "api": [],
-    "tools": [
-      "Alpine.js",
-      "Tailwind CSS",
-      "Python"
-    ],
-    "outputs": [
-      "Project Dashboard (HTML)"
-    ],
-    "depends_on": [],
-    "related_to": [],
-    "service": [],
-    "account": []
-  },
-  {
     "name": "Visualize Md",
     "dir_name": "visualize-md",
     "path": "/Users/yukinari/Desktop/antigravity/.agent/skills/visualize-md",
@@ -162,31 +203,6 @@
     "account": []
   },
   {
-    "name": "Real Estate Dashboard",
-    "dir_name": "Gov_API",
-    "path": "/Users/yukinari/Desktop/antigravity/projects/Gov_API",
-    "type": "Web App",
-    "description": "e-Gov APIを利用した不動産価格トレンドの可視化と分析。",
-    "status": "Review",
-    "last_modified": "2026-02-18 20:17",
-    "api": [
-      "e-Gov API"
-    ],
-    "tools": [
-      "Recharts",
-      "Leaflet",
-      "Next.js",
-      "Next.js (Nested)"
-    ],
-    "outputs": [
-      "Web Dashboard"
-    ],
-    "depends_on": [],
-    "related_to": [],
-    "service": [],
-    "account": []
-  },
-  {
     "name": "Food Comments",
     "dir_name": "food_comments",
     "path": "/Users/yukinari/Desktop/antigravity/projects/food_comments",
@@ -198,12 +214,12 @@
       "Google GenAI (Gemini Vision)"
     ],
     "tools": [
-      "React",
       "Tailwind",
+      "TypeScript",
       "Supabase",
       "Next.js",
-      "TypeScript",
-      "Supabase (DB/Auth)"
+      "Supabase (DB/Auth)",
+      "React"
     ],
     "outputs": [
       "Web App (Vercel)"
@@ -214,22 +230,6 @@
     "account": [
       "Supabase"
     ]
-  },
-  {
-    "name": "google_DialogLab",
-    "dir_name": "google_DialogLab",
-    "path": "/Users/yukinari/Desktop/antigravity/projects/google_DialogLab",
-    "type": "Other",
-    "description": "DialogLab",
-    "status": "Active",
-    "last_modified": "2026-02-17 11:15",
-    "api": [],
-    "tools": [],
-    "outputs": [],
-    "depends_on": [],
-    "related_to": [],
-    "service": [],
-    "account": []
   },
   {
     "name": "honami_request",
@@ -299,11 +299,11 @@
     "last_modified": "2026-02-12 12:02",
     "api": [],
     "tools": [
-      "React",
-      "Markdown",
       "Vite",
       "Howler.js",
-      "Framer Motion"
+      "Markdown",
+      "Framer Motion",
+      "React"
     ],
     "outputs": [
       "Mobile Game (iOS)"
@@ -506,12 +506,12 @@
     "last_modified": "2026-01-24 19:53",
     "api": [],
     "tools": [
-      "React",
       "Tailwind",
+      "TypeScript",
       "Vite",
       "GSAP",
-      "TypeScript",
-      "Framer Motion"
+      "Framer Motion",
+      "React"
     ],
     "outputs": [
       "Web Demo"
@@ -607,8 +607,8 @@
     "last_modified": "2026-01-18 23:52",
     "api": [],
     "tools": [
-      "Next.js",
       "Tailwind",
+      "Next.js",
       "TypeScript",
       "React"
     ],
@@ -630,9 +630,9 @@
     "last_modified": "2026-01-18 17:23",
     "api": [],
     "tools": [
-      "Markdown",
       "Firebase",
-      "Chart.js"
+      "Chart.js",
+      "Markdown"
     ],
     "outputs": [
       "Web App"

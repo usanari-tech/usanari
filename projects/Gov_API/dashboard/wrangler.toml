@@ -1,0 +1,11 @@
+name = "gov-api"
+main = ".open-next/worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_als"]
+
+# API キー等の環境変数はダッシュボードから設定推奨ですがプレースホルダーとして用意
+# [vars]
+# REINS_API_KEY = "your-api-key"
+
+[build]
+command = "npm run build"

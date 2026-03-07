@@ -1,21 +1,21 @@
 # Antigravity Projects Specifications
 
-Last Updated: 2026年 2月22日 日曜日 05時34分26秒 JST
+Last Updated: 2026年 2月28日 土曜日 07時32分29秒 JST
 
 ## 📁 Project List
 
 | Project Name | Status | Last Update | Type | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **Twitter Automation** | Operational | 2026-02-22 05:32 | Automation | Prosper開発ログの技術発信、フォロワー獲得。 |
-| **Prosper (Create)** | Development | 2026-02-22 03:17 | AI/Auto | Note記事の自動調査・執筆・投稿システム。技術的権威性の確立。 |
+| **AI Image Generator** | Operational | 2026-02-28 07:30 | AI Tool | 記事用画像の生成ツールのインターフェース提供。 |
+| **Prosper (Create)** | Development | 2026-02-28 07:29 | AI/Auto | Note記事の自動調査・執筆・投稿システム。技術的権威性の確立。 |
+| **google_DialogLab** | Active | 2026-02-28 07:26 | Other | DialogLab |
+| **Antigravity Dashboard** | Operational | 2026-02-28 07:12 | Script | 全プロジェクトのステータス、技術スタック、成果物を一元管理・可視化するダッシュボード。 |
+| **Real Estate Dashboard** | Review | 2026-02-27 01:22 | Web App | e-Gov APIを利用した不動産価格トレンドの可視化と分析。 |
+| **Twitter Automation** | Operational | 2026-02-22 10:55 | Automation | Prosper開発ログの技術発信、フォロワー獲得。 |
 | **Prosper Writer** | Operational | 2026-02-21 21:39 | Workflow | 調査レポートを元に、読者を惹きつける構成で記事を執筆し、アイキャッチ画像を生成する。 |
 | **Prosper Auto Post** | Operational | 2026-02-21 21:39 | Workflow | 調査・執筆・画像生成・Noteへの投稿までを完全自動化するエージェントワークフロー。 |
-| **AI Image Generator** | Operational | 2026-02-21 11:44 | AI Tool | 記事用画像の生成ツールのインターフェース提供。 |
-| **Antigravity Dashboard** | Operational | 2026-02-21 10:38 | Script | 全プロジェクトのステータス、技術スタック、成果物を一元管理・可視化するダッシュボード。 |
 | **Visualize Md** | Operational | 2026-02-20 14:20 | Skill / Workflow | Markdownファイルをブラウザで綺麗に閲覧・プレビューする。ユーザーが「mdを見やすくして」や「/visualize-md」と言った時に使用。 |
-| **Real Estate Dashboard** | Review | 2026-02-18 20:17 | Web App | e-Gov APIを利用した不動産価格トレンドの可視化と分析。 |
 | **Food Comments** | Prototype | 2026-02-17 11:29 | Web App | 食事写真からの栄養解析と「辛口」コメントによる食生活改善。 |
-| **google_DialogLab** | Active | 2026-02-17 11:15 | Other | DialogLab |
 | **honami_request** | Active | 2026-02-15 15:04 | Docs | 干し芋EC 競合TTP（徹底的にパクる）レポート |
 | **Update Dashboard** | Operational | 2026-02-15 14:24 | Workflow | 全プロジェクトの最新状態をスキャンし、ダッシュボード(index.html)を更新する。 |
 | **Yahoo Affiliate Research** | Research | 2026-02-14 13:32 | Docs | Yahoo!ショッピングアフィリエイトの新プログラム調査と戦略立案。 |

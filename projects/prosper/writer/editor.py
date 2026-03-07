@@ -14,7 +14,7 @@ else:
     load_dotenv()
 
 class ProsperEditor:
-    def __init__(self, model_name="gemini-2.0-flash"):
+    def __init__(self, model_name="gemini-2.5-flash"):
         self.api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         if not self.api_key:
             raise ValueError("API Key not found in .env")
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prosper Editor - Optimize for Note.com")
     parser.add_argument("file", help="Draft file path")
     parser.add_argument("--interactive", "-i", action="store_true", help="Select title interactively")
-    parser.add_argument("--model", default="gemini-2.0-flash", help="Model to use")
+    parser.add_argument("--model", default="gemini-2.5-flash", help="Model to use")
     
     args = parser.parse_args()
     

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
+export const runtime = 'edge';
+
 const API_BASE_URL = 'https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001';
 
 export async function GET(request: Request) {
