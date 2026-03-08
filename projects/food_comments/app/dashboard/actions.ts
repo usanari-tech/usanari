@@ -63,10 +63,17 @@ export async function getPastReports(): Promise<PastReport[]> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return []
 
-    // 1. レポートを取得
+    // 1. レポートと紐づく食事データをJOINで一括取得（N+1クエリ解消）
     const { data: reports, error } = await supabase
         .from('daily_reports')
-        .select('id, report_date, score, ai_comment, nutritional_summary')
+        .select(`
+            id, 
+            report_date, 
+            score, 
+            ai_comment, 
+            nutritional_summary,
+            meal_logs (image_path, memo, analysis, created_at)
+        `)
         .eq('user_id', user.id)
         .order('report_date', { ascending: false })
         .limit(10)
@@ -79,36 +86,18 @@ export async function getPastReports(): Promise<PastReport[]> {
     const result: PastReport[] = []
 
     for (const report of reports) {
-        // 2. report_idで直接紐付けされたmeal_logsを取得（優先）
-        let mealLogs: any[] | null = null
+        const mealLogs = report.meal_logs as any[] | null
 
-        const { data: linkedLogs } = await supabase
-            .from('meal_logs')
-            .select('image_path, memo, analysis, created_at')
-            .eq('report_id', report.id)
-            .order('created_at', { ascending: true })
-
-        if (linkedLogs && linkedLogs.length > 0) {
-            mealLogs = linkedLogs
-        } else {
-            // フォールバック: 日付範囲でmeal_logsを検索（旧データ用）
-            const { start, end } = getJSTDayRange(report.report_date)
-            const { data: dateLogs } = await supabase
-                .from('meal_logs')
-                .select('image_path, memo, analysis, created_at')
-                .eq('user_id', user.id)
-                .gte('created_at', start)
-                .lte('created_at', end)
-                .order('created_at', { ascending: true })
-
-            mealLogs = dateLogs
-        }
-
-        // 3. meal_logsのanalysisから食事データを構築
+        // 2. meal_logsのanalysisから食事データを構築
         const meals: MealAnalysis[] = []
 
-        if (mealLogs) {
-            for (const log of mealLogs) {
+        if (mealLogs && mealLogs.length > 0) {
+            // 作成日時でソート (JOINで順序保証がない場合の対策)
+            const sortedLogs = [...mealLogs].sort((a, b) =>
+                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            )
+
+            for (const log of sortedLogs) {
                 if (log.analysis) {
                     meals.push({
                         menu_name: log.analysis.menu_name || '不明',
@@ -123,7 +112,7 @@ export async function getPastReports(): Promise<PastReport[]> {
             }
         }
 
-        // フォールバック: 古い形式のnutritional_summaryからmeals配列を取得
+        // フォールバック: 古い形式のnutritional_summaryからmeals配列を取得（JOINで取得できなかった過去データ用）
         if (meals.length === 0 && report.nutritional_summary?.meals) {
             const legacyMeals = report.nutritional_summary.meals as any[]
             legacyMeals.forEach((m: any, i: number) => {
@@ -132,9 +121,9 @@ export async function getPastReports(): Promise<PastReport[]> {
                     calories: m.calories || 0,
                     pfc: m.pfc || { p: 0, f: 0, c: 0 },
                     comment: m.comment || '',
-                    image_path: mealLogs?.[i]?.image_path,
-                    memo: mealLogs?.[i]?.memo,
-                    created_at: mealLogs?.[i]?.created_at
+                    image_path: undefined,
+                    memo: undefined,
+                    created_at: undefined
                 })
             })
         }

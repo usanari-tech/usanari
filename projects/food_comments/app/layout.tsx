@@ -13,10 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Spicy",
-  description: "あなたの食生活を辛口コメントで管理栄養士が指導します",
+  title: "Food Comments",
+  description: "AIによる食事コメントアプリ",
   manifest: "/manifest.json",
 };
+
+// 全ページ強制Edgeランタイムは解除（Supabase SSRとの競合回避のため）
+// export const runtime = 'edge';
 
 export default function RootLayout({
   children,

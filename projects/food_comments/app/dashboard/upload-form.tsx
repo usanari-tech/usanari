@@ -52,7 +52,7 @@ export default function UploadForm({ onSuccess }: { onSuccess?: () => void }) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (files.length === 0) return
+        if (files.length === 0 && !memo.trim()) return
 
         setLoading(true)
         setMessage(null)
@@ -63,28 +63,41 @@ export default function UploadForm({ onSuccess }: { onSuccess?: () => void }) {
 
             if (!user) throw new Error('ログインが必要です')
 
-            const options = {
-                maxSizeMB: 0.3,
-                maxWidthOrHeight: 800,
-                useWebWorker: true,
-                fileType: 'image/webp' as const
-            }
+            if (files.length > 0) {
+                const options = {
+                    maxSizeMB: 0.3,
+                    maxWidthOrHeight: 800,
+                    useWebWorker: true,
+                    fileType: 'image/webp' as const
+                }
 
-            for (const { file } of files) {
-                const compressedFile = await imageCompression(file, options)
-                const fileName = `${user.id}/${Date.now()}.webp`
+                for (const { file } of files) {
+                    const compressedFile = await imageCompression(file, options)
+                    const fileName = `${user.id}/${Date.now()}.webp`
 
-                const { error: uploadError } = await supabase.storage
-                    .from('meal_photos')
-                    .upload(fileName, compressedFile)
+                    const { error: uploadError } = await supabase.storage
+                        .from('meal_photos')
+                        .upload(fileName, compressedFile)
 
-                if (uploadError) throw uploadError
+                    if (uploadError) throw uploadError
 
+                    const { error: dbError } = await supabase
+                        .from('meal_logs')
+                        .insert({
+                            user_id: user.id,
+                            image_path: fileName,
+                            memo: memo,
+                        })
+
+                    if (dbError) throw dbError
+                }
+            } else if (memo.trim() !== '') {
+                // 画像なし、メモのみの場合
                 const { error: dbError } = await supabase
                     .from('meal_logs')
                     .insert({
                         user_id: user.id,
-                        image_path: fileName,
+                        image_path: null,
                         memo: memo,
                     })
 
@@ -92,7 +105,8 @@ export default function UploadForm({ onSuccess }: { onSuccess?: () => void }) {
             }
 
             clearAll()
-            setMessage({ type: 'success', text: `${files.length}件の投稿を受け付けました！` })
+            const msgCount = files.length > 0 ? `${files.length}件の` : '1件の'
+            setMessage({ type: 'success', text: `${msgCount}投稿を受け付けました！` })
             onSuccess?.()
 
         } catch (error: unknown) {
@@ -196,7 +210,7 @@ export default function UploadForm({ onSuccess }: { onSuccess?: () => void }) {
                 {/* 投稿ボタン */}
                 <button
                     type="submit"
-                    disabled={files.length === 0 || loading}
+                    disabled={(files.length === 0 && !memo.trim()) || loading}
                     className="btn-primary w-full flex items-center justify-center gap-2"
                 >
                     {loading ? (
@@ -204,15 +218,15 @@ export default function UploadForm({ onSuccess }: { onSuccess?: () => void }) {
                             <Loader2 className="animate-spin" size={20} />
                             <span>アップロード中...</span>
                         </>
-                    ) : files.length > 0 ? (
+                    ) : (files.length > 0 || memo.trim()) ? (
                         <>
                             <Check size={20} />
-                            <span>投稿する ({files.length}件)</span>
+                            <span>投稿する {files.length > 0 ? `(${files.length}件)` : '(メモのみ)'}</span>
                         </>
                     ) : (
                         <>
                             <Sparkles size={20} />
-                            <span>写真を選択してください</span>
+                            <span>写真かメモを入力してください</span>
                         </>
                     )}
                 </button>
