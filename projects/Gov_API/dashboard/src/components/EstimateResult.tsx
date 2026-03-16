@@ -151,20 +151,27 @@ export default function EstimateResult({ data }: EstimateResultProps) {
             <div className="bg-stone-900 rounded-xl p-8 text-center">
                 <p className="text-[10px] text-stone-500 mb-2 tracking-wider uppercase">上記は過去データに基づく参考値です</p>
                 <h3 className="text-lg md:text-xl font-bold text-white mb-3 leading-snug">
-                    正確な価格を<span className="text-teal-400">プロの無料査定</span>で確認
+                    「情報の透明性」で高く売る。<br className="hidden md:block" />
+                    <span className="text-teal-400">ミライアス</span>の無料査定で最終確認
                 </h3>
                 <p className="text-stone-400 text-sm mb-6">
-                    メール連絡を希望できます。しつこい営業はありません。
+                    「囲い込み」なしの公平な仲介が、最高値での売却をサポート。<br />
+                    1都3県（東京・神奈川・千葉・埼玉）に対応。
                 </p>
                 <a
-                    href="https://ieul.jp/" /* TODO: ASPリンクに差し替え */
+                    href="https://px.a8.net/svt/ejp?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29"
                     target="_blank"
                     rel="noopener noreferrer nofollow sponsored"
                     className="inline-flex items-center gap-2 px-8 py-3.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold text-sm transition-colors"
                 >
-                    無料査定で最高値を確認する
+                    ミライアスで査定を申し込む
                     <ArrowRight className="w-5 h-5" />
                 </a>
+                <p className="text-[10px] text-stone-500 mt-4 italic">
+                    ※備考欄に「メール連絡希望」と記載することで、電話連絡を最小限に抑えられます。
+                </p>
+                {/* A8.net Tracking Pixel */}
+                <img border="0" width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" />
             </div>
         </div>
     );

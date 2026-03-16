@@ -21,7 +21,7 @@ export default function Hero() {
             <div className="relative z-10 container mx-auto px-6 max-w-4xl text-center py-16">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-white/80 text-xs font-medium mb-8 border border-white/10 backdrop-blur-sm">
                     <Shield className="w-3.5 h-3.5" />
-                    <span>登録不要・営業電話なし</span>
+                    <span>匿名・登録不要で相場を即時算出</span>
                 </div>
 
                 <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-5 tracking-tight leading-[1.25] drop-shadow-lg">
@@ -30,8 +30,8 @@ export default function Hero() {
                 </h1>
 
                 <p className="text-white/70 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
-                    一括査定で電話攻勢に遭う前に。<br className="hidden md:block" />
-                    国交省の公式取引データから、30秒で相場をセルフチェック。
+                    一括査定で「電話攻勢」に遭う前に。<br className="hidden md:block" />
+                    国土交通省の公式取引データから、30秒で相場をセルフチェック。
                 </p>
 
                 <button

@@ -571,20 +571,23 @@ export default function Home() {
               </div>
 
               {/* Mini CTA */}
-              <div className="bg-stone-900 p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+              <div className="bg-stone-900 p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 relative">
                 <div>
-                  <p className="text-white font-bold text-base">相場がわかったら、実際の売却価格を<span className="text-teal-400">匿名・机上査定</span>でチェック</p>
-                  <p className="text-stone-400 text-sm mt-1">「まずは価格だけ知りたい」「営業電話は避けたい」という方に最適です。</p>
+                  <p className="text-white font-bold text-base">情報の「透明性」が、納得の売却価格につながります。</p>
+                  <p className="text-stone-400 text-sm mt-1">「囲い込み」を一切行わない公平な仲介で、あなたの利益を守ります。<br className="hidden sm:block" />
+                  <span className="text-teal-400 text-xs">※対応エリア：東京・神奈川・千葉・埼玉</span></p>
                 </div>
                 <a
-                  href="#" /* TODO: タウンライフのASPリンクに差し替え */
+                  href="https://px.a8.net/svt/ejp?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29"
                   target="_blank"
                   rel="noopener noreferrer nofollow sponsored"
-                  className="shrink-0 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold text-sm transition-colors flex items-center gap-2"
+                  className="shrink-0 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold text-sm transition-colors flex items-center gap-2 text-center"
                 >
-                  無料・匿名で査定してみる
-                  <ArrowRight className="w-4 h-4" />
+                  <span className="flex-1">ミライアスの無料査定を申し込む</span>
+                  <ArrowRight className="w-4 h-4 ml-1" />
                 </a>
+                {/* A8.net Tracking Pixel */}
+                <img border="0" width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" className="absolute bottom-0 right-0 opacity-0" />
               </div>
 
               {/* Transaction List - always visible */}
