@@ -41,7 +41,7 @@ export default function ConversionBanner() {
                     ※当サイトは情報の透明性を重視する「ミライアス」の公式パートナーです。紹介はアフィリエイトプログラムに基づいており、利用は完全に無料です。
                 </p>
                 {/* A8.net Tracking Pixel */}
-                <img border="0" width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" />
+                <img width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" />
             </div>
         </section>
     );

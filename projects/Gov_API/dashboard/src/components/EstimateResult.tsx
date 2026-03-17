@@ -171,7 +171,7 @@ export default function EstimateResult({ data }: EstimateResultProps) {
                     ※備考欄に「メール連絡希望」と記載することで、電話連絡を最小限に抑えられます。
                 </p>
                 {/* A8.net Tracking Pixel */}
-                <img border="0" width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" />
+                <img width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" />
             </div>
         </div>
     );

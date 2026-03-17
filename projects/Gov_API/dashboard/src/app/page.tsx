@@ -587,7 +587,7 @@ export default function Home() {
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </a>
                 {/* A8.net Tracking Pixel */}
-                <img border="0" width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" className="absolute bottom-0 right-0 opacity-0" />
+                <img width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4AZGC6+DYHWW2+4I6M+5ZU29" alt="" className="absolute bottom-0 right-0 opacity-0" />
               </div>
 
               {/* Transaction List - always visible */}
