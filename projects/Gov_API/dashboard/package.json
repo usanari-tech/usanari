@@ -10,7 +10,8 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "pages:build": "NODE_OPTIONS='--max_old_space_size=3072' opennextjs-cloudflare build && cp .open-next/worker.js .open-next/assets/_worker.js"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
